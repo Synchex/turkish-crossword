@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useProgressStore } from '../src/store/gameStore';
+import { colors } from '../src/theme/colors';
 
 export default function RootLayout() {
   const loadProgress = useProgressStore((s) => s.loadProgress);
@@ -16,10 +17,14 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#F5F5F5' },
-          animation: 'slide_from_right',
+          contentStyle: { backgroundColor: colors.background },
+          animation: 'fade',
         }}
-      />
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="game/[id]" />
+        <Stack.Screen name="result/[id]" />
+      </Stack>
     </>
   );
 }

@@ -8,6 +8,8 @@ import {
   Animated,
 } from 'react-native';
 import { CellData } from '../game/types';
+import { colors } from '../theme/colors';
+import { radius } from '../theme/radius';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -30,11 +32,11 @@ export default function CrosswordGrid({
   shakeCell,
   correctFlash,
 }: Props) {
-  const cellSize = Math.floor((SCREEN_WIDTH - 32) / gridSize);
+  const cellSize = Math.floor((SCREEN_WIDTH - 40) / gridSize);
   const gridWidth = cellSize * gridSize;
 
   return (
-    <View style={[styles.container, { width: gridWidth, height: gridWidth }]}>
+    <View style={[styles.container, { width: gridWidth + 4, height: gridWidth + 4 }]}>
       {grid.map((row, r) =>
         row.map((cell, c) => (
           <Cell
@@ -74,18 +76,19 @@ function Cell({
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const shakeAnim = useRef(new Animated.Value(0)).current;
+  const bgAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (cell.userLetter) {
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.15,
-          duration: 80,
+          toValue: 1.12,
+          duration: 70,
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1,
-          duration: 80,
+          duration: 70,
           useNativeDriver: true,
         }),
       ]).start();
@@ -95,10 +98,11 @@ function Cell({
   useEffect(() => {
     if (shouldShake) {
       Animated.sequence([
-        Animated.timing(shakeAnim, { toValue: 5, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: -5, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 3, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 0, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 6, duration: 40, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -6, duration: 40, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 4, duration: 40, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -4, duration: 40, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 0, duration: 40, useNativeDriver: true }),
       ]).start();
     }
   }, [shouldShake]);
@@ -112,26 +116,32 @@ function Cell({
           {
             width: cellSize,
             height: cellSize,
-            top: cell.row * cellSize,
-            left: cell.col * cellSize,
+            top: cell.row * cellSize + 2,
+            left: cell.col * cellSize + 2,
           },
         ]}
       />
     );
   }
 
-  let bgColor = '#FFFFFF';
-  if (cell.isLocked) bgColor = correctFlash ? '#81C784' : '#E8F5E9';
-  else if (isSelected) bgColor = '#FFF176';
-  else if (isWordHighlight) bgColor = '#FFF9C4';
+  let bgColor = colors.surface;
+  if (cell.isLocked) bgColor = correctFlash ? colors.success : colors.successLight;
+  else if (isSelected) bgColor = colors.accent;
+  else if (isWordHighlight) bgColor = colors.warningLight;
 
-  const borderColor = cell.isLocked ? '#4CAF50' : isSelected ? '#F57F17' : '#424242';
+  const borderColor = cell.isLocked
+    ? colors.success
+    : isSelected
+      ? colors.accentDark
+      : colors.border;
+
+  const borderWidth = isSelected ? 2 : 1;
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={onPress}
-      style={{ position: 'absolute', top: cell.row * cellSize, left: cell.col * cellSize }}
+      style={{ position: 'absolute', top: cell.row * cellSize + 2, left: cell.col * cellSize + 2 }}
     >
       <Animated.View
         style={[
@@ -141,19 +151,32 @@ function Cell({
             height: cellSize,
             backgroundColor: bgColor,
             borderColor,
+            borderWidth,
+            borderRadius: radius.xs,
             transform: [{ translateX: shakeAnim }, { scale: scaleAnim }],
           },
         ]}
       >
         {cell.number !== undefined && (
-          <Text style={[styles.number, { fontSize: cellSize * 0.22 }]}>{cell.number}</Text>
+          <Text
+            style={[
+              styles.number,
+              { fontSize: cellSize * 0.2, color: colors.textSecondary },
+            ]}
+          >
+            {cell.number}
+          </Text>
         )}
         <Text
           style={[
             styles.letter,
             {
-              fontSize: cellSize * 0.45,
-              color: cell.isRevealed ? '#1565C0' : cell.isLocked ? '#2E7D32' : '#212121',
+              fontSize: cellSize * 0.42,
+              color: cell.isRevealed
+                ? colors.primary
+                : cell.isLocked
+                  ? colors.successDark
+                  : colors.text,
             },
           ]}
         >
@@ -168,26 +191,23 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     alignSelf: 'center',
-    borderWidth: 2,
-    borderColor: '#212121',
-    backgroundColor: '#212121',
+    borderRadius: radius.md,
+    backgroundColor: colors.border,
+    overflow: 'hidden',
   },
   cell: {
     position: 'absolute',
-    borderWidth: 0.5,
-    borderColor: '#424242',
     justifyContent: 'center',
     alignItems: 'center',
   },
   blackCell: {
-    backgroundColor: '#212121',
+    backgroundColor: colors.border,
   },
   number: {
     position: 'absolute',
     top: 1,
-    left: 2,
+    left: 3,
     fontWeight: '700',
-    color: '#757575',
   },
   letter: {
     fontWeight: '700',

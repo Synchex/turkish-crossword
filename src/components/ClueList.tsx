@@ -5,9 +5,12 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import { Word, Direction } from '../game/types';
+import { colors } from '../theme/colors';
+import { radius } from '../theme/radius';
+import { spacing } from '../theme/spacing';
+import { shadows } from '../theme/shadows';
 
 interface Props {
   words: Word[];
@@ -37,6 +40,7 @@ export default function ClueList({
 
   return (
     <View style={styles.container}>
+      {/* Tabs */}
       <View style={styles.tabs}>
         <TouchableOpacity
           style={[styles.tab, tab === 'across' && styles.activeTab]}
@@ -55,10 +59,13 @@ export default function ClueList({
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Clue list */}
       <ScrollView
         ref={scrollRef}
         style={styles.list}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
       >
         {currentWords.map((word) => {
           const isSelected = word.id === selectedWordId;
@@ -72,10 +79,33 @@ export default function ClueList({
                 isLocked && styles.lockedClue,
               ]}
               onPress={() => onSelectWord(word)}
+              activeOpacity={0.7}
             >
-              <Text style={[styles.clueNum, isLocked && styles.lockedText]}>
-                {word.num}.
-              </Text>
+              <View
+                style={[
+                  styles.numBadge,
+                  {
+                    backgroundColor: isLocked
+                      ? colors.success
+                      : isSelected
+                        ? colors.primary
+                        : colors.cardAlt,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.numText,
+                    {
+                      color: isLocked || isSelected
+                        ? colors.textInverse
+                        : colors.primary,
+                    },
+                  ]}
+                >
+                  {word.num}
+                </Text>
+              </View>
               <Text
                 style={[
                   styles.clueText,
@@ -98,76 +128,86 @@ export default function ClueList({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   tabs: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: colors.border,
   },
   tab: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.cardAlt,
   },
   activeTab: {
-    backgroundColor: '#1565C0',
+    backgroundColor: colors.primary,
   },
   tabText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#757575',
+    color: colors.textSecondary,
   },
   activeTabText: {
-    color: '#FFFFFF',
+    color: colors.textInverse,
   },
   list: {
     flex: 1,
-    paddingHorizontal: 8,
+  },
+  listContent: {
+    padding: spacing.sm,
+    gap: 4,
   },
   clueRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-    marginVertical: 2,
+    paddingHorizontal: 10,
+    borderRadius: radius.md,
+    gap: 10,
   },
   selectedClue: {
-    backgroundColor: '#FFF9C4',
-    borderWidth: 1,
-    borderColor: '#F9A825',
+    backgroundColor: colors.primary + '12',
+    borderWidth: 1.5,
+    borderColor: colors.primary + '40',
   },
   lockedClue: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.successLight,
   },
-  clueNum: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1565C0',
+  numBadge: {
     width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  numText: {
+    fontSize: 12,
+    fontWeight: '800',
   },
   clueText: {
     fontSize: 13,
-    color: '#424242',
+    color: colors.text,
     flex: 1,
+    lineHeight: 18,
   },
   selectedClueText: {
     fontWeight: '600',
-    color: '#212121',
+    color: colors.primary,
   },
   lockedText: {
-    color: '#4CAF50',
+    color: colors.success,
     textDecorationLine: 'line-through',
   },
   checkMark: {
     fontSize: 16,
-    color: '#4CAF50',
-    marginLeft: 4,
+    color: colors.success,
+    fontWeight: '700',
   },
 });

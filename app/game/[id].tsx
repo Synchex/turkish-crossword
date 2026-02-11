@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, StyleSheet, Alert, SafeAreaView, Animated } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { levels } from '../../src/levels/levels';
 import { useCrosswordGame } from '../../src/game/useCrosswordGame';
@@ -8,7 +9,10 @@ import CrosswordGrid from '../../src/components/CrosswordGrid';
 import ClueList from '../../src/components/ClueList';
 import TurkishKeyboard from '../../src/components/TurkishKeyboard';
 import TopBar from '../../src/components/TopBar';
+import FeedbackPanel from '../../src/components/ui/FeedbackPanel';
 import { Word } from '../../src/game/types';
+import { colors } from '../../src/theme/colors';
+import { spacing } from '../../src/theme/spacing';
 
 export default function GameScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -35,6 +39,7 @@ export default function GameScreen() {
   const [shakeWord, setShakeWord] = useState(false);
   const [correctFlash, setCorrectFlash] = useState(false);
   const [navigated, setNavigated] = useState(false);
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
 
   // Navigate to result on completion
   useEffect(() => {
@@ -43,8 +48,10 @@ export default function GameScreen() {
       const stars = getStars();
       completeLevel(levelId, stars, state.hearts, state.timeElapsed);
       setTimeout(() => {
-        router.replace(`/result/${levelId}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&hearts=${state.hearts}`);
-      }, 800);
+        router.replace(
+          `/result/${levelId}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&hearts=${state.hearts}`
+        );
+      }, 1200);
     }
   }, [state.isComplete]);
 
@@ -52,10 +59,14 @@ export default function GameScreen() {
     const result = checkWord();
     if (result === 'correct') {
       setCorrectFlash(true);
+      setFeedback('correct');
       setTimeout(() => setCorrectFlash(false), 600);
+      setTimeout(() => setFeedback(null), 2000);
     } else if (result === 'wrong') {
       setShakeWord(true);
+      setFeedback('wrong');
       setTimeout(() => setShakeWord(false), 400);
+      setTimeout(() => setFeedback(null), 2000);
       if (state.hearts <= 1) {
         setTimeout(() => {
           Alert.alert('Canların Bitti!', 'Tekrar denemek ister misin?', [
@@ -83,12 +94,10 @@ export default function GameScreen() {
   );
 
   const selectedWordCells = getSelectedWordCells();
-
-  // Find the first cell that should shake (for wrong animation)
   const shakeCell = shakeWord && selectedWordCells.length > 0 ? selectedWordCells[0] : null;
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top']}>
       <TopBar
         levelId={levelId}
         hearts={state.hearts}
@@ -129,6 +138,9 @@ export default function GameScreen() {
         onHint={handleHint}
         disabled={state.isComplete}
       />
+
+      {/* Feedback overlay */}
+      <FeedbackPanel type={feedback} />
     </SafeAreaView>
   );
 }
@@ -136,15 +148,15 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.background,
   },
   gridSection: {
-    paddingVertical: 8,
+    paddingVertical: spacing.sm,
     alignItems: 'center',
   },
   clueSection: {
     flex: 1,
-    marginHorizontal: 12,
-    marginBottom: 4,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.xs,
   },
 });

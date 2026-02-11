@@ -1,0 +1,271 @@
+export type QuestionType = 'crossword' | 'multipleChoice' | 'wordFill';
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
+export interface Question {
+    id: string;
+    type: QuestionType;
+    difficulty: Difficulty;
+    level: number;
+    prompt: string;
+    options?: string[];
+    correctAnswer: string;
+    gridData?: unknown;
+    createdAt: string;
+}
+
+export const questions: Question[] = [
+    // ── Level 1 — Easy ──
+    {
+        id: 'q001',
+        type: 'multipleChoice',
+        difficulty: 'easy',
+        level: 1,
+        prompt: 'Türkiye\'nin başkenti neresidir?',
+        options: ['İstanbul', 'Ankara', 'İzmir', 'Bursa'],
+        correctAnswer: 'Ankara',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q002',
+        type: 'wordFill',
+        difficulty: 'easy',
+        level: 1,
+        prompt: '"Bir elin nesi var, iki elin ___ var." — Boşluğu doldurun.',
+        correctAnswer: 'sesi',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q003',
+        type: 'multipleChoice',
+        difficulty: 'easy',
+        level: 1,
+        prompt: 'Hangi gezegen Güneş Sistemi\'nde en büyüktür?',
+        options: ['Mars', 'Venüs', 'Jüpiter', 'Satürn'],
+        correctAnswer: 'Jüpiter',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q004',
+        type: 'crossword',
+        difficulty: 'easy',
+        level: 1,
+        prompt: 'Kedilerin çıkardığı ses. (8 harf)',
+        correctAnswer: 'miyavlama',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q005',
+        type: 'wordFill',
+        difficulty: 'easy',
+        level: 1,
+        prompt: '"Ağaçtan ___ düşer." — Boşluğu doldurun.',
+        correctAnswer: 'elma',
+        createdAt: '2026-02-10',
+    },
+
+    // ── Level 2 — Easy / Medium ──
+    {
+        id: 'q006',
+        type: 'multipleChoice',
+        difficulty: 'easy',
+        level: 2,
+        prompt: 'Türk bayrağındaki sembol nedir?',
+        options: ['Güneş', 'Ay-yıldız', 'Kartal', 'Aslan'],
+        correctAnswer: 'Ay-yıldız',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q007',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 2,
+        prompt: 'İstanbul Boğazı hangi iki denizi birbirine bağlar?',
+        options: [
+            'Akdeniz - Ege Denizi',
+            'Karadeniz - Marmara Denizi',
+            'Karadeniz - Akdeniz',
+            'Ege Denizi - Marmara Denizi',
+        ],
+        correctAnswer: 'Karadeniz - Marmara Denizi',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q008',
+        type: 'wordFill',
+        difficulty: 'medium',
+        level: 2,
+        prompt: 'Dünya\'nın en uzun nehri ___\'dir.',
+        correctAnswer: 'Nil',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q009',
+        type: 'crossword',
+        difficulty: 'easy',
+        level: 2,
+        prompt: 'Sabah doğan, akşam batan. (5 harf)',
+        correctAnswer: 'güneş',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q010',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 2,
+        prompt: 'Hangisi bir programlama dilidir?',
+        options: ['HTML', 'Python', 'Photoshop', 'Windows'],
+        correctAnswer: 'Python',
+        createdAt: '2026-02-10',
+    },
+
+    // ── Level 3 — Medium ──
+    {
+        id: 'q011',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 3,
+        prompt: 'Osmanlı İmparatorluğu hangi yılda kurulmuştur?',
+        options: ['1071', '1299', '1453', '1520'],
+        correctAnswer: '1299',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q012',
+        type: 'wordFill',
+        difficulty: 'medium',
+        level: 3,
+        prompt: 'Suyun kimyasal formülü ___\'dir.',
+        correctAnswer: 'H2O',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q013',
+        type: 'crossword',
+        difficulty: 'medium',
+        level: 3,
+        prompt: 'Mevsimlerin oluşma sebebi Dünya\'nın ___ eğikliği.',
+        correctAnswer: 'eksen',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q014',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 3,
+        prompt: 'Hangisi Nobel ödülü kategorisi DEĞİLDİR?',
+        options: ['Fizik', 'Matematik', 'Edebiyat', 'Barış'],
+        correctAnswer: 'Matematik',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q015',
+        type: 'wordFill',
+        difficulty: 'medium',
+        level: 3,
+        prompt: 'İnsan vücudundaki en büyük organ ___\'dir.',
+        correctAnswer: 'deri',
+        createdAt: '2026-02-10',
+    },
+
+    // ── Level 4 — Medium / Hard ──
+    {
+        id: 'q016',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 4,
+        prompt: 'Atatürk hangi savaşla Sakarya Meydan Muharebesi\'ni kazanmıştır?',
+        options: [
+            'I. İnönü', 'II. İnönü', 'Sakarya', 'Büyük Taarruz',
+        ],
+        correctAnswer: 'Sakarya',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q017',
+        type: 'crossword',
+        difficulty: 'hard',
+        level: 4,
+        prompt: 'Einstein\'ın ünlü denklemi E=mc² ne ifade eder? (5 harf)',
+        correctAnswer: 'enerji',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q018',
+        type: 'wordFill',
+        difficulty: 'hard',
+        level: 4,
+        prompt: 'DNA açılımı "Deoksiribo___ Asit"tir.',
+        correctAnswer: 'nükleik',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q019',
+        type: 'multipleChoice',
+        difficulty: 'hard',
+        level: 4,
+        prompt: 'Pi sayısının ilk 5 basamağı nedir?',
+        options: ['3.1416', '3.1415', '3.1459', '3.1451'],
+        correctAnswer: '3.1415',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q020',
+        type: 'multipleChoice',
+        difficulty: 'medium',
+        level: 4,
+        prompt: 'Hangi element periyodik tabloda "Fe" sembolüyle gösterilir?',
+        options: ['Flor', 'Demir', 'Fermiyum', 'Fosfor'],
+        correctAnswer: 'Demir',
+        createdAt: '2026-02-10',
+    },
+
+    // ── Level 5 — Hard ──
+    {
+        id: 'q021',
+        type: 'multipleChoice',
+        difficulty: 'hard',
+        level: 5,
+        prompt: 'Kuantum mekaniğinde "belirsizlik ilkesi" kime aittir?',
+        options: ['Bohr', 'Heisenberg', 'Schrödinger', 'Planck'],
+        correctAnswer: 'Heisenberg',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q022',
+        type: 'wordFill',
+        difficulty: 'hard',
+        level: 5,
+        prompt: 'Türkiye\'nin en yüksek dağı ___\'dır.',
+        correctAnswer: 'Ağrı',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q023',
+        type: 'crossword',
+        difficulty: 'hard',
+        level: 5,
+        prompt: 'Işığın vakumda hızı yaklaşık 300.000 ___.',
+        correctAnswer: 'km/s',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q024',
+        type: 'multipleChoice',
+        difficulty: 'hard',
+        level: 5,
+        prompt: 'Hangisi Türk edebiyatında Nobel ödülü almıştır?',
+        options: ['Yaşar Kemal', 'Orhan Pamuk', 'Nazım Hikmet', 'Ahmet Hamdi Tanpınar'],
+        correctAnswer: 'Orhan Pamuk',
+        createdAt: '2026-02-10',
+    },
+    {
+        id: 'q025',
+        type: 'multipleChoice',
+        difficulty: 'hard',
+        level: 5,
+        prompt: 'Mitokondri hücrede hangi işlevi görür?',
+        options: ['Protein sentezi', 'Enerji üretimi', 'Hücre bölünmesi', 'DNA replikasyonu'],
+        correctAnswer: 'Enerji üretimi',
+        createdAt: '2026-02-10',
+    },
+];

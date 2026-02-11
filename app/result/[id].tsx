@@ -1,14 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { levels } from '../../src/levels/levels';
+import { colors } from '../../src/theme/colors';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { shadows } from '../../src/theme/shadows';
+import { typography } from '../../src/theme/typography';
+import PrimaryButton from '../../src/components/ui/PrimaryButton';
+import Card from '../../src/components/ui/Card';
 
 export default function ResultScreen() {
   const { id, stars, time, score, hearts } = useLocalSearchParams<{
@@ -26,161 +34,274 @@ export default function ResultScreen() {
   const heartsVal = parseInt(hearts ?? '0', 10);
   const hasNextLevel = levelId < levels.length;
 
-  const scaleAnim = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [displayScore, setDisplayScore] = useState(0);
+
+  // Animations
+  const emojiScale = useRef(new Animated.Value(0)).current;
+  const cardScale = useRef(new Animated.Value(0.8)).current;
+  const cardOpacity = useRef(new Animated.Value(0)).current;
+  const buttonsOpacity = useRef(new Animated.Value(0)).current;
+  const buttonsSlide = useRef(new Animated.Value(30)).current;
+  const starScales = useRef([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+  ]).current;
 
   useEffect(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    // Stagger entrance animations
     Animated.sequence([
-      Animated.spring(scaleAnim, {
+      // 1. Emoji zoom
+      Animated.spring(emojiScale, {
         toValue: 1,
         friction: 4,
         tension: 60,
         useNativeDriver: true,
       }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
+      // 2. Card reveal
+      Animated.parallel([
+        Animated.spring(cardScale, {
+          toValue: 1,
+          friction: 6,
+          useNativeDriver: true,
+        }),
+        Animated.timing(cardOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+      // 3. Stars
+      Animated.stagger(200, starScales.map((s) =>
+        Animated.spring(s, {
+          toValue: 1,
+          friction: 4,
+          tension: 80,
+          useNativeDriver: true,
+        })
+      )),
+      // 4. Buttons
+      Animated.parallel([
+        Animated.timing(buttonsOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonsSlide, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start();
-  }, []);
+
+    // Score count-up
+    let current = 0;
+    const step = Math.max(1, Math.ceil(scoreVal / 30));
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= scoreVal) {
+        current = scoreVal;
+        clearInterval(interval);
+      }
+      setDisplayScore(current);
+    }, 40);
+    return () => clearInterval(interval);
+  }, [scoreVal]);
 
   const minutes = Math.floor(timeVal / 60);
   const seconds = timeVal % 60;
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-        <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
-          <Text style={styles.emoji}>🎉</Text>
-          <Text style={styles.title}>Tebrikler!</Text>
-          <Text style={styles.subtitle}>Bölüm {levelId} Tamamlandı</Text>
-
-          <View style={styles.starsRow}>
-            {[1, 2, 3].map((i) => (
-              <Text key={i} style={styles.star}>
-                {i <= starCount ? '⭐' : '☆'}
-              </Text>
-            ))}
-          </View>
-
-          <View style={styles.statsGrid}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{scoreVal}</Text>
-              <Text style={styles.statLabel}>Puan</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>
-                {minutes}:{seconds.toString().padStart(2, '0')}
-              </Text>
-              <Text style={styles.statLabel}>Süre</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{'❤️'.repeat(heartsVal)}</Text>
-              <Text style={styles.statLabel}>Kalan Can</Text>
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View style={[styles.buttonsContainer, { opacity: fadeAnim }]}>
-          {hasNextLevel && (
-            <TouchableOpacity
-              style={styles.nextBtn}
-              onPress={() => router.replace(`/game/${levelId + 1}`)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.nextBtnText}>
-                Sonraki Bölüm →
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          <TouchableOpacity
-            style={styles.homeBtn}
-            onPress={() => router.replace('/')}
-            activeOpacity={0.8}
+    <LinearGradient
+      colors={colors.gradientPrimary as unknown as string[]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.gradient}
+    >
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <View style={styles.container}>
+          {/* Celebration emoji */}
+          <Animated.Text
+            style={[
+              styles.celebEmoji,
+              { transform: [{ scale: emojiScale }] },
+            ]}
           >
-            <Text style={styles.homeBtnText}>Ana Menü</Text>
-          </TouchableOpacity>
+            🎉
+          </Animated.Text>
 
-          <TouchableOpacity
-            style={styles.replayBtn}
-            onPress={() => router.replace(`/game/${levelId}`)}
-            activeOpacity={0.8}
+          {/* Main card */}
+          <Animated.View
+            style={{
+              opacity: cardOpacity,
+              transform: [{ scale: cardScale }],
+              width: '100%',
+            }}
           >
-            <Text style={styles.replayBtnText}>Tekrar Oyna</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    </SafeAreaView>
+            <Card style={styles.card} variant="elevated" padding="xl">
+              <Text style={styles.title}>Tebrikler!</Text>
+              <Text style={styles.subtitle}>
+                Bölüm {levelId} Tamamlandı
+              </Text>
+
+              {/* Stars */}
+              <View style={styles.starsRow}>
+                {[0, 1, 2].map((i) => (
+                  <Animated.Text
+                    key={i}
+                    style={[
+                      styles.star,
+                      { transform: [{ scale: starScales[i] }] },
+                    ]}
+                  >
+                    {i + 1 <= starCount ? '⭐' : '☆'}
+                  </Animated.Text>
+                ))}
+              </View>
+
+              {/* Stats */}
+              <View style={styles.statsGrid}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{displayScore}</Text>
+                  <Text style={styles.statLabel}>Puan</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>
+                    {minutes}:{seconds.toString().padStart(2, '0')}
+                  </Text>
+                  <Text style={styles.statLabel}>Süre</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>
+                    {'❤️'.repeat(heartsVal)}
+                  </Text>
+                  <Text style={styles.statLabel}>Kalan Can</Text>
+                </View>
+              </View>
+            </Card>
+          </Animated.View>
+
+          {/* Buttons */}
+          <Animated.View
+            style={[
+              styles.buttonsContainer,
+              {
+                opacity: buttonsOpacity,
+                transform: [{ translateY: buttonsSlide }],
+              },
+            ]}
+          >
+            {hasNextLevel && (
+              <PrimaryButton
+                title="Sonraki Bölüm →"
+                onPress={() => router.replace(`/game/${levelId + 1}`)}
+                variant="secondary"
+                size="lg"
+              />
+            )}
+
+            <PrimaryButton
+              title="Ana Menü"
+              onPress={() => router.replace('/')}
+              variant="outline"
+              size="md"
+              style={styles.outlineOnDark}
+              textStyle={styles.outlineTextOnDark}
+            />
+
+            <PrimaryButton
+              title="Tekrar Oyna"
+              onPress={() => router.replace(`/game/${levelId}`)}
+              variant="ghost"
+              size="sm"
+              textStyle={styles.ghostTextOnDark}
+            />
+          </Animated.View>
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#1565C0' },
+  gradient: {
+    flex: 1,
+  },
+  safe: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: spacing.lg,
+  },
+  celebEmoji: {
+    fontSize: 56,
+    marginBottom: spacing.md,
   },
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 32,
-    alignItems: 'center',
     width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 8,
+    alignItems: 'center',
   },
-  emoji: { fontSize: 48, marginBottom: 8 },
-  title: { fontSize: 28, fontWeight: '800', color: '#212121' },
-  subtitle: { fontSize: 16, color: '#757575', marginTop: 4 },
+  title: {
+    ...typography.h1,
+    color: colors.text,
+  },
+  subtitle: {
+    ...typography.body,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
+  },
   starsRow: {
     flexDirection: 'row',
-    marginTop: 16,
-    gap: 8,
+    marginTop: spacing.lg,
+    gap: spacing.sm,
   },
-  star: { fontSize: 36 },
+  star: {
+    fontSize: 40,
+  },
   statsGrid: {
     flexDirection: 'row',
-    marginTop: 24,
-    gap: 20,
+    marginTop: spacing.xl,
+    alignItems: 'center',
+    gap: spacing.md,
   },
-  statItem: { alignItems: 'center' },
-  statValue: { fontSize: 20, fontWeight: '700', color: '#1565C0' },
-  statLabel: { fontSize: 12, color: '#9E9E9E', marginTop: 2 },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: colors.border,
+  },
+  statValue: {
+    ...typography.h2,
+    color: colors.primary,
+  },
+  statLabel: {
+    ...typography.label,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
   buttonsContainer: {
-    marginTop: 24,
+    marginTop: spacing.xl,
     width: '100%',
-    gap: 10,
+    gap: spacing.sm,
   },
-  nextBtn: {
-    backgroundColor: '#FF6F00',
-    borderRadius: 12,
-    height: 52,
-    justifyContent: 'center',
-    alignItems: 'center',
+  outlineOnDark: {
+    borderColor: 'rgba(255,255,255,0.4)',
   },
-  nextBtnText: { color: '#FFFFFF', fontSize: 17, fontWeight: '700' },
-  homeBtn: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 12,
-    height: 46,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
+  outlineTextOnDark: {
+    color: colors.textInverse,
   },
-  homeBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
-  replayBtn: {
-    borderRadius: 12,
-    height: 42,
-    justifyContent: 'center',
-    alignItems: 'center',
+  ghostTextOnDark: {
+    color: 'rgba(255,255,255,0.7)',
   },
-  replayBtnText: { color: '#BBDEFB', fontSize: 14, fontWeight: '600' },
 });

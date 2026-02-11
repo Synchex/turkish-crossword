@@ -1,5 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, Pressable, StyleSheet, Dimensions, Animated } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { colors } from '../theme/colors';
+import { radius } from '../theme/radius';
+import { spacing } from '../theme/spacing';
+import { shadows } from '../theme/shadows';
 
 const ROWS = [
   ['E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Ğ', 'Ü'],
@@ -17,6 +22,67 @@ interface Props {
   disabled?: boolean;
 }
 
+function Key({
+  label,
+  onPress,
+  isBackspace,
+  disabled,
+  keyWidth,
+}: {
+  label: string;
+  onPress: () => void;
+  isBackspace: boolean;
+  disabled?: boolean;
+  keyWidth: number;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = useCallback(() => {
+    Animated.spring(scale, { toValue: 0.88, useNativeDriver: true }).start();
+  }, []);
+
+  const handlePressOut = useCallback(() => {
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
+  }, []);
+
+  const handlePress = useCallback(() => {
+    if (disabled) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
+  }, [disabled, onPress]);
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      disabled={disabled}
+    >
+      <Animated.View
+        style={[
+          styles.key,
+          {
+            width: isBackspace ? keyWidth * 1.4 : keyWidth,
+            backgroundColor: isBackspace ? colors.cardAlt : colors.surface,
+            transform: [{ scale }],
+          },
+          disabled && styles.disabledKey,
+        ]}
+      >
+        <Text
+          style={[
+            styles.keyText,
+            isBackspace && styles.backspaceText,
+            { color: isBackspace ? colors.secondary : colors.text },
+          ]}
+        >
+          {label}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 export default function TurkishKeyboard({
   onKeyPress,
   onBackspace,
@@ -24,6 +90,11 @@ export default function TurkishKeyboard({
   onHint,
   disabled,
 }: Props) {
+  const keyWidth = (SCREEN_WIDTH - 24) / 11;
+
+  const checkScale = useRef(new Animated.Value(1)).current;
+  const hintScale = useRef(new Animated.Value(1)).current;
+
   return (
     <View style={styles.container}>
       {ROWS.map((row, rowIndex) => (
@@ -31,62 +102,84 @@ export default function TurkishKeyboard({
           {row.map((key) => {
             const isBackspace = key === '⌫';
             return (
-              <TouchableOpacity
+              <Key
                 key={key}
-                style={[
-                  styles.key,
-                  isBackspace && styles.backspaceKey,
-                  disabled && styles.disabledKey,
-                ]}
+                label={key}
                 onPress={() => {
-                  if (disabled) return;
                   if (isBackspace) onBackspace();
                   else onKeyPress(key);
                 }}
-                activeOpacity={0.6}
-              >
-                <Text
-                  style={[
-                    styles.keyText,
-                    isBackspace && styles.backspaceText,
-                  ]}
-                >
-                  {key}
-                </Text>
-              </TouchableOpacity>
+                isBackspace={isBackspace}
+                disabled={disabled}
+                keyWidth={keyWidth}
+              />
             );
           })}
         </View>
       ))}
+
+      {/* Action row */}
       <View style={styles.actionRow}>
-        <TouchableOpacity
-          style={[styles.actionBtn, styles.hintBtn]}
-          onPress={onHint}
+        <Pressable
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            onHint();
+          }}
+          onPressIn={() => {
+            Animated.spring(hintScale, { toValue: 0.93, useNativeDriver: true }).start();
+          }}
+          onPressOut={() => {
+            Animated.spring(hintScale, { toValue: 1, useNativeDriver: true }).start();
+          }}
           disabled={disabled}
         >
-          <Text style={styles.actionText}>💡 İpucu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionBtn, styles.checkBtn]}
-          onPress={onCheck}
+          <Animated.View
+            style={[
+              styles.actionBtn,
+              styles.hintBtn,
+              { transform: [{ scale: hintScale }] },
+            ]}
+          >
+            <Text style={styles.hintText}>💡 İpucu</Text>
+          </Animated.View>
+        </Pressable>
+
+        <Pressable
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            onCheck();
+          }}
+          onPressIn={() => {
+            Animated.spring(checkScale, { toValue: 0.93, useNativeDriver: true }).start();
+          }}
+          onPressOut={() => {
+            Animated.spring(checkScale, { toValue: 1, useNativeDriver: true }).start();
+          }}
           disabled={disabled}
         >
-          <Text style={[styles.actionText, styles.checkText]}>Kontrol Et</Text>
-        </TouchableOpacity>
+          <Animated.View
+            style={[
+              styles.actionBtn,
+              styles.checkBtn,
+              { transform: [{ scale: checkScale }] },
+            ]}
+          >
+            <Text style={styles.checkText}>Kontrol Et</Text>
+          </Animated.View>
+        </Pressable>
       </View>
     </View>
   );
 }
 
-const keyWidth = (SCREEN_WIDTH - 20) / 11;
-
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 4,
     paddingBottom: 4,
-    backgroundColor: '#ECEFF1',
+    paddingTop: spacing.sm,
+    backgroundColor: colors.background,
     borderTopWidth: 1,
-    borderTopColor: '#CFD8DC',
+    borderTopColor: colors.border,
   },
   row: {
     flexDirection: 'row',
@@ -94,30 +187,19 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   key: {
-    width: keyWidth,
-    height: 42,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 6,
+    height: 44,
+    borderRadius: radius.sm,
     marginHorizontal: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 1,
-    elevation: 2,
-  },
-  backspaceKey: {
-    width: keyWidth * 1.4,
-    backgroundColor: '#B0BEC5',
+    ...shadows.sm,
   },
   disabledKey: {
-    opacity: 0.4,
+    opacity: 0.35,
   },
   keyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#212121',
   },
   backspaceText: {
     fontSize: 20,
@@ -125,32 +207,36 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 4,
-    marginBottom: 2,
+    marginTop: spacing.sm,
+    marginBottom: spacing.xs,
     gap: 10,
+    paddingHorizontal: spacing.xs,
   },
   actionBtn: {
     flex: 1,
-    height: 42,
-    borderRadius: 8,
+    height: 46,
+    borderRadius: radius.xl,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 4,
+    minWidth: (SCREEN_WIDTH - 40) / 2,
   },
   hintBtn: {
-    backgroundColor: '#FFF3E0',
-    borderWidth: 1,
-    borderColor: '#FFB74D',
+    backgroundColor: colors.accent + '25',
+    borderWidth: 1.5,
+    borderColor: colors.accent,
   },
-  checkBtn: {
-    backgroundColor: '#1565C0',
-  },
-  actionText: {
+  hintText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#E65100',
+    color: colors.accentDark,
+  },
+  checkBtn: {
+    backgroundColor: colors.primary,
+    ...shadows.md,
   },
   checkText: {
-    color: '#FFFFFF',
+    color: colors.textInverse,
+    fontSize: 15,
+    fontWeight: '700',
   },
 });

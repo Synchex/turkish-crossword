@@ -1,5 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { colors } from '../theme/colors';
+import { radius } from '../theme/radius';
+import { spacing } from '../theme/spacing';
+import { shadows } from '../theme/shadows';
+import ProgressBar from './ui/ProgressBar';
+import XPBadge from './ui/XPBadge';
 
 interface Props {
   levelId: number;
@@ -18,6 +24,19 @@ function formatTime(s: number): string {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 }
 
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <View
+      style={[
+        styles.heart,
+        { backgroundColor: filled ? colors.secondary + '20' : colors.border },
+      ]}
+    >
+      <Text style={styles.heartEmoji}>{filled ? '❤️' : '🤍'}</Text>
+    </View>
+  );
+}
+
 export default function TopBar({
   levelId,
   hearts,
@@ -28,31 +47,69 @@ export default function TopBar({
   totalWords,
   completedWords,
 }: Props) {
+  const backScale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = useCallback(() => {
+    Animated.spring(backScale, {
+      toValue: 0.9,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const handlePressOut = useCallback(() => {
+    Animated.spring(backScale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <View style={styles.container}>
+      {/* Row 1: Back + Level + Timer */}
       <View style={styles.row}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={styles.backText}>{'<'} Geri</Text>
-        </TouchableOpacity>
-        <Text style={styles.levelText}>Bölüm {levelId}</Text>
-        <Text style={styles.timerText}>{formatTime(timeElapsed)}</Text>
+        <Pressable
+          onPress={onBack}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+        >
+          <Animated.View
+            style={[styles.backBtn, { transform: [{ scale: backScale }] }]}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </Animated.View>
+        </Pressable>
+
+        <View style={styles.levelPill}>
+          <Text style={styles.levelText}>Bölüm {levelId}</Text>
+        </View>
+
+        <View style={styles.timerPill}>
+          <Text style={styles.timerIcon}>⏱</Text>
+          <Text style={styles.timerText}>{formatTime(timeElapsed)}</Text>
+        </View>
       </View>
+
+      {/* Row 2: Hearts + Progress + Coins */}
       <View style={styles.row}>
-        <Text style={styles.stat}>
-          {'❤️'.repeat(hearts)}{'🖤'.repeat(3 - hearts)}
-        </Text>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              { width: `${totalWords > 0 ? (completedWords / totalWords) * 100 : 0}%` },
-            ]}
+        <View style={styles.heartsRow}>
+          {[1, 2, 3].map((i) => (
+            <HeartIcon key={i} filled={i <= hearts} />
+          ))}
+        </View>
+
+        <View style={styles.progressWrapper}>
+          <ProgressBar
+            progress={totalWords > 0 ? completedWords / totalWords : 0}
+            height={10}
+            color={colors.primary}
+            trackColor={colors.primaryLight + '30'}
           />
-          <Text style={styles.progressText}>
+          <Text style={styles.progressLabel}>
             {completedWords}/{totalWords}
           </Text>
         </View>
-        <Text style={styles.stat}>🪙 {coins}</Text>
+
+        <XPBadge value={coins} />
       </View>
     </View>
   );
@@ -60,62 +117,84 @@ export default function TopBar({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1565C0',
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    gap: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 2,
   },
   backBtn: {
-    paddingVertical: 4,
-    paddingRight: 8,
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.cardAlt,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  backText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
+  backIcon: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  levelPill: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: radius.full,
   },
   levelText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: colors.textInverse,
+    fontSize: 14,
     fontWeight: '700',
   },
+  timerPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.cardAlt,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+    gap: 4,
+  },
+  timerIcon: {
+    fontSize: 12,
+  },
   timerText: {
-    color: '#BBDEFB',
-    fontSize: 14,
+    color: colors.text,
+    fontSize: 13,
     fontWeight: '600',
     fontVariant: ['tabular-nums'],
   },
-  stat: {
-    fontSize: 14,
-    color: '#FFFFFF',
+  heartsRow: {
+    flexDirection: 'row',
+    gap: 4,
   },
-  progressBar: {
-    flex: 1,
-    height: 18,
-    backgroundColor: '#0D47A1',
-    borderRadius: 9,
-    marginHorizontal: 12,
-    overflow: 'hidden',
+  heart: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  progressFill: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#4CAF50',
-    borderRadius: 9,
+  heartEmoji: {
+    fontSize: 14,
   },
-  progressText: {
+  progressWrapper: {
+    flex: 1,
+    marginHorizontal: spacing.md,
+    gap: 2,
+  },
+  progressLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.textSecondary,
     textAlign: 'center',
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#FFFFFF',
   },
 });
