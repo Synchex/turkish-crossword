@@ -9,7 +9,7 @@ import {
     Animated,
     Dimensions,
 } from 'react-native';
-import { Question, Difficulty, QuestionType } from '../data/questions';
+import { UIQuestion as Question, Difficulty, QuestionType } from '../utils/questionLoader';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { radius } from '../theme/radius';

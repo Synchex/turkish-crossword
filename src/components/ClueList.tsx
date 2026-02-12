@@ -1,16 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Animated,
+  LayoutAnimation,
 } from 'react-native';
 import { Word, Direction } from '../game/types';
 import { colors } from '../theme/colors';
 import { radius } from '../theme/radius';
 import { spacing } from '../theme/spacing';
-import { shadows } from '../theme/shadows';
 
 interface Props {
   words: Word[];
@@ -27,37 +28,69 @@ export default function ClueList({
   lockedWordIds,
   onSelectWord,
 }: Props) {
-  const [tab, setTab] = React.useState<Direction>(selectedDirection);
+  const [tab, setTab] = useState<Direction>(selectedDirection);
   const scrollRef = useRef<ScrollView>(null);
+  const underlineAnim = useRef(new Animated.Value(selectedDirection === 'across' ? 0 : 1)).current;
 
   useEffect(() => {
     setTab(selectedDirection);
+    Animated.spring(underlineAnim, {
+      toValue: selectedDirection === 'across' ? 0 : 1,
+      friction: 8,
+      tension: 80,
+      useNativeDriver: false,
+    }).start();
   }, [selectedDirection]);
+
+  const switchTab = (dir: Direction) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setTab(dir);
+    Animated.spring(underlineAnim, {
+      toValue: dir === 'across' ? 0 : 1,
+      friction: 8,
+      tension: 80,
+      useNativeDriver: false,
+    }).start();
+  };
 
   const acrossWords = words.filter((w) => w.direction === 'across');
   const downWords = words.filter((w) => w.direction === 'down');
   const currentWords = tab === 'across' ? acrossWords : downWords;
 
+  // Underline position interpolation
+  const underlineLeft = underlineAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '50%'],
+  });
+
   return (
     <View style={styles.container}>
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={[styles.tab, tab === 'across' && styles.activeTab]}
-          onPress={() => setTab('across')}
-        >
-          <Text style={[styles.tabText, tab === 'across' && styles.activeTabText]}>
-            Yatay →
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, tab === 'down' && styles.activeTab]}
-          onPress={() => setTab('down')}
-        >
-          <Text style={[styles.tabText, tab === 'down' && styles.activeTabText]}>
-            Dikey ↓
-          </Text>
-        </TouchableOpacity>
+      {/* Underline-style tabs */}
+      <View style={styles.tabsWrapper}>
+        <View style={styles.tabs}>
+          <TouchableOpacity
+            style={styles.tab}
+            onPress={() => switchTab('across')}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.tabText, tab === 'across' && styles.activeTabText]}>
+              Yatay →
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.tab}
+            onPress={() => switchTab('down')}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.tabText, tab === 'down' && styles.activeTabText]}>
+              Dikey ↓
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {/* Animated underline */}
+        <Animated.View
+          style={[styles.underline, { left: underlineLeft }]}
+        />
       </View>
 
       {/* Clue list */}
@@ -97,9 +130,10 @@ export default function ClueList({
                   style={[
                     styles.numText,
                     {
-                      color: isLocked || isSelected
-                        ? colors.textInverse
-                        : colors.primary,
+                      color:
+                        isLocked || isSelected
+                          ? colors.textInverse
+                          : colors.primary,
                     },
                   ]}
                 >
@@ -131,38 +165,43 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...shadows.sm,
+  },
+  tabsWrapper: {
+    position: 'relative',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderLight,
   },
   tabs: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   tab: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
-    backgroundColor: colors.cardAlt,
-  },
-  activeTab: {
-    backgroundColor: colors.primary,
   },
   tabText: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textSecondary,
+    color: colors.textMuted,
   },
   activeTabText: {
-    color: colors.textInverse,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  underline: {
+    position: 'absolute',
+    bottom: 0,
+    width: '50%',
+    height: 2.5,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
   },
   list: {
     flex: 1,
   },
   listContent: {
     padding: spacing.sm,
-    gap: 4,
+    gap: 3,
   },
   clueRow: {
     flexDirection: 'row',
@@ -173,22 +212,22 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   selectedClue: {
-    backgroundColor: colors.primary + '12',
-    borderWidth: 1.5,
-    borderColor: colors.primary + '40',
+    backgroundColor: colors.primary + '0C',
+    borderLeftWidth: 3,
+    borderLeftColor: colors.primary,
   },
   lockedClue: {
-    backgroundColor: colors.successLight,
+    backgroundColor: colors.success + '08',
   },
   numBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     justifyContent: 'center',
     alignItems: 'center',
   },
   numText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '800',
   },
   clueText: {
@@ -199,14 +238,14 @@ const styles = StyleSheet.create({
   },
   selectedClueText: {
     fontWeight: '600',
-    color: colors.primary,
+    color: colors.primaryDark,
   },
   lockedText: {
     color: colors.success,
     textDecorationLine: 'line-through',
   },
   checkMark: {
-    fontSize: 16,
+    fontSize: 14,
     color: colors.success,
     fontWeight: '700',
   },

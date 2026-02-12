@@ -35,8 +35,9 @@ export interface LevelProgress {
   unlocked: boolean;
   completed: boolean;
   stars: number; // 0-3
-  bestHearts: number;
   bestTime: number; // seconds
+  bestMistakes: number;
+  bestHintsUsed: number;
 }
 
 export interface GameState {
@@ -44,9 +45,7 @@ export interface GameState {
   selectedCell: { row: number; col: number } | null;
   selectedWordId: string | null;
   selectedDirection: Direction;
-  hearts: number;
   score: number;
-  coins: number;
   timeElapsed: number;
   isComplete: boolean;
   lockedWordIds: Set<string>;

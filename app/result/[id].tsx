@@ -13,25 +13,34 @@ import { levels } from '../../src/levels/levels';
 import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
-import { shadows } from '../../src/theme/shadows';
 import { typography } from '../../src/theme/typography';
 import PrimaryButton from '../../src/components/ui/PrimaryButton';
 import Card from '../../src/components/ui/Card';
 
 export default function ResultScreen() {
-  const { id, stars, time, score, hearts } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     id: string;
     stars: string;
     time: string;
     score: string;
-    hearts: string;
+    xp: string;
+    levelUp: string;
+    coins: string;
+    hints: string;
+    mistakes: string;
+    coinsSpent: string;
   }>();
   const router = useRouter();
-  const levelId = parseInt(id ?? '1', 10);
-  const starCount = parseInt(stars ?? '0', 10);
-  const timeVal = parseInt(time ?? '0', 10);
-  const scoreVal = parseInt(score ?? '0', 10);
-  const heartsVal = parseInt(hearts ?? '0', 10);
+  const levelId = parseInt(params.id ?? '1', 10);
+  const starCount = parseInt(params.stars ?? '0', 10);
+  const timeVal = parseInt(params.time ?? '0', 10);
+  const scoreVal = parseInt(params.score ?? '0', 10);
+  const xpGained = parseInt(params.xp ?? '0', 10);
+  const coinsEarned = parseInt(params.coins ?? '0', 10);
+  const hintsUsed = parseInt(params.hints ?? '0', 10);
+  const mistakes = parseInt(params.mistakes ?? '0', 10);
+  const coinsSpent = parseInt(params.coinsSpent ?? '0', 10);
+  const isLevelUp = params.levelUp === 'true';
   const hasNextLevel = levelId < levels.length;
 
   const [displayScore, setDisplayScore] = useState(0);
@@ -51,16 +60,13 @@ export default function ResultScreen() {
   useEffect(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Stagger entrance animations
     Animated.sequence([
-      // 1. Emoji zoom
       Animated.spring(emojiScale, {
         toValue: 1,
         friction: 4,
         tension: 60,
         useNativeDriver: true,
       }),
-      // 2. Card reveal
       Animated.parallel([
         Animated.spring(cardScale, {
           toValue: 1,
@@ -73,7 +79,6 @@ export default function ResultScreen() {
           useNativeDriver: true,
         }),
       ]),
-      // 3. Stars
       Animated.stagger(200, starScales.map((s) =>
         Animated.spring(s, {
           toValue: 1,
@@ -82,7 +87,6 @@ export default function ResultScreen() {
           useNativeDriver: true,
         })
       )),
-      // 4. Buttons
       Animated.parallel([
         Animated.timing(buttonsOpacity, {
           toValue: 1,
@@ -116,7 +120,7 @@ export default function ResultScreen() {
 
   return (
     <LinearGradient
-      colors={colors.gradientPrimary as unknown as string[]}
+      colors={colors.gradientPrimary as readonly [string, string]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
@@ -130,7 +134,7 @@ export default function ResultScreen() {
               { transform: [{ scale: emojiScale }] },
             ]}
           >
-            🎉
+            {starCount === 3 ? '🏆' : '🎉'}
           </Animated.Text>
 
           {/* Main card */}
@@ -162,7 +166,7 @@ export default function ResultScreen() {
                 ))}
               </View>
 
-              {/* Stats */}
+              {/* Stats Grid */}
               <View style={styles.statsGrid}>
                 <View style={styles.statItem}>
                   <Text style={styles.statValue}>{displayScore}</Text>
@@ -177,12 +181,34 @@ export default function ResultScreen() {
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statItem}>
-                  <Text style={styles.statValue}>
-                    {'❤️'.repeat(heartsVal)}
-                  </Text>
-                  <Text style={styles.statLabel}>Kalan Can</Text>
+                  <Text style={styles.statValue}>{mistakes}</Text>
+                  <Text style={styles.statLabel}>Hata</Text>
                 </View>
               </View>
+
+              {/* Rewards Row */}
+              <View style={styles.rewardsRow}>
+                <View style={styles.rewardBadge}>
+                  <Text style={styles.rewardText}>+{xpGained} XP</Text>
+                </View>
+                <View style={[styles.rewardBadge, { backgroundColor: colors.accent + '20' }]}>
+                  <Text style={[styles.rewardText, { color: colors.accent }]}>+{coinsEarned} 🪙</Text>
+                </View>
+                {hintsUsed > 0 && (
+                  <View style={[styles.rewardBadge, { backgroundColor: colors.secondary + '15' }]}>
+                    <Text style={[styles.rewardText, { color: colors.secondary }]}>
+                      {hintsUsed} İpucu ({coinsSpent} 🪙)
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Level Up Banner */}
+              {isLevelUp && (
+                <View style={styles.levelUpContainer}>
+                  <Text style={styles.levelUpText}>🎉 SEVİYE ATLADIN! 🎉</Text>
+                </View>
+              )}
             </Card>
           </Animated.View>
 
@@ -290,6 +316,25 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.xs,
   },
+  rewardsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+    justifyContent: 'center',
+  },
+  rewardBadge: {
+    backgroundColor: colors.primaryLight + '20',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+  },
+  rewardText: {
+    ...typography.label,
+    color: colors.primary,
+    fontWeight: '700',
+    fontSize: 12,
+  },
   buttonsContainer: {
     marginTop: spacing.xl,
     width: '100%',
@@ -303,5 +348,16 @@ const styles = StyleSheet.create({
   },
   ghostTextOnDark: {
     color: 'rgba(255,255,255,0.7)',
+  },
+  levelUpContainer: {
+    marginTop: spacing.md,
+    backgroundColor: colors.accent,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.md,
+  },
+  levelUpText: {
+    ...typography.h3,
+    color: colors.textInverse,
   },
 });

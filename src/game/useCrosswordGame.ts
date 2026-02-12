@@ -56,9 +56,7 @@ export function useCrosswordGame(level: LevelData) {
       selectedCell: null,
       selectedWordId: null,
       selectedDirection: 'across',
-      hearts: 3,
       score: 0,
-      coins: 0,
       timeElapsed: 0,
       isComplete: false,
       lockedWordIds: new Set(),
@@ -189,7 +187,7 @@ export function useCrosswordGame(level: LevelData) {
 
       if (userAnswer.length < word.answer.length) {
         result = 'wrong';
-        return { ...s, hearts: Math.max(0, s.hearts - 1) };
+        return s;
       }
 
       if (userAnswer === word.answer) {
@@ -211,7 +209,7 @@ export function useCrosswordGame(level: LevelData) {
       }
 
       result = 'wrong';
-      return { ...s, hearts: Math.max(0, s.hearts - 1) };
+      return s;
     });
     return result;
   }, [level.words]);
@@ -249,11 +247,9 @@ export function useCrosswordGame(level: LevelData) {
   }, [state.selectedWordId]);
 
   const getStars = useCallback((): number => {
-    if (state.hearts === 3) return 3;
-    if (state.hearts === 2) return 2;
-    if (state.hearts >= 1) return 1;
+    // Stars are now computed at completion via rewards.ts
     return 0;
-  }, [state.hearts]);
+  }, []);
 
   return {
     state,

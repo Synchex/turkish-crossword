@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuestionStore } from '../../src/store/useQuestionStore';
-import { Difficulty, QuestionType } from '../../src/data/questions';
+import { Difficulty, QuestionType } from '../../src/utils/questionLoader';
 import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -17,7 +17,7 @@ import { shadows } from '../../src/theme/shadows';
 import { typography } from '../../src/theme/typography';
 import QuestionDetailModal from '../../src/components/QuestionDetailModal';
 
-const LEVELS = [1, 2, 3, 4, 5];
+const LEVELS = [1, 2, 3, 4, 5, 6, 7];
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 const TYPES: { key: QuestionType; label: string }[] = [
     { key: 'multipleChoice', label: 'Çoktan Seçmeli' },

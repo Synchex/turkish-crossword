@@ -6,13 +6,16 @@ const STORAGE_KEY = '@crossword_progress';
 
 interface ProgressStore {
   progress: LevelProgress[];
-  coins: number;
   loaded: boolean;
   loadProgress: () => Promise<void>;
   saveProgress: () => Promise<void>;
-  completeLevel: (levelId: number, stars: number, hearts: number, time: number) => void;
-  spendCoin: () => boolean;
-  addCoins: (amount: number) => void;
+  completeLevel: (
+    levelId: number,
+    stars: number,
+    time: number,
+    mistakes?: number,
+    hintsUsed?: number
+  ) => void;
 }
 
 const defaultProgress = (count: number): LevelProgress[] =>
@@ -21,13 +24,13 @@ const defaultProgress = (count: number): LevelProgress[] =>
     unlocked: i === 0,
     completed: false,
     stars: 0,
-    bestHearts: 0,
     bestTime: 0,
+    bestMistakes: 999,
+    bestHintsUsed: 999,
   }));
 
 export const useProgressStore = create<ProgressStore>((set, get) => ({
   progress: defaultProgress(6),
-  coins: 5,
   loaded: false,
 
   loadProgress: async () => {
@@ -35,11 +38,15 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       const json = await AsyncStorage.getItem(STORAGE_KEY);
       if (json) {
         const data = JSON.parse(json);
-        set({
-          progress: data.progress ?? defaultProgress(6),
-          coins: data.coins ?? 5,
-          loaded: true,
-        });
+        // Migrate old shapes that lack the new fields
+        const migrated = (data.progress ?? defaultProgress(6)).map(
+          (p: LevelProgress) => ({
+            ...p,
+            bestMistakes: p.bestMistakes ?? 999,
+            bestHintsUsed: p.bestHintsUsed ?? 999,
+          })
+        );
+        set({ progress: migrated, loaded: true });
       } else {
         set({ loaded: true });
       }
@@ -50,14 +57,14 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
 
   saveProgress: async () => {
     try {
-      const { progress, coins } = get();
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ progress, coins }));
+      const { progress } = get();
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ progress }));
     } catch {
       // silent
     }
   },
 
-  completeLevel: (levelId, stars, hearts, time) => {
+  completeLevel: (levelId, stars, time, mistakes = 0, hintsUsed = 0) => {
     set((state) => {
       const progress = state.progress.map((p) => {
         if (p.levelId === levelId) {
@@ -65,8 +72,9 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
             ...p,
             completed: true,
             stars: Math.max(p.stars, stars),
-            bestHearts: Math.max(p.bestHearts, hearts),
             bestTime: p.bestTime === 0 ? time : Math.min(p.bestTime, time),
+            bestMistakes: Math.min(p.bestMistakes, mistakes),
+            bestHintsUsed: Math.min(p.bestHintsUsed, hintsUsed),
           };
         }
         if (p.levelId === levelId + 1) {
@@ -74,22 +82,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
         }
         return p;
       });
-      const coins = state.coins + stars * 2;
       setTimeout(() => get().saveProgress(), 0);
-      return { progress, coins };
+      return { progress };
     });
-  },
-
-  spendCoin: () => {
-    const { coins } = get();
-    if (coins <= 0) return false;
-    set({ coins: coins - 1 });
-    setTimeout(() => get().saveProgress(), 0);
-    return true;
-  },
-
-  addCoins: (amount) => {
-    set((state) => ({ coins: state.coins + amount }));
-    setTimeout(() => get().saveProgress(), 0);
   },
 }));

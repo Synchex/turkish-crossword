@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import {
-    questions as allQuestions,
-    Question,
+    getAllQuestionsForUI,
+    UIQuestion as Question,
     QuestionType,
     Difficulty,
-} from '../data/questions';
+} from '../utils/questionLoader';
 
 interface Filters {
     level: number | null;
@@ -35,7 +35,7 @@ interface QuestionStore {
 }
 
 export const useQuestionStore = create<QuestionStore>((set, get) => ({
-    questions: allQuestions,
+    questions: getAllQuestionsForUI(),
     filters: { level: null, difficulty: null, type: null },
 
     setLevel: (level) =>

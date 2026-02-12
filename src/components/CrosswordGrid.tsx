@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,13 @@ import {
   Dimensions,
   Animated,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { CellData } from '../game/types';
 import { colors } from '../theme/colors';
 import { radius } from '../theme/radius';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const CARD_H_PADDING = 16;
 
 interface Props {
   grid: CellData[][];
@@ -32,80 +34,113 @@ export default function CrosswordGrid({
   shakeCell,
   correctFlash,
 }: Props) {
-  const cellSize = Math.floor((SCREEN_WIDTH - 40) / gridSize);
-  const gridWidth = cellSize * gridSize;
+  const GAP = 2.5;
+  const cardInnerPad = 8;
+  const totalGaps = (gridSize - 1) * GAP;
+  const cellSize = Math.floor(
+    (SCREEN_WIDTH - CARD_H_PADDING * 2 - cardInnerPad * 2 - totalGaps) / gridSize
+  );
+  const gridWidth = cellSize * gridSize + totalGaps + cardInnerPad * 2;
 
   return (
-    <View style={[styles.container, { width: gridWidth + 4, height: gridWidth + 4 }]}>
-      {grid.map((row, r) =>
-        row.map((cell, c) => (
-          <Cell
-            key={`${r}-${c}`}
-            cell={cell}
-            cellSize={cellSize}
-            isSelected={selectedCell?.row === r && selectedCell?.col === c}
-            isWordHighlight={selectedWordCells.some(
-              (wc) => wc.row === r && wc.col === c
-            )}
-            onPress={() => onCellPress(r, c)}
-            shouldShake={shakeCell?.row === r && shakeCell?.col === c}
-            correctFlash={correctFlash && cell.isLocked}
-          />
-        ))
-      )}
+    <View style={styles.heroWrapper}>
+      {/* Floating hero card */}
+      <View style={[styles.heroCard, { width: gridWidth }]}>
+        <View style={[styles.gridInner, { padding: cardInnerPad, height: cellSize * gridSize + totalGaps + cardInnerPad * 2 }]}>
+          {grid.map((row, r) =>
+            row.map((cell, c) => (
+              <MemoCell
+                key={`${r}-${c}`}
+                cell={cell}
+                cellSize={cellSize}
+                gap={GAP}
+                isSelected={selectedCell?.row === r && selectedCell?.col === c}
+                isWordHighlight={selectedWordCells.some(
+                  (wc) => wc.row === r && wc.col === c
+                )}
+                onPress={() => onCellPress(r, c)}
+                shouldShake={shakeCell?.row === r && shakeCell?.col === c}
+                correctFlash={correctFlash && cell.isLocked}
+              />
+            ))
+          )}
+        </View>
+      </View>
     </View>
   );
 }
 
-function Cell({
-  cell,
-  cellSize,
-  isSelected,
-  isWordHighlight,
-  onPress,
-  shouldShake,
-  correctFlash,
-}: {
+// ── Memoized Cell ──
+interface CellProps {
   cell: CellData;
   cellSize: number;
+  gap: number;
   isSelected: boolean;
   isWordHighlight: boolean;
   onPress: () => void;
   shouldShake?: boolean;
   correctFlash?: boolean;
-}) {
+}
+
+const MemoCell = memo(function Cell({
+  cell,
+  cellSize,
+  gap,
+  isSelected,
+  isWordHighlight,
+  onPress,
+  shouldShake,
+  correctFlash,
+}: CellProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const shakeAnim = useRef(new Animated.Value(0)).current;
-  const bgAnim = useRef(new Animated.Value(0)).current;
 
+  // Letter entry bounce
   useEffect(() => {
     if (cell.userLetter) {
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.12,
-          duration: 70,
+          toValue: 1.18,
+          duration: 50,
           useNativeDriver: true,
         }),
-        Animated.timing(scaleAnim, {
-          toValue: 1,
-          duration: 70,
+        Animated.spring(scaleAnim, {
+          toValue: isSelected ? 1.05 : 1,
+          friction: 4,
+          tension: 250,
           useNativeDriver: true,
         }),
       ]).start();
     }
   }, [cell.userLetter]);
 
+  // Active cell scale
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: isSelected ? 1.05 : 1,
+      friction: 6,
+      tension: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isSelected]);
+
+  // Wrong answer shake
   useEffect(() => {
     if (shouldShake) {
       Animated.sequence([
-        Animated.timing(shakeAnim, { toValue: 6, duration: 40, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: -6, duration: 40, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 4, duration: 40, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: -4, duration: 40, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 0, duration: 40, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 6, duration: 30, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -6, duration: 30, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 5, duration: 30, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -4, duration: 30, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 3, duration: 30, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 0, duration: 30, useNativeDriver: true }),
       ]).start();
     }
   }, [shouldShake]);
+
+  // Top / left position with gaps
+  const top = cell.row * (cellSize + gap);
+  const left = cell.col * (cellSize + gap);
 
   if (cell.isBlack) {
     return (
@@ -113,35 +148,60 @@ function Cell({
         style={[
           styles.cell,
           styles.blackCell,
-          {
-            width: cellSize,
-            height: cellSize,
-            top: cell.row * cellSize + 2,
-            left: cell.col * cellSize + 2,
-          },
+          { width: cellSize, height: cellSize, top, left },
         ]}
       />
     );
   }
 
-  let bgColor = colors.surface;
-  if (cell.isLocked) bgColor = correctFlash ? colors.success : colors.successLight;
-  else if (isSelected) bgColor = colors.accent;
-  else if (isWordHighlight) bgColor = colors.warningLight;
+  // ── State-driven styling ──
+  const isLocked = cell.isLocked;
+  const isCorrectGlow = correctFlash && isLocked;
 
-  const borderColor = cell.isLocked
-    ? colors.success
-    : isSelected
-      ? colors.accentDark
-      : colors.border;
+  let bgColor = '#FFFFFF';
+  let borderColor = '#D8D5E2';
+  let borderW = 1;
+  let elevationStyle = {};
 
-  const borderWidth = isSelected ? 2 : 1;
+  if (isCorrectGlow) {
+    bgColor = '#A3FFD2';
+    borderColor = colors.success;
+    borderW = 2;
+  } else if (isLocked) {
+    bgColor = '#EAFFF4';
+    borderColor = '#B8E8D0';
+  } else if (isSelected) {
+    bgColor = '#F0EDFF';
+    borderColor = colors.primary;
+    borderW = 2.5;
+    elevationStyle = {
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.35,
+      shadowRadius: 8,
+      elevation: 6,
+    };
+  } else if (isWordHighlight) {
+    bgColor = '#F7F5FF';
+    borderColor = '#CCCADD';
+  }
+
+  const letterColor = cell.isRevealed
+    ? colors.primary
+    : isLocked
+      ? '#158A5D'
+      : isSelected
+        ? colors.primaryDark
+        : '#1A1A2E';
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={onPress}
-      style={{ position: 'absolute', top: cell.row * cellSize + 2, left: cell.col * cellSize + 2 }}
+      onPress={() => {
+        Haptics.selectionAsync();
+        onPress();
+      }}
+      style={{ position: 'absolute', top, left, zIndex: isSelected ? 10 : 1 }}
     >
       <Animated.View
         style={[
@@ -151,17 +211,21 @@ function Cell({
             height: cellSize,
             backgroundColor: bgColor,
             borderColor,
-            borderWidth,
-            borderRadius: radius.xs,
+            borderWidth: borderW,
+            borderRadius: radius.md,
             transform: [{ translateX: shakeAnim }, { scale: scaleAnim }],
           },
+          elevationStyle,
         ]}
       >
         {cell.number !== undefined && (
           <Text
             style={[
               styles.number,
-              { fontSize: cellSize * 0.2, color: colors.textSecondary },
+              {
+                fontSize: cellSize * 0.19,
+                color: isSelected ? colors.primary : '#AAA5BF',
+              },
             ]}
           >
             {cell.number}
@@ -171,12 +235,8 @@ function Cell({
           style={[
             styles.letter,
             {
-              fontSize: cellSize * 0.42,
-              color: cell.isRevealed
-                ? colors.primary
-                : cell.isLocked
-                  ? colors.successDark
-                  : colors.text,
+              fontSize: cellSize * 0.44,
+              color: letterColor,
             },
           ]}
         >
@@ -185,15 +245,27 @@ function Cell({
       </Animated.View>
     </TouchableOpacity>
   );
-}
+});
 
 const styles = StyleSheet.create({
-  container: {
+  heroWrapper: {
+    paddingHorizontal: CARD_H_PADDING,
+    paddingTop: 6,
+    paddingBottom: 10,
+    alignItems: 'center',
+  },
+  heroCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    // Dramatic hero shadow
+    shadowColor: '#2D2B55',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+  gridInner: {
     position: 'relative',
-    alignSelf: 'center',
-    borderRadius: radius.md,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
   },
   cell: {
     position: 'absolute',
@@ -201,16 +273,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   blackCell: {
-    backgroundColor: colors.border,
+    backgroundColor: '#F0EEF5',
+    borderRadius: radius.md,
+    borderWidth: 0,
   },
   number: {
     position: 'absolute',
     top: 1,
     left: 3,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   letter: {
-    fontWeight: '700',
+    fontWeight: '800',
     fontFamily: 'System',
+    letterSpacing: 0.5,
   },
 });

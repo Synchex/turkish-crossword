@@ -32,6 +32,15 @@ export default function TabsLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="stats"
+                options={{
+                    title: 'İstatistik',
+                    tabBarIcon: ({ color }) => (
+                        <Text style={[styles.tabIcon, { color }]}>📊</Text>
+                    ),
+                }}
+            />
         </Tabs>
     );
 }
