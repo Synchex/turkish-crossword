@@ -10,12 +10,14 @@ import {
     Dimensions,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMissionsStore, Mission } from '../store/useMissionsStore';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
-import { radius } from '../theme/radius';
 import { typography } from '../theme/typography';
+import { shadows } from '../theme/shadows';
+import IconBadge from './ui/IconBadge';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SHEET_MAX_HEIGHT = SCREEN_HEIGHT * 0.72;
@@ -49,9 +51,12 @@ function MissionItem({
                 <View style={[itemStyles.diffBadge, { backgroundColor: barColor }]}>
                     <Text style={itemStyles.diffText}>{diffLabel}</Text>
                 </View>
-                <Text style={itemStyles.reward}>
-                    🪙 {mission.rewardCoins}  ·  ✨ {mission.rewardXP} XP
-                </Text>
+                <View style={itemStyles.rewardsRow}>
+                    <Ionicons name="wallet-outline" size={11} color={colors.textSecondary} />
+                    <Text style={itemStyles.reward}> {mission.rewardCoins}  ·  </Text>
+                    <Ionicons name="sparkles" size={11} color={colors.textSecondary} />
+                    <Text style={itemStyles.reward}> {mission.rewardXP} XP</Text>
+                </View>
             </View>
 
             {/* Title + description */}
@@ -81,12 +86,14 @@ function MissionItem({
                     onPress={() => onClaim(mission.id)}
                     activeOpacity={0.75}
                 >
-                    <Text style={itemStyles.claimBtnText}>TOPLA 🎉</Text>
+                    <Text style={itemStyles.claimBtnText}>Topla</Text>
+                    <Ionicons name="arrow-down-circle" size={16} color={colors.textInverse} style={{ marginLeft: 4 }} />
                 </TouchableOpacity>
             )}
             {mission.claimed && (
                 <View style={itemStyles.claimedRow}>
-                    <Text style={itemStyles.claimedText}>✅ ALINDI</Text>
+                    <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+                    <Text style={itemStyles.claimedText}> Alındı</Text>
                 </View>
             )}
         </View>
@@ -96,16 +103,11 @@ function MissionItem({
 const itemStyles = StyleSheet.create({
     card: {
         backgroundColor: colors.surface,
-        borderRadius: radius.lg,
+        borderRadius: 14,
         padding: spacing.md,
-        borderWidth: 1,
-        borderColor: colors.borderLight,
-        // subtle shadow
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.06,
-        shadowRadius: 4,
-        elevation: 2,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: colors.border,
+        ...shadows.sm,
     },
     header: {
         flexDirection: 'row',
@@ -116,13 +118,17 @@ const itemStyles = StyleSheet.create({
     diffBadge: {
         paddingHorizontal: 10,
         paddingVertical: 3,
-        borderRadius: radius.full,
+        borderRadius: 6,
     },
     diffText: {
         fontSize: 10,
-        fontWeight: '800',
+        fontWeight: '600',
         color: colors.textInverse,
         letterSpacing: 0.5,
+    },
+    rewardsRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     reward: {
         ...typography.caption,
@@ -130,7 +136,7 @@ const itemStyles = StyleSheet.create({
         fontSize: 11,
     },
     title: {
-        ...typography.h3,
+        ...typography.headline,
         color: colors.text,
         fontSize: 15,
         marginTop: 2,
@@ -141,43 +147,45 @@ const itemStyles = StyleSheet.create({
         marginTop: 2,
     },
     progressTrack: {
-        height: 6,
-        backgroundColor: colors.borderLight,
-        borderRadius: 3,
+        height: 4,
+        backgroundColor: colors.fill,
+        borderRadius: 2,
         marginTop: spacing.sm,
         overflow: 'hidden',
     },
     progressFill: {
         height: '100%',
-        borderRadius: 3,
+        borderRadius: 2,
     },
     progressLabel: {
-        ...typography.caption,
+        ...typography.label,
         color: colors.textMuted,
-        fontSize: 11,
         marginTop: 4,
         textAlign: 'right',
     },
     claimBtn: {
         marginTop: spacing.sm,
         paddingVertical: 10,
-        borderRadius: radius.md,
+        borderRadius: 10,
         alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
     claimBtnText: {
-        ...typography.label,
-        color: colors.textInverse,
-        fontWeight: '700',
         fontSize: 14,
+        fontWeight: '600',
+        color: colors.textInverse,
     },
     claimedRow: {
         marginTop: spacing.sm,
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     claimedText: {
         ...typography.caption,
         color: colors.success,
-        fontWeight: '700',
+        fontWeight: '600',
     },
 });
 
@@ -185,7 +193,12 @@ const itemStyles = StyleSheet.create({
 function EmptyState() {
     return (
         <View style={emptyStyles.container}>
-            <Text style={emptyStyles.emoji}>📭</Text>
+            <IconBadge
+                name="mail-open-outline"
+                size={32}
+                color={colors.textMuted}
+                badgeSize={64}
+            />
             <Text style={emptyStyles.title}>Bugün görev yok</Text>
             <Text style={emptyStyles.sub}>
                 Yarın yeni görevler gelecek, takipte kal!
@@ -198,19 +211,15 @@ const emptyStyles = StyleSheet.create({
     container: {
         alignItems: 'center',
         paddingVertical: spacing.xxl,
-    },
-    emoji: {
-        fontSize: 48,
-        marginBottom: spacing.sm,
+        gap: spacing.sm,
     },
     title: {
-        ...typography.h3,
+        ...typography.headline,
         color: colors.text,
     },
     sub: {
         ...typography.caption,
         color: colors.textSecondary,
-        marginTop: spacing.xs,
         textAlign: 'center',
     },
 });
@@ -233,13 +242,11 @@ export default function MissionsModalSheet({
     const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    // Also read directly from store as fallback
     const storeMissions = useMissionsStore((s) => s.missions);
     const displayMissions = missions.length > 0 ? missions : storeMissions;
 
     useEffect(() => {
         if (visible) {
-            // Ensure missions are generated
             useMissionsStore.getState().ensureDailyMissions();
 
             slideAnim.setValue(SCREEN_HEIGHT);
@@ -281,9 +288,7 @@ export default function MissionsModalSheet({
             onRequestClose={onClose}
             statusBarTranslucent
         >
-            {/* ── Full-screen container ── */}
             <View style={sheetStyles.container}>
-                {/* Blur backdrop (absolute) */}
                 <Animated.View
                     style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}
                 >
@@ -295,14 +300,12 @@ export default function MissionsModalSheet({
                     <View style={sheetStyles.darkTint} />
                 </Animated.View>
 
-                {/* Tap-outside dismiss (fills space above sheet) */}
                 <TouchableOpacity
                     style={sheetStyles.dismissArea}
                     activeOpacity={1}
                     onPress={onClose}
                 />
 
-                {/* Sheet (anchored to bottom) */}
                 <Animated.View
                     style={[
                         sheetStyles.sheet,
@@ -313,20 +316,18 @@ export default function MissionsModalSheet({
                         },
                     ]}
                 >
-                    {/* Drag handle */}
                     <View style={sheetStyles.handleRow}>
                         <View style={sheetStyles.handle} />
                     </View>
 
-                    {/* Title row + close */}
                     <View style={sheetStyles.headerRow}>
-                        <Text style={sheetStyles.sheetTitle}>📋 Günlük Görevler</Text>
+                        <Text style={sheetStyles.sheetTitle}>Günlük Görevler</Text>
                         <TouchableOpacity
                             onPress={onClose}
                             style={sheetStyles.closeBtn}
                             activeOpacity={0.7}
                         >
-                            <Text style={sheetStyles.closeBtnText}>✕</Text>
+                            <Ionicons name="close" size={18} color={colors.textSecondary} />
                         </TouchableOpacity>
                     </View>
 
@@ -334,7 +335,6 @@ export default function MissionsModalSheet({
                         Görevleri tamamlayarak coin ve XP kazan!
                     </Text>
 
-                    {/* Mission list */}
                     {displayMissions.length === 0 ? (
                         <EmptyState />
                     ) : (
@@ -368,8 +368,8 @@ const sheetStyles = StyleSheet.create({
     },
     sheet: {
         backgroundColor: colors.background,
-        borderTopLeftRadius: radius.xxl,
-        borderTopRightRadius: radius.xxl,
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
         paddingHorizontal: spacing.lg,
         minHeight: 200,
     },
@@ -379,10 +379,10 @@ const sheetStyles = StyleSheet.create({
         paddingBottom: spacing.xs,
     },
     handle: {
-        width: 40,
+        width: 36,
         height: 4,
         borderRadius: 2,
-        backgroundColor: colors.border,
+        backgroundColor: colors.fill,
     },
     headerRow: {
         flexDirection: 'row',
@@ -397,15 +397,10 @@ const sheetStyles = StyleSheet.create({
     closeBtn: {
         width: 32,
         height: 32,
-        borderRadius: radius.full,
-        backgroundColor: colors.cardAlt,
+        borderRadius: 16,
+        backgroundColor: colors.fill,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    closeBtnText: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: colors.textSecondary,
     },
     subtitle: {
         ...typography.caption,
@@ -414,7 +409,7 @@ const sheetStyles = StyleSheet.create({
         marginBottom: spacing.md,
     },
     scrollContent: {
-        gap: 14,
+        gap: 12,
         paddingBottom: spacing.md,
     },
 });

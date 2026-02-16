@@ -10498,5 +10498,7505 @@
             "deniz"
         ],
         "createdAt": "2026-02-12"
+    },
+    {
+        "id": "tr_conn_0001",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ALA",
+        "answerLength": 3,
+        "category": "Genel Kültür",
+        "clue": "Karışık renkli, benekli",
+        "tags": [
+            "renk",
+            "sıfat"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0002",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ARA",
+        "answerLength": 3,
+        "category": "Genel Kültür",
+        "clue": "İki şeyin ortası, mesafe",
+        "tags": [
+            "boşluk",
+            "zaman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0003",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ECE",
+        "answerLength": 3,
+        "category": "Tarih",
+        "clue": "Kraliçe, güzel kadın",
+        "tags": [
+            "ünvan",
+            "isim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0004",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EBE",
+        "answerLength": 3,
+        "category": "Sağlık",
+        "clue": "Doğum yaptıran kadın",
+        "tags": [
+            "meslek",
+            "oyun"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0005",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KEK",
+        "answerLength": 3,
+        "category": "Yiyecek",
+        "clue": "Fırında pişen tatlı hamur işi",
+        "tags": [
+            "mutfak",
+            "tatlı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0006",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SES",
+        "answerLength": 3,
+        "category": "Fizik",
+        "clue": "Kulağın duyabildiği titreşim",
+        "tags": [
+            "duyu",
+            "müzik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0007",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "LAL",
+        "answerLength": 3,
+        "category": "Genel Kültür",
+        "clue": "Dilsiz, konuşamaz",
+        "tags": [
+            "sıfat",
+            "renk"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0008",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAT",
+        "answerLength": 3,
+        "category": "Duyu",
+        "clue": "Dil ile algılanan duyum",
+        "tags": [
+            "lezzet",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0009",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KAN",
+        "answerLength": 3,
+        "category": "Biyoloji",
+        "clue": "Damarlarda dolaşan kırmızı sıvı",
+        "tags": [
+            "vücut",
+            "sağlık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0010",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KAS",
+        "answerLength": 3,
+        "category": "Biyoloji",
+        "clue": "Vücudun hareketini sağlayan doku",
+        "tags": [
+            "vücut",
+            "spor"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0011",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ТАŞ",
+        "answerLength": 3,
+        "category": "Doğa",
+        "clue": "Sert, katı madde",
+        "tags": [
+            "madde",
+            "yapı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0012",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YEL",
+        "answerLength": 3,
+        "category": "Doğa",
+        "clue": "Rüzgar",
+        "tags": [
+            "hava",
+            "esinti"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0013",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SEL",
+        "answerLength": 3,
+        "category": "Doğa",
+        "clue": "Taşkın su",
+        "tags": [
+            "afet",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0014",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KEL",
+        "answerLength": 3,
+        "category": "Genel Kültür",
+        "clue": "Saçı dökülmüş baş",
+        "tags": [
+            "vücut",
+            "sıfat"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0015",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEL",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Sırtın alt kısmı",
+        "tags": [
+            "organ",
+            "bölge"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0016",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SEN",
+        "answerLength": 3,
+        "category": "Dilbilgisi",
+        "clue": "İkinci tekil şahıs",
+        "tags": [
+            "zamir",
+            "kişi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0017",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEN",
+        "answerLength": 3,
+        "category": "Dilbilgisi",
+        "clue": "Birinci tekil şahıs",
+        "tags": [
+            "zamir",
+            "kişi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0018",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CİN",
+        "answerLength": 3,
+        "category": "Mitoloji",
+        "clue": "Masallarda geçen doğaüstü varlık",
+        "tags": [
+            "hayal",
+            "efsane"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0019",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DAĞ",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Yüksek yer şekli",
+        "tags": [
+            "doğa",
+            "zirve"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0020",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OVA",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Geniş düzlük",
+        "tags": [
+            "doğa",
+            "arazi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0021",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇÖL",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Kurak geniş kumsal",
+        "tags": [
+            "sıcak",
+            "kum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0022",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAĞ",
+        "answerLength": 3,
+        "category": "Tarım",
+        "clue": "Üzüm yetiştirilen yer",
+        "tags": [
+            "meyve",
+            "bahçe"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0023",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÜL",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "Kokulu dikenli çiçek",
+        "tags": [
+            "çiçek",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0024",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DAL",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "Ağacın kolu",
+        "tags": [
+            "ağaç",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0025",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİŞ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Ağızda çiğnemeye yarayan kemik",
+        "tags": [
+            "sağlık",
+            "organ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0026",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAÇ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Baş üzerindeki kıllar",
+        "tags": [
+            "güzellik",
+            "organ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0027",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KAŞ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Göz üzerindeki kıllar",
+        "tags": [
+            "yüz",
+            "organ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0028",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÖZ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Görme organı",
+        "tags": [
+            "duyu",
+            "organ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0029",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AN",
+        "answerLength": 2,
+        "category": "Zaman",
+        "clue": "En kısa zaman parçası",
+        "tags": [
+            "vakit",
+            "süre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0030",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YIL",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "Sene, 365 gün",
+        "tags": [
+            "takvim",
+            "süre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0031",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAĞ",
+        "answerLength": 3,
+        "category": "Tarih",
+        "clue": "Devir, dönem",
+        "tags": [
+            "zaman",
+            "süre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0032",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DÜN",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "Bugünden önceki gün",
+        "tags": [
+            "geçmiş",
+            "gün"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0033",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÜN",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "24 saatlik süre",
+        "tags": [
+            "vakit",
+            "takvim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0034",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AL",
+        "answerLength": 2,
+        "category": "Renk",
+        "clue": "Kırmızı",
+        "tags": [
+            "renk",
+            "bayrak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0035",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AK",
+        "answerLength": 2,
+        "category": "Renk",
+        "clue": "Beyaz",
+        "tags": [
+            "renk",
+            "temiz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0036",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KIR",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Gri veya beyazlaşmış saç rengi",
+        "tags": [
+            "renk",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0037",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "MOR",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Kırmızıyla mavinin karışımı renk",
+        "tags": [
+            "renk",
+            "çiçek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0038",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOZ",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Açık toprak rengi, griye çalan",
+        "tags": [
+            "renk",
+            "ayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0039",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ELMA",
+        "answerLength": 4,
+        "category": "Meyve",
+        "clue": "Kırmızı veya yeşil yuvarlak meyve",
+        "tags": [
+            "yiyecek",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0040",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ARMA",
+        "answerLength": 4,
+        "category": "Sembol",
+        "clue": "Beylik, devlet veya kurum işareti",
+        "tags": [
+            "işaret",
+            "sembol"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0041",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ASLAN",
+        "answerLength": 5,
+        "category": "Hayvan",
+        "clue": "Ormanlar kralı",
+        "tags": [
+            "vahşi",
+            "kedi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0042",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAPLAN",
+        "answerLength": 6,
+        "category": "Hayvan",
+        "clue": "Büyük çizgili kedi",
+        "tags": [
+            "vahşi",
+            "yırtıcı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0043",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "YILAN",
+        "answerLength": 5,
+        "category": "Hayvan",
+        "clue": "Sürüngen, ayaksız hayvan",
+        "tags": [
+            "sürüngen",
+            "tehlikeli"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0044",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BALIK",
+        "answerLength": 5,
+        "category": "Hayvan",
+        "clue": "Suda yaşayan solungaçlı canlı",
+        "tags": [
+            "deniz",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0045",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "AĞAÇ",
+        "answerLength": 4,
+        "category": "Bitki",
+        "clue": "Odunsu gövdesi olan büyük bitki",
+        "tags": [
+            "orman",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0046",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ÇAM",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "İğne yapraklı ağaç",
+        "tags": [
+            "orman",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0047",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "MEŞE",
+        "answerLength": 4,
+        "category": "Bitki",
+        "clue": "Palamut veren ağaç",
+        "tags": [
+            "orman",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0048",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "DUT",
+        "answerLength": 3,
+        "category": "Meyve",
+        "clue": "Tatlı meyvesi olan bir ağaç",
+        "tags": [
+            "ağaç",
+            "yiyecek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0049",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAPI",
+        "answerLength": 4,
+        "category": "Ev",
+        "clue": "Giriş çıkışı sağlayan açılır kapanır levha",
+        "tags": [
+            "yapı",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0050",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "MASA",
+        "answerLength": 4,
+        "category": "Ev",
+        "clue": "Üzerinde yemek yenen veya çalışılan eşya",
+        "tags": [
+            "mobilya",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0051",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "HALI",
+        "answerLength": 4,
+        "category": "Ev",
+        "clue": "Yere serilen dokuma yaygı",
+        "tags": [
+            "dekorasyon",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0052",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "DOLAP",
+        "answerLength": 5,
+        "category": "Ev",
+        "clue": "İçine eşya konulan kapalı mobilya",
+        "tags": [
+            "mobilya",
+            "saklama"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0053",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "YATAK",
+        "answerLength": 5,
+        "category": "Ev",
+        "clue": "Uyumak için kullanılan eşya",
+        "tags": [
+            "mobilya",
+            "uyku"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0054",
+        "type": "crossword_clue",
+        "difficulty": "hard",
+        "level": 3,
+        "answer": "OKUL",
+        "answerLength": 4,
+        "category": "Eğitim",
+        "clue": "Eğitim öğretim görülen yer, mektep",
+        "tags": [
+            "bina",
+            "öğrenci"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0055",
+        "type": "crossword_clue",
+        "difficulty": "hard",
+        "level": 3,
+        "answer": "SINIF",
+        "answerLength": 5,
+        "category": "Eğitim",
+        "clue": "Ders yapılan oda",
+        "tags": [
+            "okul",
+            "ders"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0056",
+        "type": "crossword_clue",
+        "difficulty": "hard",
+        "level": 3,
+        "answer": "SİLGİ",
+        "answerLength": 5,
+        "category": "Kırtasiye",
+        "clue": "Yazılanı silmeye yarayan araç",
+        "tags": [
+            "okul",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0057",
+        "type": "crossword_clue",
+        "difficulty": "hard",
+        "level": 3,
+        "answer": "DEFTER",
+        "answerLength": 6,
+        "category": "Kırtasiye",
+        "clue": "Yazı yazılan kağıt yaprakları bütünü",
+        "tags": [
+            "okul",
+            "yazı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0058",
+        "type": "crossword_clue",
+        "difficulty": "hard",
+        "level": 3,
+        "answer": "TEBEŞİR",
+        "answerLength": 7,
+        "category": "Eğitim",
+        "clue": "Tahtaya yazı yazmaya yarayan kireçli çubuk",
+        "tags": [
+            "okul",
+            "yazı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0059",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GEL",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Buraya doğru hareket et",
+        "tags": [
+            "emir",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0060",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GİT",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Buradan uzaklaş",
+        "tags": [
+            "emir",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0061",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KOŞ",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Hızlı adımlarla ilerle",
+        "tags": [
+            "spor",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0062",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAK",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Gözünü bir şeye çevir",
+        "tags": [
+            "duyu",
+            "göz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0063",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÖR",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Gözle algıla",
+        "tags": [
+            "duyu",
+            "göz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0064",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DUR",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Hareketi kes",
+        "tags": [
+            "emir",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0065",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SUS",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Konuşmayı kes",
+        "tags": [
+            "emir",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0066",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YAT",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Uyumak için uzan",
+        "tags": [
+            "uyku",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0067",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KAL",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Gitme, dur",
+        "tags": [
+            "zaman",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0068",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AL",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Bir şeyi tutup kendine çekmek",
+        "tags": [
+            "hareket",
+            "sahip"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0069",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "VER",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Bir şeyi başkasına iletmek",
+        "tags": [
+            "hareket",
+            "iletişim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0070",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İYİ",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Kötü karşıtı, beğenilen",
+        "tags": [
+            "kalite",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0071",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KÖTÜ",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "İyi karşıtı, fena",
+        "tags": [
+            "kalite",
+            "olumsuz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0072",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UZUN",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Boyu büyük, kısa karşıtı",
+        "tags": [
+            "boyut",
+            "ölçü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0073",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KISA",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Boyu küçük, uzun karşıtı",
+        "tags": [
+            "boyut",
+            "ölçü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0074",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOŞ",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Dolu olmayan",
+        "tags": [
+            "durum",
+            "miktar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0075",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DOLU",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Boş olmayan",
+        "tags": [
+            "durum",
+            "miktar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0076",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AÇ",
+        "answerLength": 2,
+        "category": "Sıfat",
+        "clue": "Yemek yemesi gereken, tok karşıtı",
+        "tags": [
+            "yemek",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0077",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TOK",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Karnı doymuş",
+        "tags": [
+            "yemek",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0078",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "VAR",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Yok karşıtı, mevcut",
+        "tags": [
+            "varlık",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0079",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YOK",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Var olmayan",
+        "tags": [
+            "varlık",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0080",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇOK",
+        "answerLength": 3,
+        "category": "Miktar",
+        "clue": "Fazla, bol",
+        "tags": [
+            "sayı",
+            "miktar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0081",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AZ",
+        "answerLength": 2,
+        "category": "Miktar",
+        "clue": "Yetersiz, kıt",
+        "tags": [
+            "sayı",
+            "miktar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0082",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YENİ",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Eski olmayan, taze",
+        "tags": [
+            "zaman",
+            "kalite"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0083",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ESKİ",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Yeni olmayan, geçmişten kalan",
+        "tags": [
+            "zaman",
+            "kalite"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0084",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GENÇ",
+        "answerLength": 4,
+        "category": "Sıfat",
+        "clue": "Yaşlı olmayan",
+        "tags": [
+            "yaş",
+            "insan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0085",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YAŞLI",
+        "answerLength": 5,
+        "category": "Sıfat",
+        "clue": "Genç olmayan, ihtiyar",
+        "tags": [
+            "yaş",
+            "insan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0086",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BÜYÜK",
+        "answerLength": 5,
+        "category": "Sıfat",
+        "clue": "Küçük olmayan, iri",
+        "tags": [
+            "boyut",
+            "ölçü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0087",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KÜÇÜK",
+        "answerLength": 5,
+        "category": "Sıfat",
+        "clue": "Büyük olmayan, ufak",
+        "tags": [
+            "boyut",
+            "ölçü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0088",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÜZEL",
+        "answerLength": 5,
+        "category": "Sıfat",
+        "clue": "Göze hoş görünen",
+        "tags": [
+            "estetik",
+            "beğeni"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0089",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇİRKİN",
+        "answerLength": 6,
+        "category": "Sıfat",
+        "clue": "Güzel olmayan",
+        "tags": [
+            "estetik",
+            "beğeni"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0090",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZOR",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Kolay olmayan, güç",
+        "tags": [
+            "zorluk",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0091",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KOLAY",
+        "answerLength": 5,
+        "category": "Sıfat",
+        "clue": "Zor olmayan, basit",
+        "tags": [
+            "zorluk",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0092",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KOLTUK",
+        "answerLength": 6,
+        "category": "Ev",
+        "clue": "Rahat oturacak eşya",
+        "tags": [
+            "mobilya",
+            "rahatlık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0093",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "PERDE",
+        "answerLength": 5,
+        "category": "Ev",
+        "clue": "Pencere örtüsü",
+        "tags": [
+            "dekorasyon",
+            "tekstil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0094",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KİLİM",
+        "answerLength": 5,
+        "category": "Ev",
+        "clue": "İnce halı",
+        "tags": [
+            "tekstil",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0095",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "AYNA",
+        "answerLength": 4,
+        "category": "Ev",
+        "clue": "Kendini görmeye yarayan cam",
+        "tags": [
+            "eşya",
+            "cam"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0096",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "LAMBA",
+        "answerLength": 5,
+        "category": "Ev",
+        "clue": "Aydınlatma aracı",
+        "tags": [
+            "ışık",
+            "elektrik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0097",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TABAK",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Yemek konulan kap",
+        "tags": [
+            "yemek",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0098",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAŞIK",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Sulu yemek yeme aracı",
+        "tags": [
+            "yemek",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0099",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ÇATAL",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Yemek batırma aracı",
+        "tags": [
+            "yemek",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0100",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BIÇAK",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Kesmeye yarayan alet",
+        "tags": [
+            "kesici",
+            "mutfak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0101",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BARDAK",
+        "answerLength": 6,
+        "category": "Mutfak",
+        "clue": "Su içme kabı",
+        "tags": [
+            "içecek",
+            "cam"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0102",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TENCERE",
+        "answerLength": 7,
+        "category": "Mutfak",
+        "clue": "Yemek pişirme kabı",
+        "tags": [
+            "yemek",
+            "metal"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0103",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TAVA",
+        "answerLength": 4,
+        "category": "Mutfak",
+        "clue": "Kızartma yapma kabı",
+        "tags": [
+            "yemek",
+            "metal"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0104",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "FİNCAN",
+        "answerLength": 6,
+        "category": "Mutfak",
+        "clue": "Kahve içme kabı",
+        "tags": [
+            "kahve",
+            "porselen"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0105",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "EKMEK",
+        "answerLength": 5,
+        "category": "Yiyecek",
+        "clue": "Un ve sudan yapılan temel besin",
+        "tags": [
+            "fırın",
+            "hamur"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0106",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "PEYNİR",
+        "answerLength": 6,
+        "category": "Yiyecek",
+        "clue": "Sütten yapılan kahvaltılık",
+        "tags": [
+            "süt",
+            "kahvaltı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0107",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ZEYTİN",
+        "answerLength": 6,
+        "category": "Yiyecek",
+        "clue": "Siyah veya yeşil küçük yağlı meyve",
+        "tags": [
+            "kahvaltı",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0108",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "YUMURTA",
+        "answerLength": 7,
+        "category": "Yiyecek",
+        "clue": "Tavuğun verdiği besin",
+        "tags": [
+            "kahvaltı",
+            "protein"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0109",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AT",
+        "answerLength": 2,
+        "category": "Hayvan",
+        "clue": "Binek hayvanı",
+        "tags": [
+            "çiftlik",
+            "binek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0110",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ET",
+        "answerLength": 2,
+        "category": "Yiyecek",
+        "clue": "Kasaptan alınan besin",
+        "tags": [
+            "yemek",
+            "protein"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0111",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OT",
+        "answerLength": 2,
+        "category": "Bitki",
+        "clue": "Küçük bitki",
+        "tags": [
+            "doğa",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0112",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İT",
+        "answerLength": 2,
+        "category": "Hayvan",
+        "clue": "Köpek (kaba tabir)",
+        "tags": [
+            "hayvan",
+            "sokak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0113",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÜTÜ",
+        "answerLength": 3,
+        "category": "Ev",
+        "clue": "Kıyafet düzleştirme aracı",
+        "tags": [
+            "eşya",
+            "sıcak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0114",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÜYE",
+        "answerLength": 3,
+        "category": "Toplum",
+        "clue": "Bir topluluğa dahil olan kişi",
+        "tags": [
+            "insan",
+            "grup"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0115",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AYI",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Kış uykusuna yatan büyük hayvan",
+        "tags": [
+            "vahşi",
+            "orman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0116",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ARI",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Bal yapan böcek",
+        "tags": [
+            "böcek",
+            "uçan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0117",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FİL",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Hortumlu büyük hayvan",
+        "tags": [
+            "vahşi",
+            "büyük"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0118",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KAZ",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Suda yüzen beyaz kuş",
+        "tags": [
+            "kuş",
+            "çiftlik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0119",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KOÇ",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Erkek koyun",
+        "tags": [
+            "çiftlik",
+            "hayvan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0120",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KUŞ",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Kanatlı uçan hayvan",
+        "tags": [
+            "hayvan",
+            "uçan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0121",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAY",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "At yavrusu",
+        "tags": [
+            "hayvan",
+            "yavru"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0122",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YEM",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Hayvan yiyeceği",
+        "tags": [
+            "yiyecek",
+            "hayvan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0123",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİZ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Bacak eklemi",
+        "tags": [
+            "organ",
+            "eklem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0124",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SIRT",
+        "answerLength": 4,
+        "category": "Vücut",
+        "clue": "Vücudun arka tarafı",
+        "tags": [
+            "vücut",
+            "arka"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0125",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YÜZ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Çehre, surat",
+        "tags": [
+            "vücut",
+            "baş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0126",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TEN",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Cilt",
+        "tags": [
+            "vücut",
+            "deri"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0127",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TOP",
+        "answerLength": 3,
+        "category": "Oyun",
+        "clue": "Yuvarlak oyun aracı",
+        "tags": [
+            "spor",
+            "oyuncak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0128",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TEL",
+        "answerLength": 3,
+        "category": "Madde",
+        "clue": "İnce metal iplik",
+        "tags": [
+            "metal",
+            "iletişim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0129",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TİP",
+        "answerLength": 3,
+        "category": "Genel",
+        "clue": "Tür, çeşit, biçim",
+        "tags": [
+            "çeşit",
+            "şekil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0130",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FİŞ",
+        "answerLength": 3,
+        "category": "Teknoloji",
+        "clue": "Elektrik bağlantı ucu",
+        "tags": [
+            "elektrik",
+            "alet"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0131",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "PİL",
+        "answerLength": 3,
+        "category": "Teknoloji",
+        "clue": "Enerji deposu",
+        "tags": [
+            "enerji",
+            "elektrik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0132",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZİL",
+        "answerLength": 3,
+        "category": "Ses",
+        "clue": "Çınlama sesi çıkaran araç",
+        "tags": [
+            "ses",
+            "okul"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0133",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İL",
+        "answerLength": 2,
+        "category": "Coğrafya",
+        "clue": "Şehir, vilayet",
+        "tags": [
+            "yer",
+            "yönetim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0134",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YOL",
+        "answerLength": 3,
+        "category": "Ulaşım",
+        "clue": "Gidilen yer, güzergah",
+        "tags": [
+            "seyahat",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0135",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YER",
+        "answerLength": 3,
+        "category": "Konum",
+        "clue": "Mekan, zemin",
+        "tags": [
+            "alan",
+            "konum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0136",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KÖY",
+        "answerLength": 3,
+        "category": "Yerleşim",
+        "clue": "Küçük yerleşim yeri",
+        "tags": [
+            "kırsal",
+            "yaşam"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0137",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SÖZ",
+        "answerLength": 3,
+        "category": "İletişim",
+        "clue": "Kelime, laf",
+        "tags": [
+            "konuşma",
+            "dil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0138",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖZ",
+        "answerLength": 2,
+        "category": "Felsefe",
+        "clue": "Bir şeyin temeli, cevher",
+        "tags": [
+            "iç",
+            "ruh"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0139",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TÜR",
+        "answerLength": 3,
+        "category": "Biyoloji",
+        "clue": "Cins, çeşit",
+        "tags": [
+            "sınıf",
+            "grup"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0140",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HUY",
+        "answerLength": 3,
+        "category": "Psikoloji",
+        "clue": "Karakter, mizaç",
+        "tags": [
+            "kişilik",
+            "davranış"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0141",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HİS",
+        "answerLength": 3,
+        "category": "Psikoloji",
+        "clue": "Duygu, sezgi",
+        "tags": [
+            "duygu",
+            "iç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0142",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HAZ",
+        "answerLength": 3,
+        "category": "Psikoloji",
+        "clue": "Zevk, hoşlanma",
+        "tags": [
+            "duygu",
+            "keyif"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0143",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NAZ",
+        "answerLength": 3,
+        "category": "Davranış",
+        "clue": "İsteksiz görünme, cilve",
+        "tags": [
+            "duygu",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0144",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TEZ",
+        "answerLength": 3,
+        "category": "Akademi",
+        "clue": "Çabuk, acele; sav",
+        "tags": [
+            "hız",
+            "bilim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0145",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OK",
+        "answerLength": 2,
+        "category": "Silah",
+        "clue": "Yay ile atılan çubuk",
+        "tags": [
+            "savaş",
+            "spor"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0146",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YAY",
+        "answerLength": 3,
+        "category": "Silah",
+        "clue": "Ok atmaya yarayan araç",
+        "tags": [
+            "savaş",
+            "spor"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0147",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AŞK",
+        "answerLength": 3,
+        "category": "Duygu",
+        "clue": "Şiddetli sevgi",
+        "tags": [
+            "sevgi",
+            "kalp"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0148",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SEV",
+        "answerLength": 3,
+        "category": "Duygu",
+        "clue": "Aşk duy (emir kipi)",
+        "tags": [
+            "sevgi",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0149",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "KİM",
+        "answerLength": 3,
+        "category": "Soru",
+        "clue": "Hangi kişi?",
+        "tags": [
+            "soru",
+            "zamir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0150",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NE",
+        "answerLength": 2,
+        "category": "Soru",
+        "clue": "Hangi şey?",
+        "tags": [
+            "soru",
+            "zamir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0151",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "MUM",
+        "answerLength": 3,
+        "category": "Eşya",
+        "clue": "Eriyerek ışık veren madde",
+        "tags": [
+            "ışık",
+            "ateş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0152",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "MUZ",
+        "answerLength": 3,
+        "category": "Meyve",
+        "clue": "Sarı uzun meyve",
+        "tags": [
+            "yiyecek",
+            "tropik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0153",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NAR",
+        "answerLength": 3,
+        "category": "Meyve",
+        "clue": "İçi taneli kırmızı meyve",
+        "tags": [
+            "yiyecek",
+            "kış"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0154",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NAL",
+        "answerLength": 3,
+        "category": "Eşya",
+        "clue": "Atın ayağına çakılan demir",
+        "tags": [
+            "at",
+            "demir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0155",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NET",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Bulanık olmayan, açık",
+        "tags": [
+            "görüntü",
+            "kesin"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0156",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NEM",
+        "answerLength": 3,
+        "category": "Hava",
+        "clue": "Rutubet, ıslaklık",
+        "tags": [
+            "su",
+            "hava"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0157",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NEY",
+        "answerLength": 3,
+        "category": "Müzik",
+        "clue": "Üflemeli çalgı",
+        "tags": [
+            "sanat",
+            "saz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0158",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NOT",
+        "answerLength": 3,
+        "category": "Yazı",
+        "clue": "Kısa yazı, puan",
+        "tags": [
+            "okul",
+            "yazı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0159",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "POT",
+        "answerLength": 3,
+        "category": "Oyun",
+        "clue": "Gaf, hata; sepetteki delik",
+        "tags": [
+            "hata",
+            "basket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0160",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RAF",
+        "answerLength": 3,
+        "category": "Eşya",
+        "clue": "Eşya konulan tahta levha",
+        "tags": [
+            "mobilya",
+            "düzen"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0161",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RAY",
+        "answerLength": 3,
+        "category": "Ulaşım",
+        "clue": "Tren yolu demiri",
+        "tags": [
+            "tren",
+            "yol"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0162",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ROL",
+        "answerLength": 3,
+        "category": "Sanat",
+        "clue": "Oyuncunun canlandırdığı karakter",
+        "tags": [
+            "tiyatro",
+            "film"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0163",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RUH",
+        "answerLength": 3,
+        "category": "İnanç",
+        "clue": "Can, tin",
+        "tags": [
+            "hayat",
+            "manevi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0164",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RUJ",
+        "answerLength": 3,
+        "category": "Kozmetik",
+        "clue": "Dudak boyası",
+        "tags": [
+            "makyaj",
+            "boya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0165",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RUS",
+        "answerLength": 3,
+        "category": "Millet",
+        "clue": "Rusya halkından olan",
+        "tags": [
+            "dünya",
+            "insan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0166",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAF",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Katkısız, temiz, masum",
+        "tags": [
+            "kalite",
+            "kişilik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0167",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAĞ",
+        "answerLength": 3,
+        "category": "Yön",
+        "clue": "Sol karşıtı",
+        "tags": [
+            "taraf",
+            "yön"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0168",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SOL",
+        "answerLength": 3,
+        "category": "Yön",
+        "clue": "Sağ karşıtı",
+        "tags": [
+            "taraf",
+            "yön"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0169",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAL",
+        "answerLength": 3,
+        "category": "Ulaşım",
+        "clue": "Basit su taşıtı",
+        "tags": [
+            "deniz",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0170",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAP",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "Bitkinin tutunacak yeri, tutacak",
+        "tags": [
+            "parça",
+            "tutacak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0171",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAY",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Numaralamak, hesaplamak",
+        "tags": [
+            "matematik",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0172",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SAZ",
+        "answerLength": 3,
+        "category": "Müzik",
+        "clue": "Telli çalgı; sulak bitki",
+        "tags": [
+            "müzik",
+            "bitki"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0173",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SIR",
+        "answerLength": 3,
+        "category": "Gizem",
+        "clue": "Gizli tutulan şey",
+        "tags": [
+            "gizli",
+            "bilgi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0174",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SİS",
+        "answerLength": 3,
+        "category": "Hava",
+        "clue": "Dumanlı hava durumu",
+        "tags": [
+            "bulut",
+            "hava"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0175",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SİZ",
+        "answerLength": 3,
+        "category": "Dilbilgisi",
+        "clue": "İkinci çoğul şahıs",
+        "tags": [
+            "zamir",
+            "kişi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0176",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SOS",
+        "answerLength": 3,
+        "category": "Yiyecek",
+        "clue": "Yemeğe tat veren sıvı",
+        "tags": [
+            "mutfak",
+            "lezzet"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0177",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SOY",
+        "answerLength": 3,
+        "category": "Toplum",
+        "clue": "Nesil, sülale",
+        "tags": [
+            "aile",
+            "köken"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0178",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SUÇ",
+        "answerLength": 3,
+        "category": "Hukuk",
+        "clue": "Yasaya aykırı eylem",
+        "tags": [
+            "ceza",
+            "hata"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0179",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SÜS",
+        "answerLength": 3,
+        "category": "Dekorasyon",
+        "clue": "Bezeme, ziynet",
+        "tags": [
+            "güzellik",
+            "takı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0180",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ŞAL",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "Omuz örtüsü",
+        "tags": [
+            "kıyafet",
+            "örtü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0181",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ŞEF",
+        "answerLength": 3,
+        "category": "Meslek",
+        "clue": "Başkan, yönetici; aşçıbaşı",
+        "tags": [
+            "yönetici",
+            "lider"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0182",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ŞİŞ",
+        "answerLength": 3,
+        "category": "Mutfak",
+        "clue": "Et takılan ince çubuk; kabartı",
+        "tags": [
+            "yemek",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0183",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ŞOK",
+        "answerLength": 3,
+        "category": "Psikoloji",
+        "clue": "Ani sarsıntı, şaşkınlık",
+        "tags": [
+            "duygu",
+            "etki"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0184",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAÇ",
+        "answerLength": 3,
+        "category": "Sembol",
+        "clue": "Kralın başlığı",
+        "tags": [
+            "kral",
+            "başlık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0185",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAK",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Takmak eylemi; süs kemeri",
+        "tags": [
+            "yapı",
+            "hareket"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0186",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAM",
+        "answerLength": 3,
+        "category": "Miktar",
+        "clue": "Eksiksiz, bütün",
+        "tags": [
+            "bütün",
+            "tüm"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0187",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAN",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "Güneş doğmadan önceki zaman",
+        "tags": [
+            "sabah",
+            "vakit"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0188",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TAS",
+        "answerLength": 3,
+        "category": "Mutfak",
+        "clue": "İçi derin kap",
+        "tags": [
+            "kap",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0189",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TIR",
+        "answerLength": 3,
+        "category": "Ulaşım",
+        "clue": "Büyük yük kamyonu",
+        "tags": [
+            "araç",
+            "yük"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0190",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TEK",
+        "answerLength": 3,
+        "category": "Sayı",
+        "clue": "Yalnız, bir tane",
+        "tags": [
+            "bir",
+            "sayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0191",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇİFT",
+        "answerLength": 4,
+        "category": "Sayı",
+        "clue": "İki tane, tek karşıtı",
+        "tags": [
+            "iki",
+            "sayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0192",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TER",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Deri gözeneklerinden çıkan sıvı",
+        "tags": [
+            "su",
+            "sıcak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0193",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TÜRK",
+        "answerLength": 4,
+        "category": "Millet",
+        "clue": "Türkiye halkından olan",
+        "tags": [
+            "millet",
+            "ülke"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0194",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KÜRT",
+        "answerLength": 4,
+        "category": "Millet",
+        "clue": "Orta Doğu halklarından biri",
+        "tags": [
+            "millet",
+            "halk"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0195",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZAM",
+        "answerLength": 3,
+        "category": "Ekonomi",
+        "clue": "Fiyat artışı",
+        "tags": [
+            "para",
+            "fiyat"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0196",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZAN",
+        "answerLength": 3,
+        "category": "Düşünce",
+        "clue": "Sanı, şüphe",
+        "tags": [
+            "fikir",
+            "şüphe"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0197",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZAR",
+        "answerLength": 3,
+        "category": "Oyun",
+        "clue": "Oyun küpü; ince deri",
+        "tags": [
+            "oyun",
+            "şans"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0198",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZAT",
+        "answerLength": 3,
+        "category": "Kişi",
+        "clue": "Kişi, kimse",
+        "tags": [
+            "insan",
+            "saygı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0199",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZOR",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Güç, çetin",
+        "tags": [
+            "durum",
+            "mücadele"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_conn_0200",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİL",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Tat alma ve konuşma organı; lisan",
+        "tags": [
+            "organ",
+            "konuşma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0001",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "GELMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Ulaşmak, varmak",
+        "tags": [
+            "hareket",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0002",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "GİTMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Bir yerden ayrılmak",
+        "tags": [
+            "hareket",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0003",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KOŞMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Hızlı adımlarla gitmek",
+        "tags": [
+            "spor",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0004",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BAKMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Gözünü bir şeye çevirmek",
+        "tags": [
+            "duyu",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0005",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "GÖRMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Gözle algılamak",
+        "tags": [
+            "duyu",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0006",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "DURMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Hareketsiz kalmak",
+        "tags": [
+            "durum",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0007",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "YAZMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Harfleri kağıda dökmek",
+        "tags": [
+            "iletişim",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0008",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ÇİZMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Resim veya şekil yapmak",
+        "tags": [
+            "sanat",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0009",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SEVMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Tutkuyla bağlanmak",
+        "tags": [
+            "duygu",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0010",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SAYMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Sayıları sıralamak",
+        "tags": [
+            "matematik",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0011",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "OTURMAK",
+        "answerLength": 7,
+        "category": "Eylem",
+        "clue": "Bir yere yerleşmek",
+        "tags": [
+            "durum",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0012",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KALKMAK",
+        "answerLength": 7,
+        "category": "Eylem",
+        "clue": "Ayağa dikilmek",
+        "tags": [
+            "hareket",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0013",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "UYUMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Dinlenmek için gözlerini yummak",
+        "tags": [
+            "dinlenme",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0014",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "UYANMAK",
+        "answerLength": 7,
+        "category": "Eylem",
+        "clue": "Uykudan çıkmak",
+        "tags": [
+            "zaman",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0015",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "GÜLMEK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Neşelenip ses çıkarmak",
+        "tags": [
+            "duygu",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0016",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "AĞLAMAK",
+        "answerLength": 7,
+        "category": "Eylem",
+        "clue": "Gözyaşı dökmek",
+        "tags": [
+            "duygu",
+            "fiil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0017",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "YAPMAK",
+        "answerLength": 6,
+        "category": "Eylem",
+        "clue": "Meydana getirmek, üretmek",
+        "tags": [
+            "fiil",
+            "genel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0018",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ETMEK",
+        "answerLength": 5,
+        "category": "Eylem",
+        "clue": "Yapmak ile aynı anlamda yardımcı fiil",
+        "tags": [
+            "fiil",
+            "genel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0019",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "OLMAK",
+        "answerLength": 5,
+        "category": "Eylem",
+        "clue": "Meydana gelmek",
+        "tags": [
+            "fiil",
+            "genel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0020",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KALEM",
+        "answerLength": 5,
+        "category": "Kırtasiye",
+        "clue": "Yazı yazma aracı",
+        "tags": [
+            "okul",
+            "yazı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0021",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAĞIT",
+        "answerLength": 5,
+        "category": "Kırtasiye",
+        "clue": "Üzerine yazı yazılan madde",
+        "tags": [
+            "okul",
+            "yazı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0022",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KİTAP",
+        "answerLength": 5,
+        "category": "Kırtasiye",
+        "clue": "Okumak için sayfaları olan nesne",
+        "tags": [
+            "okul",
+            "bilgi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0023",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SİLGİ",
+        "answerLength": 5,
+        "category": "Kırtasiye",
+        "clue": "Yazıyı silmeye yarayan gereç",
+        "tags": [
+            "okul",
+            "silmek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0024",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ÇANTA",
+        "answerLength": 5,
+        "category": "Eşya",
+        "clue": "Eşya taşımaya yarayan kap",
+        "tags": [
+            "okul",
+            "giyim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0025",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAPAK",
+        "answerLength": 5,
+        "category": "Eşya",
+        "clue": "Bir kabın üzerini örten parça",
+        "tags": [
+            "kap",
+            "örtü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0026",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TABAK",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Yemek tabağı",
+        "tags": [
+            "yemek",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0027",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAŞIK",
+        "answerLength": 5,
+        "category": "Mutfak",
+        "clue": "Çorba içme aracı",
+        "tags": [
+            "yemek",
+            "eşya"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0028",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BARDAK",
+        "answerLength": 6,
+        "category": "Mutfak",
+        "clue": "Su içilen cam kap",
+        "tags": [
+            "içecek",
+            "cam"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0029",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TUZLUK",
+        "answerLength": 6,
+        "category": "Mutfak",
+        "clue": "Tuz koyma kabı",
+        "tags": [
+            "yemek",
+            "baharat"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0030",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ŞEKER",
+        "answerLength": 5,
+        "category": "Yiyecek",
+        "clue": "Tatlı beyaz toz",
+        "tags": [
+            "tatlı",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0031",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "BİBER",
+        "answerLength": 5,
+        "category": "Yiyecek",
+        "clue": "Acı sebze veya baharat",
+        "tags": [
+            "sebze",
+            "acı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0032",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "LİMON",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Sarı ekşi narenciye",
+        "tags": [
+            "meyve",
+            "ekşi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0033",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KAVUN",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Sarı büyük yaz meyvesi",
+        "tags": [
+            "meyve",
+            "tatlı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0034",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KARPUZ",
+        "answerLength": 6,
+        "category": "Meyve",
+        "clue": "Yeşil kabuklu kırmızı içli meyve",
+        "tags": [
+            "meyve",
+            "yaz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0035",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ARMUT",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Altı geniş yeşil-sarı meyve",
+        "tags": [
+            "meyve",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0036",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ÇİLEK",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Küçük kırmızı benekli meyve",
+        "tags": [
+            "meyve",
+            "tatlı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0037",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "VİŞNE",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Ekşi kırmızı meyve",
+        "tags": [
+            "meyve",
+            "ekşi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0038",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KİRAZ",
+        "answerLength": 5,
+        "category": "Meyve",
+        "clue": "Saplı küçük kırmızı meyve",
+        "tags": [
+            "meyve",
+            "yaz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0039",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "DOMATES",
+        "answerLength": 7,
+        "category": "Sebze",
+        "clue": "Kırmızı yuvarlak sebze",
+        "tags": [
+            "sebze",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0040",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "PATATES",
+        "answerLength": 7,
+        "category": "Sebze",
+        "clue": "Toprak altında yetişen yumru",
+        "tags": [
+            "sebze",
+            "kızartma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0041",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SOĞAN",
+        "answerLength": 5,
+        "category": "Sebze",
+        "clue": "Göz yaşartan sebze",
+        "tags": [
+            "sebze",
+            "acı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0042",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SARIMSAK",
+        "answerLength": 8,
+        "category": "Sebze",
+        "clue": "Keskin kokulu dişli sebze",
+        "tags": [
+            "sebze",
+            "koku"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0043",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "ISPANAK",
+        "answerLength": 7,
+        "category": "Sebze",
+        "clue": "Yeşil yapraklı demir deposu",
+        "tags": [
+            "sebze",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0044",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "PIRASA",
+        "answerLength": 6,
+        "category": "Sebze",
+        "clue": "Uzun yeşil saplı sebze",
+        "tags": [
+            "sebze",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0045",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "KABAK",
+        "answerLength": 5,
+        "category": "Sebze",
+        "clue": "Uzun yeşil sebze",
+        "tags": [
+            "sebze",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0046",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "PATLICAN",
+        "answerLength": 8,
+        "category": "Sebze",
+        "clue": "Mor renkli uzun sebze",
+        "tags": [
+            "sebze",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0047",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "HAVUÇ",
+        "answerLength": 5,
+        "category": "Sebze",
+        "clue": "Turuncu renkli kök sebze",
+        "tags": [
+            "sebze",
+            "göz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0048",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "TURP",
+        "answerLength": 4,
+        "category": "Sebze",
+        "clue": "Kırmızı veya beyaz kök sebze",
+        "tags": [
+            "sebze",
+            "salata"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0049",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "SALATA",
+        "answerLength": 6,
+        "category": "Yiyecek",
+        "clue": "Çiğ sebzelerden yapılan karışım",
+        "tags": [
+            "sebze",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0050",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 2,
+        "answer": "MARUL",
+        "answerLength": 5,
+        "category": "Sebze",
+        "clue": "Salatada kullanılan yeşillik",
+        "tags": [
+            "sebze",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0051",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "OTOBÜS",
+        "answerLength": 6,
+        "category": "Ulaşım",
+        "clue": "Toplu taşıma aracı",
+        "tags": [
+            "araç",
+            "şehir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0052",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "MİNİBÜS",
+        "answerLength": 7,
+        "category": "Ulaşım",
+        "clue": "Küçük otobüs, dolmuş",
+        "tags": [
+            "araç",
+            "şehir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0053",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "TAKSİ",
+        "answerLength": 5,
+        "category": "Ulaşım",
+        "clue": "Sarı renkli ticari araç",
+        "tags": [
+            "araç",
+            "şehir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0054",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "UÇAK",
+        "answerLength": 4,
+        "category": "Ulaşım",
+        "clue": "Havada giden taşıt",
+        "tags": [
+            "hava",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0055",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "GEMİ",
+        "answerLength": 4,
+        "category": "Ulaşım",
+        "clue": "Denizde giden büyük taşıt",
+        "tags": [
+            "deniz",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0056",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "METRO",
+        "answerLength": 5,
+        "category": "Ulaşım",
+        "clue": "Yeraltı treni",
+        "tags": [
+            "tren",
+            "şehir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0057",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "TREN",
+        "answerLength": 4,
+        "category": "Ulaşım",
+        "clue": "Ray üzerinde giden taşıt",
+        "tags": [
+            "demir",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0058",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BİSİKLET",
+        "answerLength": 8,
+        "category": "Ulaşım",
+        "clue": "İki tekerlekli pedalsız araç",
+        "tags": [
+            "spor",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0059",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "KAMYON",
+        "answerLength": 6,
+        "category": "Ulaşım",
+        "clue": "Yük taşıma aracı",
+        "tags": [
+            "araç",
+            "yük"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0060",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "DOKTOR",
+        "answerLength": 6,
+        "category": "Meslek",
+        "clue": "Hekim, tabip",
+        "tags": [
+            "sağlık",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0061",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "AVUKAT",
+        "answerLength": 6,
+        "category": "Meslek",
+        "clue": "Hak savunucusu",
+        "tags": [
+            "hukuk",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0062",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "MİMAR",
+        "answerLength": 5,
+        "category": "Meslek",
+        "clue": "Yapı tasarlayan kişi",
+        "tags": [
+            "yapı",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0063",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BERBER",
+        "answerLength": 6,
+        "category": "Meslek",
+        "clue": "Saç kesen kişi",
+        "tags": [
+            "bakım",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0064",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "TERZİ",
+        "answerLength": 5,
+        "category": "Meslek",
+        "clue": "Kıyafet diken kişi",
+        "tags": [
+            "giyim",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0065",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "ŞOFÖR",
+        "answerLength": 5,
+        "category": "Meslek",
+        "clue": "Araç kullanan kişi",
+        "tags": [
+            "araç",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0066",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BAKKAL",
+        "answerLength": 6,
+        "category": "Meslek",
+        "clue": "Mahalle marketi işleten",
+        "tags": [
+            "ticaret",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0067",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "MANAV",
+        "answerLength": 5,
+        "category": "Meslek",
+        "clue": "Sebze meyve satan",
+        "tags": [
+            "ticaret",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0068",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "KASAP",
+        "answerLength": 5,
+        "category": "Meslek",
+        "clue": "Et satan kişi",
+        "tags": [
+            "ticaret",
+            "iş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0069",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "RÜZGAR",
+        "answerLength": 6,
+        "category": "Doğa",
+        "clue": "Hava akımı, yel",
+        "tags": [
+            "hava",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0070",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "YAĞMUR",
+        "answerLength": 6,
+        "category": "Doğa",
+        "clue": "Gökten yağan su",
+        "tags": [
+            "hava",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0071",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "ŞİMŞEK",
+        "answerLength": 6,
+        "category": "Doğa",
+        "clue": "Gökyüzünde çakan ışık",
+        "tags": [
+            "hava",
+            "ışık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0072",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "TOPRAK",
+        "answerLength": 6,
+        "category": "Doğa",
+        "clue": "Yer kabuğunun yüzeyi",
+        "tags": [
+            "doğa",
+            "zemin"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0073",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "YAPRAK",
+        "answerLength": 6,
+        "category": "Doğa",
+        "clue": "Ağacın yeşil parçası",
+        "tags": [
+            "bitki",
+            "ağaç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0074",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "ORMAN",
+        "answerLength": 5,
+        "category": "Doğa",
+        "clue": "Ağaç topluluğu",
+        "tags": [
+            "doğa",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0075",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "DENİZ",
+        "answerLength": 5,
+        "category": "Doğa",
+        "clue": "Büyük su kütlesi",
+        "tags": [
+            "su",
+            "mavi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0076",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "NEHİR",
+        "answerLength": 5,
+        "category": "Doğa",
+        "clue": "Akarsu, ırmak",
+        "tags": [
+            "su",
+            "akış"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0077",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "IRMAK",
+        "answerLength": 5,
+        "category": "Doğa",
+        "clue": "Büyük akarsu",
+        "tags": [
+            "su",
+            "akış"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0078",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "SEVİNÇ",
+        "answerLength": 6,
+        "category": "Duygu",
+        "clue": "Mutluluk hali",
+        "tags": [
+            "mutlu",
+            "his"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0079",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "KORKU",
+        "answerLength": 5,
+        "category": "Duygu",
+        "clue": "Ürküntü, endişe",
+        "tags": [
+            "his",
+            "kötü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0080",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "ÖFKE",
+        "answerLength": 4,
+        "category": "Duygu",
+        "clue": "Kızgınlık",
+        "tags": [
+            "his",
+            "kötü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0081",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "NEŞE",
+        "answerLength": 4,
+        "category": "Duygu",
+        "clue": "Keyif, eğlence",
+        "tags": [
+            "his",
+            "mutlu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0082",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "HÜZÜN",
+        "answerLength": 5,
+        "category": "Duygu",
+        "clue": "Üzüntü, keder",
+        "tags": [
+            "his",
+            "mutsuz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0083",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "MERAK",
+        "answerLength": 5,
+        "category": "Duygu",
+        "clue": "Öğrenme isteği",
+        "tags": [
+            "his",
+            "bilgi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0084",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BAŞARI",
+        "answerLength": 6,
+        "category": "Kavram",
+        "clue": "Muvaffakiyet",
+        "tags": [
+            "iyi",
+            "sonuç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0085",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BİLGİ",
+        "answerLength": 5,
+        "category": "Kavram",
+        "clue": "Öğrenilen şey, malumat",
+        "tags": [
+            "okul",
+            "akıl"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0086",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "ZAMAN",
+        "answerLength": 5,
+        "category": "Kavram",
+        "clue": "Vakit, süre",
+        "tags": [
+            "saat",
+            "gün"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0087",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "HAYAT",
+        "answerLength": 5,
+        "category": "Kavram",
+        "clue": "Yaşam, ömür",
+        "tags": [
+            "can",
+            "süre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0088",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "DÜNYA",
+        "answerLength": 5,
+        "category": "Kavram",
+        "clue": "Yaşadığımız gezegen",
+        "tags": [
+            "yer",
+            "uzay"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0089",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "GÜNEŞ",
+        "answerLength": 5,
+        "category": "Uzay",
+        "clue": "Isı ve ışık kaynağımız",
+        "tags": [
+            "yıldız",
+            "sıcak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0090",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "YILDIZ",
+        "answerLength": 6,
+        "category": "Uzay",
+        "clue": "Gece gökte parlayan nokta",
+        "tags": [
+            "uzay",
+            "ışık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0091",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BULUT",
+        "answerLength": 5,
+        "category": "Hava",
+        "clue": "Su buharı yığını",
+        "tags": [
+            "hava",
+            "beyaz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0092",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "MAVİ",
+        "answerLength": 4,
+        "category": "Renk",
+        "clue": "Deniz ve gökyüzü rengi",
+        "tags": [
+            "renk",
+            "gök"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0093",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "SARI",
+        "answerLength": 4,
+        "category": "Renk",
+        "clue": "Güneş rengi",
+        "tags": [
+            "renk",
+            "sıcak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0094",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "YEŞİL",
+        "answerLength": 5,
+        "category": "Renk",
+        "clue": "Doğa rengi",
+        "tags": [
+            "renk",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0095",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "SİYAH",
+        "answerLength": 5,
+        "category": "Renk",
+        "clue": "Kara, en koyu renk",
+        "tags": [
+            "renk",
+            "kara"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0096",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "BEYAZ",
+        "answerLength": 5,
+        "category": "Renk",
+        "clue": "Ak, en açık renk",
+        "tags": [
+            "renk",
+            "temiz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0097",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "KIRMIZI",
+        "answerLength": 7,
+        "category": "Renk",
+        "clue": "Al, bayrak rengi",
+        "tags": [
+            "renk",
+            "kan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0098",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "TURUNCU",
+        "answerLength": 7,
+        "category": "Renk",
+        "clue": "Portakal rengi",
+        "tags": [
+            "renk",
+            "meyve"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0099",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "PEMBE",
+        "answerLength": 5,
+        "category": "Renk",
+        "clue": "Açık kırmızı",
+        "tags": [
+            "renk",
+            "kız"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_med_0100",
+        "type": "crossword_clue",
+        "difficulty": "medium",
+        "level": 3,
+        "answer": "LACİVERT",
+        "answerLength": 8,
+        "category": "Renk",
+        "clue": "Koyu mavi",
+        "tags": [
+            "renk",
+            "koyu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0001",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AB",
+        "answerLength": 2,
+        "category": "Eski Dil",
+        "clue": "Su (Eski dil)",
+        "tags": [
+            "su",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0002",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AD",
+        "answerLength": 2,
+        "category": "Dilbilgisi",
+        "clue": "İsim",
+        "tags": [
+            "gramer",
+            "kimlik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0003",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AH",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Acı veya özlem ünlemi",
+        "tags": [
+            "ses",
+            "duygu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0004",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AK",
+        "answerLength": 2,
+        "category": "Renk",
+        "clue": "Beyaz",
+        "tags": [
+            "renk",
+            "temiz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0005",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AL",
+        "answerLength": 2,
+        "category": "Renk",
+        "clue": "Kırmızı",
+        "tags": [
+            "renk",
+            "bayrak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0006",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AN",
+        "answerLength": 2,
+        "category": "Zaman",
+        "clue": "Lahza, kısa süre",
+        "tags": [
+            "vakit",
+            "zaman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0007",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AR",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "Utanma duygusu",
+        "tags": [
+            "ahlak",
+            "duygu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0008",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AS",
+        "answerLength": 2,
+        "category": "Oyun",
+        "clue": "İskambilde en değerli kağıt; kakım",
+        "tags": [
+            "kart",
+            "hayvan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0009",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AŞ",
+        "answerLength": 2,
+        "category": "Yiyecek",
+        "clue": "Yemek",
+        "tags": [
+            "karın",
+            "besin"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0010",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AT",
+        "answerLength": 2,
+        "category": "Hayvan",
+        "clue": "Binek hayvanı",
+        "tags": [
+            "çiftlik",
+            "binek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0011",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AV",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Yabani hayvan yakalama işi",
+        "tags": [
+            "spor",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0012",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AY",
+        "answerLength": 2,
+        "category": "Uzay",
+        "clue": "Dünya'nın uydusu; takvim birimi",
+        "tags": [
+            "gök",
+            "zaman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0013",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AZ",
+        "answerLength": 2,
+        "category": "Miktar",
+        "clue": "Çok karşıtı",
+        "tags": [
+            "miktar",
+            "sayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0014",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BU",
+        "answerLength": 2,
+        "category": "Zamir",
+        "clue": "İşaret sıfatı/zamiri",
+        "tags": [
+            "işaret",
+            "dil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0015",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DE",
+        "answerLength": 2,
+        "category": "Bağlaç",
+        "clue": "Dahi anlamındaki bağlaç",
+        "tags": [
+            "dil",
+            "ek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0016",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DO",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Bir nota",
+        "tags": [
+            "ses",
+            "nota"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0017",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EK",
+        "answerLength": 2,
+        "category": "Dil",
+        "clue": "İlave parça",
+        "tags": [
+            "gramer",
+            "parça"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0018",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EL",
+        "answerLength": 2,
+        "category": "Vücut",
+        "clue": "Tutmaya yarayan organ; yabancı",
+        "tags": [
+            "organ",
+            "kişi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0019",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EM",
+        "answerLength": 2,
+        "category": "Eski Dil",
+        "clue": "İlaç, merhem",
+        "tags": [
+            "sağlık",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0020",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EN",
+        "answerLength": 2,
+        "category": "Miktar",
+        "clue": "Genişlik; derece bildiren zarf",
+        "tags": [
+            "ölçü",
+            "dil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0021",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ER",
+        "answerLength": 2,
+        "category": "Askeri",
+        "clue": "Rütbesiz asker; erkek; erken",
+        "tags": [
+            "asker",
+            "zaman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0022",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ES",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Müzikte sus işareti",
+        "tags": [
+            "müzik",
+            "sus"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0023",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EŞ",
+        "answerLength": 2,
+        "category": "Aile",
+        "clue": "Karı koca biri; benzer",
+        "tags": [
+            "aile",
+            "benzer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0024",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ET",
+        "answerLength": 2,
+        "category": "Yiyecek",
+        "clue": "Kasap ürünü",
+        "tags": [
+            "besin",
+            "kasap"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0025",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EV",
+        "answerLength": 2,
+        "category": "Konut",
+        "clue": "Yaşanılan bina, konut",
+        "tags": [
+            "bina",
+            "yuva"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0026",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EY",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Seslenme sözü",
+        "tags": [
+            "ses",
+            "hitap"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0027",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FA",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Bir nota",
+        "tags": [
+            "ses",
+            "nota"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0028",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HA",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Şaşkınlık veya uyarı ünlemi",
+        "tags": [
+            "ses",
+            "dil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0029",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HE",
+        "answerLength": 2,
+        "category": "Halk",
+        "clue": "Evet anlamında halk ağzı",
+        "tags": [
+            "onay",
+            "halk"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0030",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "HU",
+        "answerLength": 2,
+        "category": "Tasavvuf",
+        "clue": "Derviş selamı; Allah",
+        "tags": [
+            "din",
+            "selam"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0031",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İÇ",
+        "answerLength": 2,
+        "category": "Konum",
+        "clue": "Dış karşıtı, dahil",
+        "tags": [
+            "yer",
+            "yön"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0032",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İL",
+        "answerLength": 2,
+        "category": "Coğrafya",
+        "clue": "Şehir, vilayet",
+        "tags": [
+            "yer",
+            "yönetim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0033",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İM",
+        "answerLength": 2,
+        "category": "İşaret",
+        "clue": "İşaret, alamet",
+        "tags": [
+            "sembol",
+            "iz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0034",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İN",
+        "answerLength": 2,
+        "category": "Coğrafya",
+        "clue": "Mağara; inmek emri",
+        "tags": [
+            "yer",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0035",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İP",
+        "answerLength": 2,
+        "category": "Eşya",
+        "clue": "Bağlamaya yarayan lif",
+        "tags": [
+            "kenevir",
+            "bağ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0036",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İS",
+        "answerLength": 2,
+        "category": "Madde",
+        "clue": "Duman karası",
+        "tags": [
+            "kir",
+            "duman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0037",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İŞ",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Çalışma, meslek; oluş",
+        "tags": [
+            "meslek",
+            "emek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0038",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İT",
+        "answerLength": 2,
+        "category": "Hayvan",
+        "clue": "Köpek (kaba); itmek emri",
+        "tags": [
+            "hayvan",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0039",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "İZ",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "Belirti, nişan",
+        "tags": [
+            "kanıt",
+            "yol"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0040",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "Kİ",
+        "answerLength": 2,
+        "category": "Bağlaç",
+        "clue": "İlgi zamiri veya bağlaç",
+        "tags": [
+            "dil",
+            "gramer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0041",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "LA",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Bir nota",
+        "tags": [
+            "ses",
+            "nota"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0042",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "LE",
+        "answerLength": 2,
+        "category": "Halk",
+        "clue": "Seslenme sözü",
+        "tags": [
+            "ses",
+            "hitap"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0043",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "MA",
+        "answerLength": 2,
+        "category": "Kimya",
+        "clue": "Su (Arapça kökenli)",
+        "tags": [
+            "su",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0044",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ME",
+        "answerLength": 2,
+        "category": "Halk",
+        "clue": "Koyun sesi",
+        "tags": [
+            "ses",
+            "hayvan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0045",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "Mİ",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Bir nota; soru eki",
+        "tags": [
+            "nota",
+            "soru"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0046",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "NE",
+        "answerLength": 2,
+        "category": "Soru",
+        "clue": "Hangi şey?",
+        "tags": [
+            "soru",
+            "zamir"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0047",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OD",
+        "answerLength": 2,
+        "category": "Eski Dil",
+        "clue": "Ateş",
+        "tags": [
+            "ateş",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0048",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OF",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Bezginlik ünlemi",
+        "tags": [
+            "bıkkınlık",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0049",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OH",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Rahatlama ünlemi",
+        "tags": [
+            "rahat",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0050",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OK",
+        "answerLength": 2,
+        "category": "Silah",
+        "clue": "Yay ile atılan çubuk",
+        "tags": [
+            "savaş",
+            "spor"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0051",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OL",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Olmak emri",
+        "tags": [
+            "emir",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0052",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ON",
+        "answerLength": 2,
+        "category": "Sayı",
+        "clue": "Dokuzdan sonraki sayı",
+        "tags": [
+            "rakam",
+            "sayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0053",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OT",
+        "answerLength": 2,
+        "category": "Bitki",
+        "clue": "Küçük bitki",
+        "tags": [
+            "doğa",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0054",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "OY",
+        "answerLength": 2,
+        "category": "Seçim",
+        "clue": "Seçim tercihi; ünlem",
+        "tags": [
+            "seçim",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0055",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖÇ",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "İntikam",
+        "tags": [
+            "hırs",
+            "duygu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0056",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖL",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Ölmek emri",
+        "tags": [
+            "emir",
+            "son"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0057",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖN",
+        "answerLength": 2,
+        "category": "Yön",
+        "clue": "Arka karşıtı",
+        "tags": [
+            "taraf",
+            "yüz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0058",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖR",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Örmek emri",
+        "tags": [
+            "emir",
+            "yap"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0059",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖS",
+        "answerLength": 2,
+        "category": "Zaman",
+        "clue": "Öğleden sonra (kısaltma)",
+        "tags": [
+            "kısaltma",
+            "vakit"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0060",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÖZ",
+        "answerLength": 2,
+        "category": "Felsefe",
+        "clue": "Cevher, esas",
+        "tags": [
+            "iç",
+            "ruh"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0061",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "PE",
+        "answerLength": 2,
+        "category": "Dil",
+        "clue": "Farsça B harfi; Peh ünlemi",
+        "tags": [
+            "harf",
+            "ünlem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0062",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "RE",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Bir nota",
+        "tags": [
+            "ses",
+            "nota"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0063",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "SU",
+        "answerLength": 2,
+        "category": "İçecek",
+        "clue": "Yaşam kaynağı sıvı; asker",
+        "tags": [
+            "hayat",
+            "asker"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0064",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ŞU",
+        "answerLength": 2,
+        "category": "Zamir",
+        "clue": "İşaret zamiri",
+        "tags": [
+            "işaret",
+            "o"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0065",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TA",
+        "answerLength": 2,
+        "category": "Bağlaç",
+        "clue": "Uzaklık veya abartma edatı",
+        "tags": [
+            "dil",
+            "uzak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0066",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TE",
+        "answerLength": 2,
+        "category": "Harf",
+        "clue": "Arap alfabesi harfi",
+        "tags": [
+            "eski",
+            "harf"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0067",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "Tİ",
+        "answerLength": 2,
+        "category": "Askeri",
+        "clue": "İşaret borusu sesi",
+        "tags": [
+            "ses",
+            "asker"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0068",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "TU",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Yuhalama sesi",
+        "tags": [
+            "ses",
+            "tepki"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0069",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UÇ",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "Kenar, son nokta",
+        "tags": [
+            "son",
+            "kenar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0070",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UD",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Telli çalgı",
+        "tags": [
+            "saz",
+            "müzik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0071",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UF",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Bezginlik veya acı ünlemi",
+        "tags": [
+            "ses",
+            "acı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0072",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UL",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "İşaret, nişan (Eski)",
+        "tags": [
+            "eski",
+            "iz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0073",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UN",
+        "answerLength": 2,
+        "category": "Yiyecek",
+        "clue": "Öğütülmüş tahıl tozu",
+        "tags": [
+            "gıda",
+            "hamur"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0074",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UR",
+        "answerLength": 2,
+        "category": "Sağlık",
+        "clue": "Tümör",
+        "tags": [
+            "hastalık",
+            "kitle"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0075",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "US",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "Akıl, zihin",
+        "tags": [
+            "akıl",
+            "zekâ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0076",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "UT",
+        "answerLength": 2,
+        "category": "Müzik",
+        "clue": "Ud (Eski yazılış)",
+        "tags": [
+            "müzik",
+            "saz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0077",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÜN",
+        "answerLength": 2,
+        "category": "Kavram",
+        "clue": "Şöhret, san",
+        "tags": [
+            "tanınma",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0078",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÜS",
+        "answerLength": 2,
+        "category": "Askeri",
+        "clue": "Askeri harekat merkezi",
+        "tags": [
+            "merkez",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0079",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÜT",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Ütmek (oyunda kazanmak)",
+        "tags": [
+            "oyun",
+            "yengi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0080",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "VE",
+        "answerLength": 2,
+        "category": "Bağlaç",
+        "clue": "Bağlama sözü",
+        "tags": [
+            "dil",
+            "bağ"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0081",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YA",
+        "answerLength": 2,
+        "category": "Bağlaç",
+        "clue": "Veya, dahi; ünlem",
+        "tags": [
+            "dil",
+            "ek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0082",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YE",
+        "answerLength": 2,
+        "category": "Eylem",
+        "clue": "Yemek emri",
+        "tags": [
+            "emir",
+            "yemek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0083",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "YO",
+        "answerLength": 2,
+        "category": "Ünlem",
+        "clue": "Yok, hayır (kısa)",
+        "tags": [
+            "hayır",
+            "red"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0084",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ZE",
+        "answerLength": 2,
+        "category": "Harf",
+        "clue": "Eski harf",
+        "tags": [
+            "eski",
+            "harf"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0085",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ABA",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "Kaba kumaştan giysi",
+        "tags": [
+            "giyim",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0086",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ABE",
+        "answerLength": 3,
+        "category": "Halk",
+        "clue": "Seslenme sözü (Rumeli)",
+        "tags": [
+            "ses",
+            "yöre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0087",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ABİ",
+        "answerLength": 3,
+        "category": "Aile",
+        "clue": "Ağabey (kısa)",
+        "tags": [
+            "aile",
+            "hitap"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0088",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ACI",
+        "answerLength": 3,
+        "category": "Duyu",
+        "clue": "Tatlı karşıtı tat; keder",
+        "tags": [
+            "tat",
+            "duygu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0089",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AÇI",
+        "answerLength": 3,
+        "category": "Matematik",
+        "clue": "İki doğru arasındaki açıklık",
+        "tags": [
+            "geometri",
+            "yön"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0090",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ADA",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Dört tarafı suyla çevrili kara",
+        "tags": [
+            "yer",
+            "deniz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0091",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ADİ",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Bayağı, değersiz",
+        "tags": [
+            "kalite",
+            "kötü"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0092",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AĞA",
+        "answerLength": 3,
+        "category": "Unvan",
+        "clue": "Köy sahibi, zengin",
+        "tags": [
+            "unvan",
+            "yerel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0093",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AĞI",
+        "answerLength": 3,
+        "category": "Zehir",
+        "clue": "Zehir",
+        "tags": [
+            "madde",
+            "tehlike"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0094",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AHU",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Ceylan; güzel kadın",
+        "tags": [
+            "hayvan",
+            "güzel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0095",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AİT",
+        "answerLength": 3,
+        "category": "İlişki",
+        "clue": "İlgili, mensup",
+        "tags": [
+            "bağ",
+            "durum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0096",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AKA",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Büyük, ulu (Eski)",
+        "tags": [
+            "büyük",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0097",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AKI",
+        "answerLength": 3,
+        "category": "Ekonomi",
+        "clue": "Akış, cereyan; gelir",
+        "tags": [
+            "akış",
+            "varlık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0098",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AKS",
+        "answerLength": 3,
+        "category": "Fizik",
+        "clue": "Yansıma, yankı; dingil",
+        "tags": [
+            "ses",
+            "parça"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0099",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ALİ",
+        "answerLength": 3,
+        "category": "İsim",
+        "clue": "Yüce; erkek ismi",
+        "tags": [
+            "yüce",
+            "ad"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0100",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ALO",
+        "answerLength": 3,
+        "category": "İletişim",
+        "clue": "Telefonda seslenme",
+        "tags": [
+            "ses",
+            "telefon"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0101",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ALP",
+        "answerLength": 3,
+        "category": "Unvan",
+        "clue": "Yiğit, kahraman",
+        "tags": [
+            "savaşçı",
+            "isim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0102",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ALT",
+        "answerLength": 3,
+        "category": "Yön",
+        "clue": "Üst karşıtı, aşağı",
+        "tags": [
+            "yön",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0103",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AMA",
+        "answerLength": 3,
+        "category": "Bağlaç",
+        "clue": "Fakat, lakin",
+        "tags": [
+            "dil",
+            "zıt"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0104",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ANA",
+        "answerLength": 3,
+        "category": "Aile",
+        "clue": "Anne; temel, esas",
+        "tags": [
+            "aile",
+            "baş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0105",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ANI",
+        "answerLength": 3,
+        "category": "Hafıza",
+        "clue": "Hatıra",
+        "tags": [
+            "geçmiş",
+            "zihin"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0106",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ARŞ",
+        "answerLength": 3,
+        "category": "Din",
+        "clue": "Gökyüzünün en yüksek katı",
+        "tags": [
+            "gök",
+            "inanç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0107",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ARZ",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Yeryüzü; sunma",
+        "tags": [
+            "yer",
+            "sunum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0108",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ASİ",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Başkaldıran",
+        "tags": [
+            "isyancı",
+            "kişilik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0109",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ASK",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Asma işi; asker",
+        "tags": [
+            "eylem",
+            "asker"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0110",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AST",
+        "answerLength": 3,
+        "category": "Rütbe",
+        "clue": "Alt rütbe; üst karşıtı",
+        "tags": [
+            "makam",
+            "yön"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0111",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AŞI",
+        "answerLength": 3,
+        "category": "Sağlık",
+        "clue": "Hastalık önleyici sıvı",
+        "tags": [
+            "tıp",
+            "koruma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0112",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ATA",
+        "answerLength": 3,
+        "category": "Aile",
+        "clue": "Baba; geçmiş büyükler",
+        "tags": [
+            "aile",
+            "geçmiş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0113",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ATE",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "Gelecek (Eski)",
+        "tags": [
+            "zaman",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0114",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ATİ",
+        "answerLength": 3,
+        "category": "Zaman",
+        "clue": "Gelecek zaman",
+        "tags": [
+            "zaman",
+            "istikbal"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0115",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AUT",
+        "answerLength": 3,
+        "category": "Spor",
+        "clue": "Dış (Futbol)",
+        "tags": [
+            "futbol",
+            "kural"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0116",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "AZA",
+        "answerLength": 3,
+        "category": "Toplum",
+        "clue": "Üye",
+        "tags": [
+            "üye",
+            "kurul"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0117",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAĞ",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "Üzüm kütüğü; düğüm",
+        "tags": [
+            "meyve",
+            "düğüm"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0118",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAŞ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Kafa; başlangıç",
+        "tags": [
+            "organ",
+            "lider"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0119",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAT",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Batmak emri",
+        "tags": [
+            "emir",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0120",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAY",
+        "answerLength": 3,
+        "category": "Hitap",
+        "clue": "Erkekler için hitap; zengin",
+        "tags": [
+            "erkek",
+            "unvan"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0121",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BAZ",
+        "answerLength": 3,
+        "category": "Kimya",
+        "clue": "Asit karşıtı madde; temel",
+        "tags": [
+            "kimya",
+            "temel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0122",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEK",
+        "answerLength": 3,
+        "category": "Spor",
+        "clue": "Savunma oyuncusu",
+        "tags": [
+            "futbol",
+            "savunma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0123",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEJ",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Açık kahverengi",
+        "tags": [
+            "renk",
+            "ton"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0124",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEŞ",
+        "answerLength": 3,
+        "category": "Sayı",
+        "clue": "Dörtten sonraki sayı",
+        "tags": [
+            "rakam",
+            "sayı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0125",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BEY",
+        "answerLength": 3,
+        "category": "Unvan",
+        "clue": "Saygı bildiren hitap",
+        "tags": [
+            "saygı",
+            "erkek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0126",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BİN",
+        "answerLength": 3,
+        "category": "Sayı",
+        "clue": "1000 sayısı; binmek emri",
+        "tags": [
+            "sayı",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0127",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BİR",
+        "answerLength": 3,
+        "category": "Sayı",
+        "clue": "İlk sayı; tek",
+        "tags": [
+            "sayı",
+            "tek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0128",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BİT",
+        "answerLength": 3,
+        "category": "Hayvan",
+        "clue": "Parazit böcek; bitmek emri",
+        "tags": [
+            "böcek",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0129",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BİZ",
+        "answerLength": 3,
+        "category": "Dilbilgisi",
+        "clue": "Birinci çoğul şahıs; deri delme aracı",
+        "tags": [
+            "zamir",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0130",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOL",
+        "answerLength": 3,
+        "category": "Miktar",
+        "clue": "Geniş, çok",
+        "tags": [
+            "miktar",
+            "geniş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0131",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOR",
+        "answerLength": 3,
+        "category": "Kimya",
+        "clue": "Bir element; işlenmemiş tarla",
+        "tags": [
+            "maden",
+            "toprak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0132",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOŞ",
+        "answerLength": 3,
+        "category": "Durum",
+        "clue": "Dolu olmayan",
+        "tags": [
+            "durum",
+            "yer"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0133",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOT",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "Kısa çizme; küçük tekne",
+        "tags": [
+            "ayakkabı",
+            "araç"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0134",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOY",
+        "answerLength": 3,
+        "category": "Ölçü",
+        "clue": "Uzunluk; kabile",
+        "tags": [
+            "ölçü",
+            "toplum"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0135",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BOZ",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Kül rengi; bozulmamış toprak",
+        "tags": [
+            "renk",
+            "toprak"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0136",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BUL",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Bulmak emri",
+        "tags": [
+            "emir",
+            "ara"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0137",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BUN",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Sıkıntı (Eski)",
+        "tags": [
+            "eski",
+            "dert"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0138",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BUT",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Bacak kısmı",
+        "tags": [
+            "et",
+            "vücut"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0139",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BUZ",
+        "answerLength": 3,
+        "category": "Madde",
+        "clue": "Donmuş su",
+        "tags": [
+            "su",
+            "soğuk"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0140",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "BÜK",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Çalı topluluğu; bükmek emri",
+        "tags": [
+            "doğa",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0141",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CAM",
+        "answerLength": 3,
+        "category": "Madde",
+        "clue": "Saydam kırılgan madde",
+        "tags": [
+            "yapı",
+            "pencere"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0142",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CAN",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Ruh, hayat; gönül",
+        "tags": [
+            "ruh",
+            "sevgi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0143",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CAR",
+        "answerLength": 3,
+        "category": "Ses",
+        "clue": "Yüksek ses; çarşaf",
+        "tags": [
+            "ses",
+            "giyim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0144",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CEM",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Toplama, bir araya getirme; ayin",
+        "tags": [
+            "toplama",
+            "din"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0145",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CEP",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "Giysideki küçük torba",
+        "tags": [
+            "giyim",
+            "kumaş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0146",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "CİZ",
+        "answerLength": 3,
+        "category": "Ses",
+        "clue": "Cızırtı sesi",
+        "tags": [
+            "ses",
+            "yansıma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0147",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAY",
+        "answerLength": 3,
+        "category": "İçecek",
+        "clue": "Sıcak içilen bitki suyu; dere",
+        "tags": [
+            "içecek",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0148",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAN",
+        "answerLength": 3,
+        "category": "Ses",
+        "clue": "Ses çıkaran metal araç",
+        "tags": [
+            "ses",
+            "kilise"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0149",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAM",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "İğne yapraklı ağaç",
+        "tags": [
+            "ağaç",
+            "orman"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0150",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAP",
+        "answerLength": 3,
+        "category": "Matematik",
+        "clue": "Dairenin genişliği; boyut",
+        "tags": [
+            "ölçü",
+            "kalite"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0151",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇAR",
+        "answerLength": 3,
+        "category": "Unvan",
+        "clue": "Rus hükümdarı",
+        "tags": [
+            "kral",
+            "rus"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0152",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇEK",
+        "answerLength": 3,
+        "category": "Ekonomi",
+        "clue": "Banka ödeme emri; çekmek emri",
+        "tags": [
+            "para",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0153",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇİL",
+        "answerLength": 3,
+        "category": "Doğa",
+        "clue": "Yüzdeki leke; keklik sesi",
+        "tags": [
+            "leke",
+            "ses"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0154",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇİM",
+        "answerLength": 3,
+        "category": "Bitki",
+        "clue": "Yeşil yer örtüsü",
+        "tags": [
+            "bahçe",
+            "yeşil"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0155",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇİT",
+        "answerLength": 3,
+        "category": "Yapı",
+        "clue": "Bahçe engeli",
+        "tags": [
+            "bahçe",
+            "engel"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0156",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ÇÖP",
+        "answerLength": 3,
+        "category": "Atık",
+        "clue": "Atılan değersiz şey",
+        "tags": [
+            "kir",
+            "atık"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0157",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DAM",
+        "answerLength": 3,
+        "category": "Yapı",
+        "clue": "Çatı; hapishane (argo)",
+        "tags": [
+            "bina",
+            "üst"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0158",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DAR",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Geniş karşıtı",
+        "tags": [
+            "boyut",
+            "sıkı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0159",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DAZ",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Kel, tüysüz",
+        "tags": [
+            "saç",
+            "yok"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0160",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DEK",
+        "answerLength": 3,
+        "category": "Edat",
+        "clue": "Kadar, değin",
+        "tags": [
+            "dil",
+            "süre"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0161",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DEM",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "An, zaman; çayın kıvamı; kan",
+        "tags": [
+            "zaman",
+            "çay"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0162",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DEV",
+        "answerLength": 3,
+        "category": "Mitoloji",
+        "clue": "Çok büyük masal yaratığı",
+        "tags": [
+            "masal",
+            "büyük"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0163",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DIŞ",
+        "answerLength": 3,
+        "category": "Yön",
+        "clue": "İç karşıtı",
+        "tags": [
+            "yer",
+            "yüz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0164",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİK",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Eğik olmayan; dikey",
+        "tags": [
+            "yön",
+            "duruş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0165",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİL",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Tat alma organı; lisan",
+        "tags": [
+            "organ",
+            "konuşma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0166",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİN",
+        "answerLength": 3,
+        "category": "İnanç",
+        "clue": "İnanç sistemi",
+        "tags": [
+            "inanç",
+            "tanrı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0167",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DİP",
+        "answerLength": 3,
+        "category": "Yön",
+        "clue": "En alt, derinlik",
+        "tags": [
+            "yer",
+            "alt"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0168",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DON",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "İç giysi; buzlanma; at rengi",
+        "tags": [
+            "giyim",
+            "soğuk"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0169",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DOZ",
+        "answerLength": 3,
+        "category": "Ölçü",
+        "clue": "Miktar, ölçü (İlaç)",
+        "tags": [
+            "tıp",
+            "miktar"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0170",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DUL",
+        "answerLength": 3,
+        "category": "Durum",
+        "clue": "Eşi ölmüş kimse",
+        "tags": [
+            "medeni",
+            "hal"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0171",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DUŞ",
+        "answerLength": 3,
+        "category": "Temizlik",
+        "clue": "Ayakta yıkanma",
+        "tags": [
+            "banyo",
+            "su"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0172",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "DÜŞ",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Rüya; düşmek emri",
+        "tags": [
+            "uyku",
+            "hayal"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0173",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EDA",
+        "answerLength": 3,
+        "category": "Davranış",
+        "clue": "Naz, tavır; ödeme",
+        "tags": [
+            "davranış",
+            "ekonomi"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0174",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EFE",
+        "answerLength": 3,
+        "category": "Unvan",
+        "clue": "Zeybek, yiğit; ağabey",
+        "tags": [
+            "yiğit",
+            "ege"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0175",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EGE",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Bir deniz ve bölgemiz; veli",
+        "tags": [
+            "deniz",
+            "bölge"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0176",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EĞE",
+        "answerLength": 3,
+        "category": "Alet",
+        "clue": "Törpüleme aracı; kaburga",
+        "tags": [
+            "araç",
+            "kemik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0177",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EKO",
+        "answerLength": 3,
+        "category": "Ses",
+        "clue": "Yankı",
+        "tags": [
+            "ses",
+            "yansıma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0178",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ELA",
+        "answerLength": 3,
+        "category": "Renk",
+        "clue": "Sarıya çalan kestane rengi",
+        "tags": [
+            "renk",
+            "göz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0179",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "EME",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Hala (Eski)",
+        "tags": [
+            "aile",
+            "eski"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0180",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "ETİ",
+        "answerLength": 3,
+        "category": "Tarih",
+        "clue": "Hitit",
+        "tags": [
+            "eski",
+            "anadolu"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0181",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FAL",
+        "answerLength": 3,
+        "category": "Gelenek",
+        "clue": "Geleceği görme işi",
+        "tags": [
+            "şans",
+            "gelecek"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0182",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FAZ",
+        "answerLength": 3,
+        "category": "Bilim",
+        "clue": "Evre, aşama; elektrik terimi",
+        "tags": [
+            "evre",
+            "elektrik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0183",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FEN",
+        "answerLength": 3,
+        "category": "Bilim",
+        "clue": "Pozitif bilim; teknik",
+        "tags": [
+            "bilim",
+            "okul"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0184",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FES",
+        "answerLength": 3,
+        "category": "Giyim",
+        "clue": "Eski bir başlık",
+        "tags": [
+            "başlık",
+            "tarih"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0185",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FİŞ",
+        "answerLength": 3,
+        "category": "Belge",
+        "clue": "Alışveriş belgesi; elektrik ucu",
+        "tags": [
+            "kağıt",
+            "alet"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0186",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FİT",
+        "answerLength": 3,
+        "category": "Sıfat",
+        "clue": "Formda; teşvik",
+        "tags": [
+            "spor",
+            "kışkırtma"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0187",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FON",
+        "answerLength": 3,
+        "category": "Ekonomi",
+        "clue": "Kaynak, sermaye; arka plan",
+        "tags": [
+            "para",
+            "resim"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0188",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "FÖY",
+        "answerLength": 3,
+        "category": "Belge",
+        "clue": "Büyük kağıt yaprağı; liste",
+        "tags": [
+            "kağıt",
+            "liste"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0189",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GAF",
+        "answerLength": 3,
+        "category": "Davranış",
+        "clue": "Pot kırma, yersiz söz",
+        "tags": [
+            "hata",
+            "söz"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0190",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GAM",
+        "answerLength": 3,
+        "category": "Duygu",
+        "clue": "Keder, tasa; müzik dizisi",
+        "tags": [
+            "üzüntü",
+            "müzik"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0191",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GAR",
+        "answerLength": 3,
+        "category": "Ulaşım",
+        "clue": "Tren istasyonu",
+        "tags": [
+            "tren",
+            "bina"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0192",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GAZ",
+        "answerLength": 3,
+        "category": "Madde",
+        "clue": "Uçucu madde",
+        "tags": [
+            "hava",
+            "yakıt"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0193",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GEM",
+        "answerLength": 3,
+        "category": "Alet",
+        "clue": "Atın ağzına takılan demir",
+        "tags": [
+            "at",
+            "kontrol"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0194",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GEN",
+        "answerLength": 3,
+        "category": "Biyoloji",
+        "clue": "Kalıtım birimi; geniş (Eski)",
+        "tags": [
+            "dna",
+            "geniş"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0195",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GEZ",
+        "answerLength": 3,
+        "category": "Alet",
+        "clue": "Nişan deliği; gezmek emri",
+        "tags": [
+            "silah",
+            "eylem"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0196",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GİL",
+        "answerLength": 3,
+        "category": "Kimya",
+        "clue": "Kil (Eski); aile eki",
+        "tags": [
+            "toprak",
+            "aile"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0197",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GİZ",
+        "answerLength": 3,
+        "category": "Kavram",
+        "clue": "Sır",
+        "tags": [
+            "gizli",
+            "saklı"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0198",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÖÇ",
+        "answerLength": 3,
+        "category": "Eylem",
+        "clue": "Taşınma, yer değiştirme",
+        "tags": [
+            "taşınma",
+            "yol"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0199",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÖL",
+        "answerLength": 3,
+        "category": "Coğrafya",
+        "clue": "Durgun su birikintisi",
+        "tags": [
+            "su",
+            "doğa"
+        ],
+        "createdAt": "2026-02-14"
+    },
+    {
+        "id": "tr_dns_0200",
+        "type": "crossword_clue",
+        "difficulty": "easy",
+        "level": 1,
+        "answer": "GÖZ",
+        "answerLength": 3,
+        "category": "Vücut",
+        "clue": "Görme organı; çekmece",
+        "tags": [
+            "organ",
+            "bölüm"
+        ],
+        "createdAt": "2026-02-14"
     }
 ]

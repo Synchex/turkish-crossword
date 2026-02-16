@@ -8,7 +8,7 @@ import {
     Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../theme/ThemeContext';
 import { radius } from '../../theme/radius';
 import { typography } from '../../theme/typography';
 import { shadows } from '../../theme/shadows';
@@ -34,6 +34,7 @@ export default function PrimaryButton({
     style,
     textStyle,
 }: PrimaryButtonProps) {
+    const t = useTheme();
     const scale = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = useCallback(() => {
@@ -56,19 +57,19 @@ export default function PrimaryButton({
     }, [onPress]);
 
     const bgColor = disabled
-        ? colors.textMuted
+        ? t.textMuted
         : variant === 'primary'
-            ? colors.primary
+            ? t.primary
             : variant === 'secondary'
-                ? colors.secondary
+                ? t.secondary
                 : variant === 'success'
-                    ? colors.success
+                    ? t.success
                     : 'transparent';
 
     const txtColor =
         variant === 'outline' || variant === 'ghost'
-            ? colors.primary
-            : colors.textInverse;
+            ? t.primary
+            : t.textInverse;
 
     const height = size === 'sm' ? 40 : size === 'md' ? 48 : 56;
 
@@ -87,7 +88,7 @@ export default function PrimaryButton({
                         height,
                         transform: [{ scale }],
                         ...(variant === 'outline'
-                            ? { borderWidth: 2, borderColor: colors.primary }
+                            ? { borderWidth: 2, borderColor: t.primary }
                             : {}),
                     },
                     variant !== 'outline' && variant !== 'ghost' && shadows.md,

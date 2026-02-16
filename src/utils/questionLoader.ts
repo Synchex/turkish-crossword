@@ -1,4 +1,4 @@
-import questionsData from '../data/questions_tr.json';
+import questionsData from '../data/questions_db.json';
 import { questions as oldQuestions } from '../data/questions';
 
 export interface Question {
@@ -15,6 +15,7 @@ export interface Question {
 }
 
 const questions = questionsData as Question[];
+console.log('Loaded questions from JSON:', questions.length);
 
 /**
  * Get random questions for a specific difficulty.

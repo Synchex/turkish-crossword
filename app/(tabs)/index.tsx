@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useProgressStore } from '../../src/store/gameStore';
 import { useEconomyStore, STREAK_FREEZE_COST } from '../../src/store/useEconomyStore';
@@ -19,42 +20,65 @@ import { useGamificationStore, getXPForNextLevel } from '../../src/store/useGami
 import { useDailyPuzzleStore } from '../../src/store/useDailyPuzzleStore';
 import { DAILY_COIN_REWARD, DAILY_XP_REWARD } from '../../src/data/dailyPuzzles';
 import { levels } from '../../src/levels/levels';
-import LevelPath from '../../src/components/LevelPath';
+
 import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/theme/ThemeContext';
 import { spacing } from '../../src/theme/spacing';
-import { radius } from '../../src/theme/radius';
 import { typography } from '../../src/theme/typography';
+import { shadows } from '../../src/theme/shadows';
 import Card from '../../src/components/ui/Card';
+import IconBadge from '../../src/components/ui/IconBadge';
+import PremiumButton from '../../src/components/ui/PremiumButton';
 import DailyMissionsButtonCard from '../../src/components/DailyMissionsButtonCard';
 import MissionsModalSheet from '../../src/components/MissionsModalSheet';
+import PlayChooserPanel from '../../src/components/PlayChooserPanel';
 import DeveloperPanel from '../../src/components/DeveloperPanel';
 import { IS_DEV } from '../../src/config/devConfig';
 
-// ── Daily Puzzle Card Component ──
+// ── Daily Puzzle Card ──
 function DailyPuzzleCard({ router }: { router: ReturnType<typeof useRouter> }) {
+  const t = useTheme();
   const completedToday = useDailyPuzzleStore((s) => s.completedToday);
   const todayPuzzle = useDailyPuzzleStore((s) => s.getTodayPuzzle)();
 
   return (
     <TouchableOpacity
-      style={dpStyles.card}
+      style={[dpStyles.card, { backgroundColor: t.card, borderColor: t.border }]}
       activeOpacity={0.85}
       onPress={() => {
         if (!completedToday) router.push('/daily');
       }}
     >
       <View style={dpStyles.left}>
-        <Text style={dpStyles.emoji}>🌟</Text>
+        <IconBadge
+          name="today-outline"
+          size={22}
+          color={colors.accent}
+          backgroundColor={colors.accent + '14'}
+          badgeSize={44}
+        />
         <View style={{ flex: 1 }}>
           <Text style={dpStyles.title}>Bugünün Bulmacası</Text>
           <Text style={dpStyles.sub}>{todayPuzzle.title}</Text>
-          <Text style={dpStyles.rewards}>🪙 {DAILY_COIN_REWARD}  ·  ✨ {DAILY_XP_REWARD} XP</Text>
+          <View style={dpStyles.rewardsRow}>
+            <Ionicons name="wallet-outline" size={12} color={colors.textSecondary} />
+            <Text style={dpStyles.rewards}> {DAILY_COIN_REWARD}</Text>
+            <Text style={dpStyles.rewardsDot}>  ·  </Text>
+            <Ionicons name="sparkles" size={12} color={colors.textSecondary} />
+            <Text style={dpStyles.rewards}> {DAILY_XP_REWARD} XP</Text>
+          </View>
         </View>
       </View>
-      <View style={[dpStyles.ctaBadge, completedToday && dpStyles.ctaDone]}>
+      <View style={[dpStyles.ctaBadge, completedToday && dpStyles.ctaDone, !completedToday && { backgroundColor: t.primary }]}>
         <Text style={[dpStyles.ctaText, completedToday && dpStyles.ctaDoneText]}>
-          {completedToday ? 'Tamamlandı ✅' : 'Başla ▶'}
+          {completedToday ? 'Tamamlandı' : 'Başla'}
         </Text>
+        {!completedToday && (
+          <Ionicons name="play" size={14} color={colors.textInverse} style={{ marginLeft: 4 }} />
+        )}
+        {completedToday && (
+          <Ionicons name="checkmark-circle" size={14} color={colors.success} style={{ marginLeft: 4 }} />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -65,23 +89,21 @@ const dpStyles = StyleSheet.create({
     marginHorizontal: spacing.md,
     marginTop: spacing.md,
     backgroundColor: colors.surface,
-    borderRadius: radius.xl,
+    borderRadius: 16,
     padding: spacing.lg,
-    borderWidth: 2,
-    borderColor: colors.accent,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
     flexDirection: 'column',
     gap: spacing.sm,
+    ...shadows.md,
   },
   left: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
   },
-  emoji: {
-    fontSize: 36,
-  },
   title: {
-    ...typography.h3,
+    ...typography.headline,
     color: colors.text,
   },
   sub: {
@@ -89,33 +111,42 @@ const dpStyles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: 2,
   },
+  rewardsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
   rewards: {
     ...typography.caption,
-    color: colors.accent,
-    fontWeight: '600',
-    marginTop: 4,
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  rewardsDot: {
+    ...typography.caption,
+    color: colors.textMuted,
   },
   ctaBadge: {
     backgroundColor: colors.primary,
     paddingVertical: 10,
-    borderRadius: radius.full,
+    borderRadius: 12,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   ctaDone: {
-    backgroundColor: colors.cardAlt,
+    backgroundColor: colors.fill,
   },
   ctaText: {
-    ...typography.label,
+    ...typography.subheadline,
+    fontWeight: '600',
     color: colors.textInverse,
-    fontWeight: '700',
-    fontSize: 14,
   },
   ctaDoneText: {
     color: colors.success,
   },
 });
 
-// ── Mission Card Component ──
+// ── Mission Card (inline) ──
 function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: string) => void }) {
   const progressPercent = Math.min(1, mission.progress / mission.target);
   const diffColors: Record<string, string> = {
@@ -133,7 +164,12 @@ function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: str
             {mission.difficulty === 'easy' ? 'Kolay' : mission.difficulty === 'medium' ? 'Orta' : 'Zor'}
           </Text>
         </View>
-        <Text style={mStyles.reward}>🪙 {mission.rewardCoins} · ✨ {mission.rewardXP} XP</Text>
+        <View style={mStyles.rewardsRow}>
+          <Ionicons name="wallet-outline" size={11} color={colors.textSecondary} />
+          <Text style={mStyles.reward}> {mission.rewardCoins}  ·  </Text>
+          <Ionicons name="sparkles" size={11} color={colors.textSecondary} />
+          <Text style={mStyles.reward}> {mission.rewardXP} XP</Text>
+        </View>
       </View>
 
       <Text style={mStyles.title}>{mission.title}</Text>
@@ -149,12 +185,13 @@ function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: str
           style={[mStyles.claimBtn, { backgroundColor: barColor }]}
           onPress={() => onClaim(mission.id)}
         >
-          <Text style={mStyles.claimText}>Ödülü Al! 🎉</Text>
+          <Text style={mStyles.claimText}>Ödülü Al</Text>
         </TouchableOpacity>
       )}
       {mission.claimed && (
         <View style={mStyles.claimedBadge}>
-          <Text style={mStyles.claimedText}>✅ Alındı</Text>
+          <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+          <Text style={mStyles.claimedText}> Alındı</Text>
         </View>
       )}
     </View>
@@ -164,11 +201,12 @@ function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: str
 const mStyles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: radius.lg,
+    borderRadius: 14,
     padding: spacing.md,
     marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -179,13 +217,16 @@ const mStyles = StyleSheet.create({
   diffBadge: {
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: radius.full,
+    borderRadius: 6,
   },
   diffText: {
-    fontSize: 10,
-    fontWeight: '700',
+    fontSize: 11,
+    fontWeight: '600',
     color: colors.textInverse,
-    textTransform: 'uppercase',
+  },
+  rewardsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   reward: {
     ...typography.caption,
@@ -193,7 +234,7 @@ const mStyles = StyleSheet.create({
     fontSize: 11,
   },
   title: {
-    ...typography.h3,
+    ...typography.headline,
     color: colors.text,
     fontSize: 15,
   },
@@ -203,38 +244,38 @@ const mStyles = StyleSheet.create({
     marginTop: 2,
   },
   progressTrack: {
-    height: 6,
-    backgroundColor: colors.borderLight,
-    borderRadius: 3,
+    height: 4,
+    backgroundColor: colors.fill,
+    borderRadius: 2,
     marginTop: spacing.sm,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 2,
   },
   progressText: {
-    ...typography.caption,
+    ...typography.label,
     color: colors.textMuted,
     marginTop: 4,
     textAlign: 'right',
-    fontSize: 11,
   },
   claimBtn: {
     marginTop: spacing.sm,
     paddingVertical: 8,
-    borderRadius: radius.md,
+    borderRadius: 10,
     alignItems: 'center',
   },
   claimText: {
-    ...typography.label,
-    color: colors.textInverse,
-    fontWeight: '700',
     fontSize: 14,
+    fontWeight: '600',
+    color: colors.textInverse,
   },
   claimedBadge: {
     marginTop: spacing.sm,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   claimedText: {
     ...typography.caption,
@@ -246,6 +287,7 @@ const mStyles = StyleSheet.create({
 // ── Main Home Screen ──
 export default function HomeScreen() {
   const router = useRouter();
+  const t = useTheme();
   const progress = useProgressStore((s) => s.progress);
   const loaded = useProgressStore((s) => s.loaded);
 
@@ -261,13 +303,12 @@ export default function HomeScreen() {
   const [shopVisible, setShopVisible] = useState(false);
   const [missionsModalVisible, setMissionsModalVisible] = useState(false);
   const [devPanelVisible, setDevPanelVisible] = useState(false);
+  const [playModeVisible, setPlayModeVisible] = useState(false);
 
-  // Ensure missions on focus
   useEffect(() => {
     ensureDailyMissions();
   }, []);
 
-  // Level Progress
   const nextLevelXP = getXPForNextLevel(playerLevel);
   const prevLevelXP = playerLevel === 1 ? 0 : getXPForNextLevel(playerLevel - 1);
   const levelProgress = Math.min(1, Math.max(0, (totalXP - prevLevelXP) / (nextLevelXP - prevLevelXP)));
@@ -296,13 +337,13 @@ export default function HomeScreen() {
   const handleClaimMission = (id: string) => {
     const result = claimMission(id);
     if (result) {
-      Alert.alert('Ödül Alındı!', `🪙 ${result.coins} coin kazandın!`);
+      Alert.alert('Ödül Alındı', `${result.coins} coin kazandın!`);
     }
   };
 
   const handleBuyFreeze = () => {
     if (buyStreakFreeze()) {
-      Alert.alert('Satın Alındı!', '❄️ 1 Seri Dondurucu eklendi.');
+      Alert.alert('Satın Alındı', '1 Seri Dondurucu eklendi.');
     } else {
       Alert.alert('Yetersiz Coin', `Seri dondurucu ${STREAK_FREEZE_COST} coin gerektirir.`);
     }
@@ -316,17 +357,26 @@ export default function HomeScreen() {
     );
   }
 
+  const isDark = t.id === 'black';
+
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: t.background }]} edges={['top']}>
+      {/* Gradient background for dark theme */}
+      {isDark && (
+        <LinearGradient
+          colors={['#0B1020', '#05070F']}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* ── Hero Header ── */}
         <LinearGradient
-          colors={colors.gradientPrimary as readonly [string, string]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          colors={isDark ? ['#5E8BFF', '#7B61FF'] as const : t.gradientPrimary as readonly [string, string]}
+          start={isDark ? { x: 0, y: 0 } : { x: 0, y: 0 }}
+          end={isDark ? { x: 1, y: 1 } : { x: 1, y: 1 }}
           style={styles.hero}
         >
           <Animated.View
@@ -340,7 +390,7 @@ export default function HomeScreen() {
             <Text style={styles.heroSubtitle}>Türkçe Çengel Bulmaca</Text>
             {IS_DEV && (
               <View style={styles.devBadge}>
-                <Text style={styles.devBadgeText}>DEV MODE</Text>
+                <Text style={styles.devBadgeText}>DEV</Text>
               </View>
             )}
 
@@ -367,29 +417,115 @@ export default function HomeScreen() {
             },
           ]}
         >
-          {/* Completed Levels */}
           <Card style={styles.statCard} variant="elevated" padding="md">
-            <Text style={styles.statIcon}>✅</Text>
-            <Text style={styles.statValue}>{completedCount}</Text>
-            <Text style={styles.statLabel}>Tamamlanan</Text>
+            <IconBadge name="checkmark-circle" size={18} color={colors.success} badgeSize={34} />
+            <Text style={[styles.statValue, { color: t.text }]}>{completedCount}</Text>
+            <Text style={[styles.statLabel, { color: t.textSecondary }]}>Tamamlanan</Text>
           </Card>
 
           <Card style={styles.statCard} variant="elevated" padding="md">
-            <Text style={styles.statIcon}>⭐</Text>
-            <Text style={styles.statValue}>{totalStars}</Text>
-            <Text style={styles.statLabel}>Yıldız</Text>
+            <IconBadge name="star" size={18} color={colors.accent} badgeSize={34} />
+            <Text style={[styles.statValue, { color: t.text }]}>{totalStars}</Text>
+            <Text style={[styles.statLabel, { color: t.textSecondary }]}>Yıldız</Text>
           </Card>
+
           <TouchableOpacity
             activeOpacity={0.8}
             onLongPress={() => IS_DEV && setDevPanelVisible(true)}
             delayLongPress={2000}
+            style={{ flex: 1 }}
           >
             <Card style={styles.statCard} variant="elevated" padding="md">
-              <Text style={styles.statIcon}>🪙</Text>
-              <Text style={styles.statValue}>{IS_DEV ? '∞' : coins}</Text>
-              <Text style={styles.statLabel}>Coin</Text>
+              <IconBadge name="wallet" size={18} color={t.primary} badgeSize={34} />
+              <Text style={[styles.statValue, { color: t.text }]}>{IS_DEV ? '∞' : coins}</Text>
+              <Text style={[styles.statLabel, { color: t.textSecondary }]}>Coin</Text>
             </Card>
           </TouchableOpacity>
+        </Animated.View>
+
+        {/* ── Play CTA ── */}
+        <View style={styles.playCta}>
+          {/* Radial glow behind OYNA for dark */}
+          {isDark && (
+            <View style={{
+              position: 'absolute',
+              top: -20,
+              left: '15%',
+              right: '15%',
+              height: 120,
+              borderRadius: 60,
+              backgroundColor: 'rgba(94,139,255,0.08)',
+            }} />
+          )}
+          <PremiumButton
+            title="OYNA"
+            icon="play"
+            onPress={() => setPlayModeVisible(true)}
+            style={{ width: '100%' }}
+          />
+        </View>
+
+        {/* ── Play Mode Cards (always visible) ── */}
+        <View style={styles.playCardsRow}>
+          <TouchableOpacity
+            style={[
+              styles.playCard,
+              { backgroundColor: isDark ? '#131A2E' : t.card, borderColor: t.border },
+              isDark && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+            ]}
+            activeOpacity={0.82}
+            onPress={() => router.push('/(tabs)/chapters')}
+          >
+            <IconBadge name="map-outline" size={26} color={t.primary} badgeSize={56} />
+            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text }]}>Bolumler</Text>
+            <Text style={[styles.playCardSub, { color: t.textSecondary }]}>Seviye seviye ilerle</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.playCard,
+              { backgroundColor: isDark ? '#131A2E' : t.card, borderColor: t.border },
+              isDark && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+            ]}
+            activeOpacity={0.82}
+            onPress={() => router.push('/big-puzzle')}
+          >
+            <IconBadge name="grid-outline" size={26} color={colors.accent} badgeSize={56} />
+            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text }]}>Buyuk Bulmaca</Text>
+            <Text style={[styles.playCardSub, { color: t.textSecondary }]}>Rastgele, buyuk boy</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.playHint}>
+          Son kaldigin yer: Seviye {progress.find((p) => !p.completed)?.levelId ?? levels.length}
+        </Text>
+
+        {/* ── Daily Streak Card ── */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <Card style={styles.streakCard} variant="accent" padding="lg">
+            <View style={styles.streakRow}>
+              <IconBadge
+                name="flame"
+                size={22}
+                color="#FF6723"
+                backgroundColor="#FF672318"
+                badgeSize={44}
+              />
+              <View>
+                <Text style={styles.streakTitle}>{currentStreak} Günlük Seri</Text>
+                <Text style={styles.streakSub}>
+                  {longestStreak > 0
+                    ? `En uzun seri: ${longestStreak} gün`
+                    : 'Her gün oyna, seriyi koru!'}
+                </Text>
+              </View>
+            </View>
+          </Card>
         </Animated.View>
 
         {/* ── Shop Button ── */}
@@ -406,30 +542,9 @@ export default function HomeScreen() {
             style={styles.shopButton}
             onPress={() => setShopVisible(true)}
           >
-            <Text style={styles.shopButtonText}>🛍️ Mağaza</Text>
+            <Ionicons name="bag-outline" size={16} color={t.primary} style={{ marginRight: 6 }} />
+            <Text style={[styles.shopButtonText, { color: t.primary }]}>Mağaza</Text>
           </TouchableOpacity>
-        </Animated.View>
-
-        {/* ── Daily Streak Card ── */}
-        <Animated.View
-          style={{
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          }}
-        >
-          <Card style={styles.streakCard} variant="accent" padding="lg">
-            <View style={styles.streakRow}>
-              <Text style={styles.streakEmoji}>🔥</Text>
-              <View>
-                <Text style={styles.streakTitle}>{currentStreak} Günlük Seri</Text>
-                <Text style={styles.streakSub}>
-                  {longestStreak > 0
-                    ? `En uzun seri: ${longestStreak} gün`
-                    : 'Her gün oyna, seriyi koru!'}
-                </Text>
-              </View>
-            </View>
-          </Card>
         </Animated.View>
 
         {/* ── Daily Puzzle Card ── */}
@@ -441,16 +556,6 @@ export default function HomeScreen() {
           totalCount={missions.length}
           onPress={() => setMissionsModalVisible(true)}
         />
-
-        {/* ── Level Path (Duolingo Style) ── */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>🗺️ Bölümler</Text>
-          <Text style={styles.sectionBadge}>
-            {completedCount}/{levels.length}
-          </Text>
-        </View>
-
-        <LevelPath />
       </ScrollView>
 
       {/* ── Shop Modal ── */}
@@ -467,31 +572,43 @@ export default function HomeScreen() {
         >
           <View style={styles.shopSheet}>
             <View style={styles.shopHandle} />
-            <Text style={styles.shopTitle}>🛍️ Mağaza</Text>
-            <Text style={styles.shopCoins}>🪙 {coins} Coin</Text>
+            <Text style={styles.shopTitle}>Mağaza</Text>
+            <View style={styles.shopCoinsRow}>
+              <Ionicons name="wallet" size={16} color={colors.textSecondary} />
+              <Text style={styles.shopCoins}> {coins} Coin</Text>
+            </View>
 
             {/* Streak Freeze */}
             <TouchableOpacity style={styles.shopItem} onPress={handleBuyFreeze}>
               <View style={styles.shopItemLeft}>
-                <Text style={styles.shopItemEmoji}>❄️</Text>
-                <View>
+                <IconBadge
+                  name="snow"
+                  size={20}
+                  color="#5AC8FA"
+                  backgroundColor="#5AC8FA14"
+                  badgeSize={40}
+                />
+                <View style={{ flex: 1 }}>
                   <Text style={styles.shopItemTitle}>Seri Dondurucu</Text>
                   <Text style={styles.shopItemDesc}>
                     1 gün oynamasan da serin korunsun (Mevcut: {streakFreezes})
                   </Text>
                 </View>
               </View>
-              <View style={styles.shopPriceBadge}>
-                <Text style={styles.shopPriceText}>{STREAK_FREEZE_COST} 🪙</Text>
+              <View style={[styles.shopPriceBadge, { backgroundColor: t.primary }]}>
+                <Text style={styles.shopPriceText}>{STREAK_FREEZE_COST}</Text>
               </View>
             </TouchableOpacity>
 
             {/* Info card */}
             <View style={styles.shopInfoCard}>
-              <Text style={styles.shopInfoTitle}>💡 İpuçları</Text>
+              <View style={styles.shopInfoTitleRow}>
+                <Ionicons name="information-circle-outline" size={16} color={t.primary} />
+                <Text style={[styles.shopInfoTitle, { color: t.primary }]}> İpuçları</Text>
+              </View>
               <Text style={styles.shopInfoDesc}>
                 Oyun sırasında İpucu butonuna basarak harf veya kelime açabilirsin.
-                {'\n'}Harf: 10 🪙  ·  Kelime: 25 🪙
+                {'\n'}Harf: 10 coin  ·  Kelime: 25 coin
               </Text>
             </View>
 
@@ -505,7 +622,28 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Modal>
 
-      {/* ── Daily Missions Modal ── */}
+      {/* ── Play Chooser Panel ── */}
+      <PlayChooserPanel
+        visible={playModeVisible}
+        onClose={() => setPlayModeVisible(false)}
+        options={[
+          {
+            title: 'Bolumler',
+            subtitle: 'Seviye seviye ilerle',
+            icon: 'map-outline',
+            iconColor: t.primary,
+            onPress: () => router.push('/(tabs)/chapters'),
+          },
+          {
+            title: 'Buyuk Bulmaca',
+            subtitle: 'Rastgele, buyuk boy',
+            icon: 'grid-outline',
+            iconColor: colors.accent,
+            onPress: () => router.push('/big-puzzle'),
+          },
+        ]}
+      />
+
       <MissionsModalSheet
         visible={missionsModalVisible}
         missions={missions}
@@ -534,19 +672,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   loadingText: {
-    ...typography.h3,
+    ...typography.headline,
     color: colors.textSecondary,
   },
   scrollContent: {
-    paddingBottom: spacing.xxl,
+    paddingBottom: 120,
   },
   // ── Hero ──
   hero: {
     paddingTop: spacing.xl,
     paddingBottom: spacing.xxl,
     alignItems: 'center',
-    borderBottomLeftRadius: radius.xxl,
-    borderBottomRightRadius: radius.xxl,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   xpContainer: {
     flexDirection: 'row',
@@ -556,37 +694,37 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: radius.full,
+    borderRadius: 20,
   },
   levelBadge: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.accent,
+    backgroundColor: 'rgba(255,255,255,0.28)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   levelText: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.textInverse,
   },
   xpBarTrack: {
     width: 100,
-    height: 6,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    borderRadius: 3,
+    height: 4,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 2,
     overflow: 'hidden',
   },
   xpBarFill: {
     height: '100%',
-    backgroundColor: colors.accent,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: 2,
   },
   xpLabelText: {
-    ...typography.caption,
-    fontSize: 11,
-    color: colors.textInverse,
-    fontWeight: '700',
+    ...typography.label,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '600',
   },
   heroTitle: {
     ...typography.hero,
@@ -594,12 +732,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   heroSubtitle: {
-    ...typography.caption,
-    color: 'rgba(255,255,255,0.8)',
+    ...typography.subheadline,
+    color: 'rgba(255,255,255,0.72)',
     marginTop: spacing.xs,
   },
   devBadge: {
-    backgroundColor: '#FF6B4A',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 6,
@@ -608,7 +746,7 @@ const styles = StyleSheet.create({
   devBadgeText: {
     color: '#FFFFFF',
     fontSize: 10,
-    fontWeight: '900',
+    fontWeight: '700',
     letterSpacing: 1,
   },
   // ── Stats ──
@@ -618,22 +756,10 @@ const styles = StyleSheet.create({
     marginTop: -spacing.lg,
     gap: spacing.sm,
   },
-  statCardRaw: {
-    flex: 1,
-  },
-  statCardInner: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 2,
-  },
   statCard: {
     flex: 1,
     alignItems: 'center',
-    gap: 2,
-  },
-  statIcon: {
-    fontSize: 20,
-    marginBottom: 2,
+    gap: 4,
   },
   statValue: {
     ...typography.h3,
@@ -643,33 +769,71 @@ const styles = StyleSheet.create({
     ...typography.label,
     color: colors.textSecondary,
   },
-  timerLabel: {
+  // ── Play CTA ──
+  playCta: {
+    alignItems: 'center',
+    marginHorizontal: spacing.md,
+    marginTop: spacing.xl,
+    marginBottom: 0,
+  },
+  playCardsRow: {
+    flexDirection: 'row',
+    marginHorizontal: spacing.md,
+    marginTop: 14,
+    gap: 12,
+  },
+  playCard: {
+    flex: 1,
+    minHeight: 130,
+    backgroundColor: colors.card,
+    borderRadius: 24,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    ...shadows.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.sm,
+    gap: 4,
+  },
+  playCardTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginTop: 6,
+    textAlign: 'center',
+    letterSpacing: -0.2,
+  },
+  playCardSub: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  playHint: {
     ...typography.caption,
-    color: colors.secondary,
-    fontSize: 10,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+    marginHorizontal: spacing.md,
   },
   // ── CTA ──
   ctaContainer: {
     marginHorizontal: spacing.md,
-    marginTop: spacing.lg,
-    gap: spacing.sm,
+    marginTop: spacing.md,
+    alignItems: 'center',
   },
   shopButton: {
-    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 20,
-    borderRadius: radius.full,
-    backgroundColor: colors.cardAlt,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 12,
+    backgroundColor: colors.fill,
   },
   shopButtonText: {
-    ...typography.label,
+    ...typography.subheadline,
+    fontWeight: '600',
     color: colors.primary,
-    fontWeight: '700',
-    fontSize: 14,
   },
   // ── Streak ──
   streakCard: {
@@ -681,39 +845,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
   },
-  streakEmoji: {
-    fontSize: 32,
-  },
   streakTitle: {
-    ...typography.h3,
-    color: colors.primary,
+    ...typography.headline,
+    color: colors.text,
   },
   streakSub: {
     ...typography.caption,
     color: colors.textSecondary,
     marginTop: 2,
-  },
-  // ── Section ──
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: spacing.md,
-    marginTop: spacing.xl,
-    marginBottom: spacing.md,
-  },
-  sectionTitle: {
-    ...typography.h2,
-    color: colors.text,
-  },
-  sectionBadge: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    backgroundColor: colors.cardAlt,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: radius.full,
-    overflow: 'hidden',
   },
   // ── Shop Modal ──
   modalOverlay: {
@@ -723,17 +862,17 @@ const styles = StyleSheet.create({
   },
   shopSheet: {
     backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xxl,
-    borderTopRightRadius: radius.xxl,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.xxl,
   },
   shopHandle: {
-    width: 40,
+    width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: colors.fill,
     alignSelf: 'center',
     marginBottom: spacing.md,
   },
@@ -742,12 +881,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
   },
+  shopCoinsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: spacing.xs,
+    marginBottom: spacing.lg,
+  },
   shopCoins: {
     ...typography.body,
     color: colors.textSecondary,
-    textAlign: 'center',
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
   },
   shopItem: {
     flexDirection: 'row',
@@ -755,7 +898,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: colors.cardAlt,
     padding: spacing.md,
-    borderRadius: radius.lg,
+    borderRadius: 14,
     marginBottom: spacing.sm,
   },
   shopItemLeft: {
@@ -764,11 +907,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     flex: 1,
   },
-  shopItemEmoji: {
-    fontSize: 28,
-  },
   shopItemTitle: {
-    ...typography.h3,
+    ...typography.headline,
     color: colors.text,
     fontSize: 15,
   },
@@ -779,27 +919,30 @@ const styles = StyleSheet.create({
     maxWidth: 200,
   },
   shopPriceBadge: {
-    backgroundColor: colors.accent,
-    paddingHorizontal: 12,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 14,
     paddingVertical: 6,
-    borderRadius: radius.full,
+    borderRadius: 10,
   },
   shopPriceText: {
-    ...typography.label,
-    fontWeight: '700',
-    color: colors.text,
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textInverse,
   },
   shopInfoCard: {
-    backgroundColor: colors.shimmer,
+    backgroundColor: colors.fill,
     padding: spacing.md,
-    borderRadius: radius.lg,
+    borderRadius: 14,
     marginTop: spacing.sm,
   },
+  shopInfoTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   shopInfoTitle: {
-    ...typography.h3,
+    ...typography.subheadline,
+    fontWeight: '600',
     color: colors.primary,
-    fontSize: 14,
   },
   shopInfoDesc: {
     ...typography.caption,

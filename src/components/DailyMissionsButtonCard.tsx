@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { colors } from '../theme/colors';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../theme/ThemeContext';
 import { spacing } from '../theme/spacing';
-import { radius } from '../theme/radius';
 import { typography } from '../theme/typography';
-import Card from './ui/Card';
+import { shadows } from '../theme/shadows';
+import IconBadge from './ui/IconBadge';
 
 interface Props {
     completedCount: number;
@@ -17,46 +18,49 @@ export default function DailyMissionsButtonCard({
     totalCount,
     onPress,
 }: Props) {
+    const t = useTheme();
     const allDone = completedCount === totalCount && totalCount > 0;
 
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-            <Card style={styles.card} variant="accent" padding="lg">
+            <View style={[styles.card, { backgroundColor: t.card, borderColor: t.border }]}>
                 <View style={styles.row}>
-                    {/* Icon */}
-                    <Text style={styles.emoji}>📋</Text>
-
-                    {/* Text */}
+                    <IconBadge
+                        name="clipboard-outline"
+                        size={20}
+                        color={t.primary}
+                        badgeSize={42}
+                    />
                     <View style={styles.textColumn}>
-                        <Text style={styles.title}>Günlük Görevler</Text>
-                        <Text style={styles.subtitle}>
+                        <Text style={[styles.title, { color: t.text }]}>Günlük Görevler</Text>
+                        <Text style={[styles.subtitle, { color: t.textSecondary }]}>
                             {allDone
-                                ? 'Tüm görevler tamamlandı! 🎉'
+                                ? 'Tüm görevler tamamlandı!'
                                 : 'Bugünkü görevlerini tamamla, coin ve XP kazan!'}
                         </Text>
                     </View>
-
-                    {/* Badge + chevron */}
                     <View style={styles.rightSection}>
                         <View
                             style={[
                                 styles.badge,
-                                allDone && styles.badgeDone,
+                                { backgroundColor: t.primary + '14' },
+                                allDone && { backgroundColor: t.success + '18' },
                             ]}
                         >
                             <Text
                                 style={[
                                     styles.badgeText,
-                                    allDone && styles.badgeTextDone,
+                                    { color: t.primary },
+                                    allDone && { color: t.success },
                                 ]}
                             >
                                 {completedCount}/{totalCount}
                             </Text>
                         </View>
-                        <Text style={styles.chevron}>›</Text>
+                        <Ionicons name="chevron-forward" size={18} color={t.textMuted} />
                     </View>
                 </View>
-            </Card>
+            </View>
         </TouchableOpacity>
     );
 }
@@ -65,25 +69,25 @@ const styles = StyleSheet.create({
     card: {
         marginHorizontal: spacing.md,
         marginTop: spacing.md,
+        borderRadius: 16,
+        padding: spacing.lg,
+        borderWidth: StyleSheet.hairlineWidth,
+        ...shadows.sm,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: spacing.md,
     },
-    emoji: {
-        fontSize: 32,
-    },
     textColumn: {
         flex: 1,
     },
     title: {
-        ...typography.h3,
-        color: colors.primary,
+        ...typography.headline,
+        fontSize: 16,
     },
     subtitle: {
         ...typography.caption,
-        color: colors.textSecondary,
         marginTop: 2,
     },
     rightSection: {
@@ -92,27 +96,12 @@ const styles = StyleSheet.create({
         gap: spacing.xs,
     },
     badge: {
-        backgroundColor: colors.primary + '18',
         paddingHorizontal: 10,
         paddingVertical: 4,
-        borderRadius: radius.full,
-    },
-    badgeDone: {
-        backgroundColor: colors.success + '20',
+        borderRadius: 8,
     },
     badgeText: {
-        ...typography.caption,
-        fontWeight: '700',
-        color: colors.primary,
-        fontSize: 12,
-    },
-    badgeTextDone: {
-        color: colors.success,
-    },
-    chevron: {
-        fontSize: 22,
-        fontWeight: '700',
-        color: colors.textMuted,
-        marginTop: -2,
+        ...typography.label,
+        fontWeight: '600',
     },
 });

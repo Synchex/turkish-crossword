@@ -1,16 +1,18 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, useMemo } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
   StyleSheet,
   Dimensions,
   Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { CellData } from '../game/types';
+import { CellData, Word } from '../game/types';
 import { colors } from '../theme/colors';
 import { radius } from '../theme/radius';
+import { buildStartCellMap, StartCellInfo } from '../utils/crosswordHelpers';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_H_PADDING = 16;
@@ -23,6 +25,10 @@ interface Props {
   onCellPress: (row: number, col: number) => void;
   shakeCell?: { row: number; col: number } | null;
   correctFlash?: boolean;
+  // ── Clue chip props ──
+  words?: Word[];
+  selectedWordId?: string | null;
+  onClueChipPress?: (word: Word) => void;
 }
 
 export default function CrosswordGrid({
@@ -33,6 +39,9 @@ export default function CrosswordGrid({
   onCellPress,
   shakeCell,
   correctFlash,
+  words,
+  selectedWordId,
+  onClueChipPress,
 }: Props) {
   const GAP = 2.5;
   const cardInnerPad = 8;
@@ -42,27 +51,39 @@ export default function CrosswordGrid({
   );
   const gridWidth = cellSize * gridSize + totalGaps + cardInnerPad * 2;
 
+  // Build start-cell map (memoized)
+  const startCellMap = useMemo(
+    () => (words ? buildStartCellMap(words) : new Map<string, StartCellInfo>()),
+    [words],
+  );
+
   return (
     <View style={styles.heroWrapper}>
       {/* Floating hero card */}
       <View style={[styles.heroCard, { width: gridWidth }]}>
         <View style={[styles.gridInner, { padding: cardInnerPad, height: cellSize * gridSize + totalGaps + cardInnerPad * 2 }]}>
           {grid.map((row, r) =>
-            row.map((cell, c) => (
-              <MemoCell
-                key={`${r}-${c}`}
-                cell={cell}
-                cellSize={cellSize}
-                gap={GAP}
-                isSelected={selectedCell?.row === r && selectedCell?.col === c}
-                isWordHighlight={selectedWordCells.some(
-                  (wc) => wc.row === r && wc.col === c
-                )}
-                onPress={() => onCellPress(r, c)}
-                shouldShake={shakeCell?.row === r && shakeCell?.col === c}
-                correctFlash={correctFlash && cell.isLocked}
-              />
-            ))
+            row.map((cell, c) => {
+              const startInfo = startCellMap.get(`${r},${c}`);
+              return (
+                <MemoCell
+                  key={`${r}-${c}`}
+                  cell={cell}
+                  cellSize={cellSize}
+                  gap={GAP}
+                  isSelected={selectedCell?.row === r && selectedCell?.col === c}
+                  isWordHighlight={selectedWordCells.some(
+                    (wc) => wc.row === r && wc.col === c
+                  )}
+                  onPress={() => onCellPress(r, c)}
+                  shouldShake={shakeCell?.row === r && shakeCell?.col === c}
+                  correctFlash={correctFlash && cell.isLocked}
+                  startInfo={startInfo}
+                  selectedWordId={selectedWordId ?? null}
+                  onClueChipPress={onClueChipPress}
+                />
+              );
+            })
           )}
         </View>
       </View>
@@ -80,6 +101,9 @@ interface CellProps {
   onPress: () => void;
   shouldShake?: boolean;
   correctFlash?: boolean;
+  startInfo?: StartCellInfo;
+  selectedWordId: string | null;
+  onClueChipPress?: (word: Word) => void;
 }
 
 const MemoCell = memo(function Cell({
@@ -91,6 +115,9 @@ const MemoCell = memo(function Cell({
   onPress,
   shouldShake,
   correctFlash,
+  startInfo,
+  selectedWordId,
+  onClueChipPress,
 }: CellProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const shakeAnim = useRef(new Animated.Value(0)).current;
@@ -194,6 +221,16 @@ const MemoCell = memo(function Cell({
         ? colors.primaryDark
         : '#1A1A2E';
 
+  // ── Clue chips ──
+  const hasAcrossStart = !!startInfo?.across;
+  const hasDownStart = !!startInfo?.down;
+  const hasBothStarts = hasAcrossStart && hasDownStart;
+
+  // Chip sizing (responsive to cell size)
+  const chipH = Math.max(10, cellSize * 0.3);
+  const chipFont = Math.max(6, cellSize * 0.17);
+  const chipPadH = Math.max(2, cellSize * 0.06);
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -218,25 +255,40 @@ const MemoCell = memo(function Cell({
           elevationStyle,
         ]}
       >
-        {cell.number !== undefined && (
-          <Text
-            style={[
-              styles.number,
-              {
-                fontSize: cellSize * 0.19,
-                color: isSelected ? colors.primary : '#AAA5BF',
-              },
-            ]}
-          >
-            {cell.number}
-          </Text>
+        {/* ── Purple clue chip(s) ── */}
+        {hasAcrossStart && (
+          <ClueChip
+            num={startInfo!.across!.word.num}
+            suffix="A"
+            isActive={selectedWordId === startInfo!.across!.word.id}
+            position="topLeft"
+            chipH={chipH}
+            chipFont={chipFont}
+            chipPadH={chipPadH}
+            onPress={() => onClueChipPress?.(startInfo!.across!.word)}
+          />
         )}
+        {hasDownStart && (
+          <ClueChip
+            num={startInfo!.down!.word.num}
+            suffix="D"
+            isActive={selectedWordId === startInfo!.down!.word.id}
+            position={hasBothStarts ? 'topRight' : 'topLeft'}
+            chipH={chipH}
+            chipFont={chipFont}
+            chipPadH={chipPadH}
+            onPress={() => onClueChipPress?.(startInfo!.down!.word)}
+          />
+        )}
+
+        {/* Letter */}
         <Text
           style={[
             styles.letter,
             {
               fontSize: cellSize * 0.44,
               color: letterColor,
+              marginTop: (hasAcrossStart || hasDownStart) ? chipH * 0.3 : 0,
             },
           ]}
         >
@@ -246,6 +298,64 @@ const MemoCell = memo(function Cell({
     </TouchableOpacity>
   );
 });
+
+// ── Purple Clue Chip ──
+
+interface ChipProps {
+  num: number;
+  suffix: 'A' | 'D';
+  isActive: boolean;
+  position: 'topLeft' | 'topRight';
+  chipH: number;
+  chipFont: number;
+  chipPadH: number;
+  onPress: () => void;
+}
+
+function ClueChip({
+  num,
+  suffix,
+  isActive,
+  position,
+  chipH,
+  chipFont,
+  chipPadH,
+  onPress,
+}: ChipProps) {
+  return (
+    <Pressable
+      onPress={(e) => {
+        e.stopPropagation?.();
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress();
+      }}
+      hitSlop={4}
+      style={[
+        styles.clueChip,
+        {
+          height: chipH,
+          paddingHorizontal: chipPadH,
+          borderRadius: chipH * 0.3,
+          backgroundColor: isActive ? colors.primary : '#7C6BC4',
+          opacity: isActive ? 1 : 0.75,
+          transform: [{ scale: isActive ? 1.08 : 1 }],
+        },
+        position === 'topLeft' ? { left: 1, top: 1 } : { right: 1, top: 1 },
+      ]}
+    >
+      <Text
+        style={[
+          styles.clueChipText,
+          { fontSize: chipFont },
+        ]}
+      >
+        {num}{suffix}
+      </Text>
+    </Pressable>
+  );
+}
+
+// ── Styles ──
 
 const styles = StyleSheet.create({
   heroWrapper: {
@@ -277,15 +387,26 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 0,
   },
-  number: {
-    position: 'absolute',
-    top: 1,
-    left: 3,
-    fontWeight: '800',
-  },
   letter: {
     fontWeight: '800',
     fontFamily: 'System',
     letterSpacing: 0.5,
+  },
+  // ── Clue chip ──
+  clueChip: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 5,
+    shadowColor: '#3B2880',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  clueChipText: {
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.2,
   },
 });

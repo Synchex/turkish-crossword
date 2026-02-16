@@ -1,21 +1,14 @@
 /**
  * Big Puzzle Store
  *
- * Holds big random puzzle state. Puzzles are stored by ID so the game
- * screen can load them via route param with "big_" prefix.
- *
- * Also holds prebuilt puzzles and a fallback mechanism:
- * if the generator fails, a random prebuilt puzzle is silently used.
+ * Async puzzle generation with timeout + silent prebuilt fallback.
+ * The user never sees an error — puzzles always appear "AI-generated".
  */
 
 import { create } from 'zustand';
 import { LevelData } from '../game/types';
 import { generateCrossword } from '../generator/crosswordGenerator';
-import {
-    PREBUILT_BIG_PUZZLES,
-    PREBUILT_META,
-    PrebuiltMeta,
-} from '../data/prebuiltBigPuzzles';
+import { PREBUILT_BIG_PUZZLES } from '../data/prebuiltBigPuzzles';
 
 // ── Config ──
 
@@ -34,9 +27,16 @@ export interface BigPuzzleEntry {
     id: string;
     config: BigPuzzleConfig;
     createdAtISO: string;
-    status: 'success' | 'failed';
-    error?: string;
-    payload?: LevelData;
+    status: 'success';
+    payload: LevelData;
+    source: 'ai' | 'prebuilt'; // always show as "ai" to user
+}
+
+// ── Generate result ──
+
+export interface GenerateResult {
+    puzzleId: string;
+    usedFallback: boolean;
 }
 
 // ── Store ──
@@ -44,17 +44,11 @@ export interface BigPuzzleEntry {
 interface BigPuzzleStore {
     currentPuzzleId: string | null;
     puzzles: Record<string, BigPuzzleEntry>;
-    isLoading: boolean;
-    error: string | null;
+    isGenerating: boolean;
     config: BigPuzzleConfig;
 
-    // Prebuilt
-    prebuiltPuzzles: LevelData[];
-    prebuiltMeta: PrebuiltMeta[];
-
     setConfig: (partial: Partial<BigPuzzleConfig>) => void;
-    generate: (seed?: number) => string | null;
-    selectPrebuilt: (id: number) => string;
+    generate: (seed?: number) => Promise<GenerateResult>;
     getPuzzleById: (id: string) => BigPuzzleEntry | undefined;
     clear: () => void;
 }
@@ -65,108 +59,97 @@ const DEFAULT_CONFIG: BigPuzzleConfig = {
     theme: 'Genel',
 };
 
+// ── Timeout helper ──
+
+const GENERATOR_TIMEOUT_MS = 1500;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+    return Promise.race([
+        promise,
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+    ]);
+}
+
+// ── Pick random prebuilt ──
+
+function pickRandomPrebuilt(): LevelData {
+    const idx = Math.floor(Math.random() * PREBUILT_BIG_PUZZLES.length);
+    return PREBUILT_BIG_PUZZLES[idx];
+}
+
+// ── Store ──
+
 export const useBigPuzzleStore = create<BigPuzzleStore>((set, get) => ({
     currentPuzzleId: null,
     puzzles: {},
-    isLoading: false,
-    error: null,
+    isGenerating: false,
     config: { ...DEFAULT_CONFIG },
-
-    // Prebuilt data loaded at init
-    prebuiltPuzzles: PREBUILT_BIG_PUZZLES,
-    prebuiltMeta: PREBUILT_META,
 
     setConfig: (partial) =>
         set((s) => ({ config: { ...s.config, ...partial } })),
 
-    /**
-     * Select a prebuilt puzzle by its numeric ID.
-     * Creates a BigPuzzleEntry and sets currentPuzzleId.
-     * Returns the store key (string) for navigation.
-     */
-    selectPrebuilt: (id: number) => {
-        const puzzle = PREBUILT_BIG_PUZZLES.find((p) => p.id === id);
-        if (!puzzle) {
-            // Fallback to first prebuilt
-            const fallback = PREBUILT_BIG_PUZZLES[0];
-            const key = `prebuilt_${fallback.id}`;
-            const entry: BigPuzzleEntry = {
-                id: key,
-                config: { ...DEFAULT_CONFIG },
-                createdAtISO: new Date().toISOString(),
-                status: 'success',
-                payload: fallback,
-            };
-            set((st) => ({
-                currentPuzzleId: key,
-                puzzles: { ...st.puzzles, [key]: entry },
-            }));
-            return key;
-        }
-
-        const key = `prebuilt_${puzzle.id}`;
-        const meta = PREBUILT_META.find((m) => m.id === id);
-        const entry: BigPuzzleEntry = {
-            id: key,
-            config: {
-                size: 15,
-                difficulty:
-                    meta?.difficultyLabel === 'Kolay'
-                        ? 'easy'
-                        : meta?.difficultyLabel === 'Zor'
-                            ? 'hard'
-                            : 'medium',
-                theme: meta?.theme ?? 'Genel',
-            },
-            createdAtISO: new Date().toISOString(),
-            status: 'success',
-            payload: puzzle,
-        };
-
-        set((st) => ({
-            currentPuzzleId: key,
-            puzzles: { ...st.puzzles, [key]: entry },
-        }));
-
-        return key;
-    },
-
-    generate: (seed?: number) => {
+    generate: async (seed?: number): Promise<GenerateResult> => {
         const s = seed ?? Date.now();
         const { config } = get();
 
-        set({ isLoading: true, error: null });
+        set({ isGenerating: true });
 
-        const result = generateCrossword({
-            seed: s,
-            size: 15,
-            difficulty: config.difficulty,
+        // Wrap synchronous generator in a microtask so the UI can update
+        const generatorPromise = new Promise<{
+            puzzleId: string;
+            puzzle: LevelData;
+        } | null>((resolve) => {
+            setTimeout(() => {
+                try {
+                    const result = generateCrossword({
+                        seed: s,
+                        size: 15,
+                        difficulty: config.difficulty,
+                    });
+
+                    if (result.success && result.puzzle && result.puzzleId) {
+                        resolve({
+                            puzzleId: result.puzzleId,
+                            puzzle: result.puzzle,
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                } catch {
+                    resolve(null);
+                }
+            }, 0);
         });
 
-        if (result.success && result.puzzle && result.puzzleId) {
+        // Race generator vs timeout
+        const genResult = await withTimeout(
+            generatorPromise,
+            GENERATOR_TIMEOUT_MS,
+        );
+
+        if (genResult) {
+            // Generator succeeded
             const entry: BigPuzzleEntry = {
-                id: result.puzzleId,
+                id: genResult.puzzleId,
                 config: { ...config },
                 createdAtISO: new Date().toISOString(),
                 status: 'success',
-                payload: result.puzzle,
+                payload: genResult.puzzle,
+                source: 'ai',
             };
 
             set((st) => ({
-                isLoading: false,
-                error: null,
-                currentPuzzleId: result.puzzleId!,
-                puzzles: { ...st.puzzles, [result.puzzleId!]: entry },
+                isGenerating: false,
+                currentPuzzleId: genResult.puzzleId,
+                puzzles: { ...st.puzzles, [genResult.puzzleId]: entry },
             }));
 
-            return result.puzzleId;
+            return { puzzleId: genResult.puzzleId, usedFallback: false };
         }
 
-        // ── Fallback: pick a random prebuilt puzzle ──
-        const prebuilt = PREBUILT_BIG_PUZZLES;
-        const randomIdx = Math.floor(Math.random() * prebuilt.length);
-        const fallback = prebuilt[randomIdx];
-        const fallbackKey = `prebuilt_${fallback.id}`;
+        // Fallback to prebuilt — disguised as "ai"
+        const fallback = pickRandomPrebuilt();
+        const fallbackKey = `ai_${Date.now()}_${fallback.id}`;
 
         const fallbackEntry: BigPuzzleEntry = {
             id: fallbackKey,
@@ -174,16 +157,16 @@ export const useBigPuzzleStore = create<BigPuzzleStore>((set, get) => ({
             createdAtISO: new Date().toISOString(),
             status: 'success',
             payload: fallback,
+            source: 'ai', // mask as AI-generated
         };
 
         set((st) => ({
-            isLoading: false,
-            error: null, // NO error — silent fallback
+            isGenerating: false,
             currentPuzzleId: fallbackKey,
             puzzles: { ...st.puzzles, [fallbackKey]: fallbackEntry },
         }));
 
-        return fallbackKey;
+        return { puzzleId: fallbackKey, usedFallback: true };
     },
 
     getPuzzleById: (id) => get().puzzles[id],
@@ -192,7 +175,6 @@ export const useBigPuzzleStore = create<BigPuzzleStore>((set, get) => ({
         set({
             currentPuzzleId: null,
             puzzles: {},
-            isLoading: false,
-            error: null,
+            isGenerating: false,
         }),
 }));

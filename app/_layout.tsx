@@ -5,9 +5,10 @@ import { useProgressStore } from '../src/store/gameStore';
 import { useGamificationStore } from '../src/store/useGamificationStore';
 import { useMissionsStore } from '../src/store/useMissionsStore';
 import { useDailyPuzzleStore } from '../src/store/useDailyPuzzleStore';
-import { colors } from '../src/theme/colors';
+import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 
-export default function RootLayout() {
+function AppContent() {
+  const t = useTheme();
   const loadProgress = useProgressStore((s) => s.loadProgress);
   const checkDailyStreak = useGamificationStore((s) => s.checkDailyStreak);
   const ensureDailyMissions = useMissionsStore((s) => s.ensureDailyMissions);
@@ -22,11 +23,11 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style={t.id === 'black' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.background },
+          contentStyle: { backgroundColor: t.background },
           animation: 'fade',
         }}
       >
@@ -36,5 +37,13 @@ export default function RootLayout() {
         <Stack.Screen name="daily" />
       </Stack>
     </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

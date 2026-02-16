@@ -1,8 +1,10 @@
 import React, { useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
-import { radius } from '../theme/radius';
 import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
+import { shadows } from '../theme/shadows';
 
 interface Props {
   levelId: number;
@@ -52,7 +54,7 @@ export default function TopBar({
           <Animated.View
             style={[styles.backBtn, { transform: [{ scale: backScale }] }]}
           >
-            <Text style={styles.backIcon}>←</Text>
+            <Ionicons name="chevron-back" size={18} color={colors.primary} />
           </Animated.View>
         </Pressable>
 
@@ -66,13 +68,14 @@ export default function TopBar({
         {/* Right: Coin + Timer */}
         <View style={styles.rightGroup}>
           <View style={styles.coinBadge}>
-            <Text style={styles.coinText}>🪙 {coins}</Text>
+            <Ionicons name="wallet" size={12} color={colors.accent} />
+            <Text style={styles.coinText}> {coins}</Text>
           </View>
           <Text style={styles.timerText}>{formatTime(timeElapsed)}</Text>
         </View>
       </View>
 
-      {/* Progress bar — thicker, below row */}
+      {/* Progress bar */}
       <View style={styles.progressTrack}>
         <Animated.View
           style={[
@@ -90,12 +93,12 @@ export default function TopBar({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     paddingHorizontal: spacing.md,
     paddingTop: 4,
     paddingBottom: 6,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E8E5F0',
+    borderBottomColor: colors.border,
   },
   row: {
     flexDirection: 'row',
@@ -106,14 +109,9 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: '#F3F0FF',
+    backgroundColor: colors.fill,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: colors.primary,
   },
   centerGroup: {
     flex: 1,
@@ -123,59 +121,53 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     paddingHorizontal: 18,
     paddingVertical: 5,
-    borderRadius: radius.full,
-    // Subtle badge shadow
-    shadowColor: colors.primaryDark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 12,
+    ...shadows.sm,
   },
   levelText: {
-    color: '#FFFFFF',
+    color: colors.textInverse,
     fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.3,
+    fontWeight: '700',
+    letterSpacing: -0.2,
   },
   rightGroup: {
     alignItems: 'flex-end',
     gap: 2,
   },
   coinBadge: {
-    backgroundColor: '#FFF8E1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.fill,
     paddingHorizontal: 10,
     paddingVertical: 3,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: colors.accent + '40',
+    borderRadius: 8,
   },
   coinText: {
     fontSize: 12,
-    fontWeight: '800',
-    color: colors.accentDark,
+    fontWeight: '700',
+    color: colors.text,
   },
   timerText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#A9A5B8',
+    ...typography.label,
+    fontWeight: '500',
+    color: colors.textSecondary,
     fontVariant: ['tabular-nums'],
   },
   progressTrack: {
     width: '100%',
-    height: 8,
-    backgroundColor: '#EEEAF6',
-    borderRadius: 4,
+    height: 4,
+    backgroundColor: colors.fill,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     backgroundColor: colors.primary,
-    borderRadius: 4,
+    borderRadius: 2,
   },
   progressLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#B0ABBD',
+    ...typography.label,
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 3,
   },

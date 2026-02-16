@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -6,34 +6,416 @@ import {
   Alert,
   Modal,
   TouchableOpacity,
+  Pressable,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { getPuzzleById } from '../../src/cengel/puzzles/index';
+import { useCengelGame } from '../../src/cengel/useCengelGame';
+import { findEntriesForCell } from '../../src/cengel/gridUtils';
+import CengelGrid from '../../src/components/CengelGrid';
+import ClueBar from '../../src/components/ClueBar';
+import CengelClueList from '../../src/components/CengelClueList';
+import { Entry } from '../../src/cengel/types';
+import TurkishKeyboard from '../../src/components/TurkishKeyboard';
+import TopBar from '../../src/components/TopBar';
+import FeedbackPanel from '../../src/components/ui/FeedbackPanel';
+import { useEconomyStore, HINT_LETTER_COST } from '../../src/store/useEconomyStore';
+import { colors } from '../../src/theme/colors';
+import { spacing } from '../../src/theme/spacing';
+import { typography } from '../../src/theme/typography';
+
+// ── Old imports for legacy modes ──
 import { levels } from '../../src/levels/levels';
 import { useCrosswordGame } from '../../src/game/useCrosswordGame';
 import { useProgressStore } from '../../src/store/gameStore';
 import { useGamificationStore } from '../../src/store/useGamificationStore';
-import { useEconomyStore, HINT_LETTER_COST, HINT_WORD_COST } from '../../src/store/useEconomyStore';
 import { useStatsStore } from '../../src/store/useStatsStore';
+import { useGeneratorStore } from '../../src/store/useGeneratorStore';
+import { useBigPuzzleStore } from '../../src/store/useBigPuzzleStore';
 import { onPuzzleCompleted, onCorrectWordEntered } from '../../src/game/missionEvents';
 import { computeStars, computeXP, computeCoins, mapDifficulty } from '../../src/utils/rewards';
 import CrosswordGrid from '../../src/components/CrosswordGrid';
 import ClueList from '../../src/components/ClueList';
-import TurkishKeyboard from '../../src/components/TurkishKeyboard';
-import TopBar from '../../src/components/TopBar';
-import FeedbackPanel from '../../src/components/ui/FeedbackPanel';
-import { Word } from '../../src/game/types';
-import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
-import { radius } from '../../src/theme/radius';
-import { typography } from '../../src/theme/typography';
+import CluePopover from '../../src/components/CluePopover';
+import { Word, LevelData } from '../../src/game/types';
+import { buildStartCellMap } from '../../src/utils/crosswordHelpers';
 
 export default function GameScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  // Detect çengel mode: puzzle IDs start with "ch"
+  const isCengelMode = id?.startsWith('ch') ?? false;
+
+  if (isCengelMode) {
+    return <CengelGameScreen puzzleId={id!} />;
+  }
+
+  // Legacy mode — keep old game screen behavior
+  return <LegacyGameScreen id={id ?? '1'} />;
+}
+
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
   const router = useRouter();
-  const levelId = parseInt(id ?? '1', 10);
-  const level = levels.find((l) => l.id === levelId) ?? levels[0];
+  const puzzle = useMemo(() => getPuzzleById(puzzleId), [puzzleId]);
+
+  if (!puzzle) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <Text style={styles.errorText}>Bulmaca bulunamadı: {puzzleId}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const {
+    state,
+    selectCell,
+    typeLetter,
+    backspace,
+    checkWord,
+    revealHint,
+    revealRandomHint,
+    activeEntryCells,
+    activeEntry,
+    getStars,
+    entries,
+  } = useCengelGame(puzzle);
+
+  const coins = useEconomyStore((s) => s.coins);
+  const spendCoins = useEconomyStore((s) => s.spendCoins);
+
+  const [isSolving, setIsSolving] = useState(false);
+  const [correctFlash, setCorrectFlash] = useState(false);
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+  const [navigated, setNavigated] = useState(false);
+  const [hintModalVisible, setHintModalVisible] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  // Derived: should keyboard and solving UI be shown?
+  const shouldShowKeyboard = isSolving && activeEntry != null;
+
+  // Can we toggle direction at selected cell?
+  const canToggle = useMemo(() => {
+    if (!state.selectedCell) return false;
+    const cellEntries = findEntriesForCell(
+      state.selectedCell.row,
+      state.selectedCell.col,
+      entries,
+    );
+    return cellEntries.length > 1;
+  }, [state.selectedCell, entries]);
+
+  // Format time
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // ── Enter solving mode ──
+  const enterSolvingMode = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsSolving(true);
+  }, []);
+
+  // ── Exit solving mode ──
+  const exitSolvingMode = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsSolving(false);
+  }, []);
+
+  // ── Cell tap: auto-enter solving mode ──
+  const handleCellPress = useCallback(
+    (row: number, col: number) => {
+      selectCell(row, col);
+      if (!isSolving) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsSolving(true);
+      }
+    },
+    [selectCell, isSolving],
+  );
+
+  // ── Completion ──
+  useEffect(() => {
+    if (state.isComplete && !navigated) {
+      setNavigated(true);
+      setIsSolving(false);
+      const stars = getStars();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Tebrikler!',
+          `${puzzle.title} tamamlandı!\n⭐ ${stars} yıldız\n⏱ ${formatTime(state.timeElapsed)}\n💡 ${state.hintsUsed} ipucu kullanıldı`,
+          [{ text: 'Tamam', onPress: () => router.back() }],
+        );
+      }, 800);
+    }
+  }, [state.isComplete]);
+
+  // ── Check ──
+  const handleCheck = useCallback(() => {
+    const result = checkWord();
+    if (result === 'correct') {
+      setCorrectFlash(true);
+      setFeedback('correct');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setTimeout(() => setCorrectFlash(false), 600);
+      setTimeout(() => setFeedback(null), 2000);
+    } else if (result === 'wrong') {
+      setFeedback('wrong');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setTimeout(() => setFeedback(null), 2000);
+    }
+    // Exit solving mode after check
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsSolving(false);
+  }, [checkWord]);
+
+  // ── Hints ──
+  const handleHintPress = useCallback(() => setHintModalVisible(true), []);
+  const handleRevealLetter = useCallback(() => {
+    if (!spendCoins(HINT_LETTER_COST)) {
+      setHintModalVisible(false);
+      Alert.alert('Yetersiz Coin', `İpucu ${HINT_LETTER_COST} coin gerektirir.`);
+      return;
+    }
+    revealHint();
+    setHintModalVisible(false);
+  }, [spendCoins, revealHint]);
+
+  // ── Toggle direction ──
+  const handleToggle = useCallback(() => {
+    if (state.selectedCell) {
+      selectCell(state.selectedCell.row, state.selectedCell.col);
+    }
+  }, [state.selectedCell, selectCell]);
+
+  // ── Select entry from clue list ──
+  const handleSelectEntry = useCallback(
+    (entry: Entry) => {
+      if (entry.cells.length > 0) {
+        selectCell(entry.cells[0].row, entry.cells[0].col);
+        if (!isSolving) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setIsSolving(true);
+        }
+      }
+    },
+    [selectCell, isSolving],
+  );
+
+  // ── Random hint: reveal one random empty cell (full cost) ──
+  const handleRandomHint = useCallback(() => {
+    if (!spendCoins(HINT_LETTER_COST)) {
+      Alert.alert('Yetersiz Coin', `Rastgele ipucu ${HINT_LETTER_COST} coin gerektirir.`);
+      return;
+    }
+    const revealed = revealRandomHint();
+    if (!revealed) {
+      setToast('Açılacak harf kalmadı!');
+      setTimeout(() => setToast(null), 2000);
+      return;
+    }
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsSolving(true);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setToast(`1 harf açıldı (-${HINT_LETTER_COST} coin)`);
+    setTimeout(() => setToast(null), 2000);
+  }, [revealRandomHint, spendCoins]);
+
+  // ── Random letter: cheaper single-letter reveal ──
+  const RANDOM_LETTER_COST = 3;
+  const handleRandomLetter = useCallback(() => {
+    if (!spendCoins(RANDOM_LETTER_COST)) {
+      Alert.alert('Yetersiz Coin', `Random harf ${RANDOM_LETTER_COST} coin gerektirir.`);
+      return;
+    }
+    const revealed = revealRandomHint();
+    if (!revealed) {
+      setToast('Açılacak harf kalmadı!');
+      setTimeout(() => setToast(null), 2000);
+      return;
+    }
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsSolving(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setToast(`1 harf açıldı (-${RANDOM_LETTER_COST} coin)`);
+    setTimeout(() => setToast(null), 2000);
+  }, [revealRandomHint, spendCoins]);
+
+  // Progress bar
+  const totalEntries = entries.length;
+  const lockedCount = state.lockedEntryIds.size;
+  const progress = totalEntries > 0 ? lockedCount / totalEntries : 0;
+
+  return (
+    <Pressable style={{ flex: 1 }} onPress={isSolving ? exitSolvingMode : undefined}>
+      <SafeAreaView style={styles.safe} edges={['top']}>
+        {/* ── Header ── */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Ionicons name="chevron-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>{puzzle.title}</Text>
+            <Text style={styles.headerSub}>
+              {formatTime(state.timeElapsed)} · {lockedCount}/{totalEntries}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={handleHintPress} style={styles.hintBtn}>
+            <Ionicons name="bulb-outline" size={20} color={colors.accent} />
+            <Text style={styles.coinText}>{coins}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── Progress bar ── */}
+        <View style={styles.progressContainer}>
+          <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+        </View>
+
+        {/* ── Clue Bar (only when solving) ── */}
+        {shouldShowKeyboard ? (
+          <View style={styles.clueBarWrapper}>
+            <ClueBar entry={activeEntry} canToggle={canToggle} onToggle={handleToggle} />
+            <TouchableOpacity onPress={exitSolvingMode} style={styles.closeBtn}>
+              <Ionicons name="close" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.hintRow}>
+            <TouchableOpacity
+              style={styles.randomHintBtn}
+              activeOpacity={0.75}
+              onPress={handleRandomHint}
+            >
+              <Ionicons name="dice-outline" size={18} color={colors.primary} />
+              <Text style={styles.randomHintText}>Rastgele İpucu</Text>
+              <View style={styles.costBadge}>
+                <Text style={styles.costBadgeText}>-{HINT_LETTER_COST}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.randomLetterBtn}
+              activeOpacity={0.75}
+              onPress={handleRandomLetter}
+            >
+              <Ionicons name="text-outline" size={18} color={colors.primary} />
+              <Text style={styles.randomHintText}>Random Harf</Text>
+              <View style={styles.costBadge}>
+                <Text style={styles.costBadgeText}>-3</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* ── Grid ── */}
+        <CengelGrid
+          gameGrid={state.gameGrid}
+          gridSize={puzzle.size}
+          selectedCell={state.selectedCell}
+          activeEntryCells={activeEntryCells}
+          onCellPress={handleCellPress}
+          correctFlash={correctFlash}
+        />
+
+        {/* ── Clue List (numaralı soru listesi) ── */}
+        <CengelClueList
+          entries={entries}
+          activeEntryId={state.activeEntryId}
+          activeDirection={state.activeDirection}
+          lockedEntryIds={state.lockedEntryIds}
+          onSelectEntry={handleSelectEntry}
+        />
+
+        {/* ── Feedback ── */}
+        <FeedbackPanel type={feedback} />
+
+        {/* ── Toast ── */}
+        {toast && (
+          <View style={styles.toastContainer}>
+            <Text style={styles.toastText}>{toast}</Text>
+          </View>
+        )}
+
+        {/* ── Bottom area: Keyboard OR CTA ── */}
+        {shouldShowKeyboard ? (
+          <TurkishKeyboard
+            onKeyPress={typeLetter}
+            onBackspace={backspace}
+            onCheck={handleCheck}
+            onHint={handleHintPress}
+          />
+        ) : (
+          <View style={styles.ctaContainer}>
+            <TouchableOpacity
+              style={styles.ctaButton}
+              activeOpacity={0.8}
+              onPress={enterSolvingMode}
+            >
+              <Ionicons name="pencil" size={18} color="#FFF" />
+              <Text style={styles.ctaText}>Çözmeye Başla</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* ── Hint Modal ── */}
+        <Modal visible={hintModalVisible} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.hintCard}>
+              <Text style={styles.hintTitle}>💡 İpucu</Text>
+              <TouchableOpacity style={styles.hintOption} onPress={handleRevealLetter}>
+                <Text style={styles.hintOptionText}>Bir harf göster</Text>
+                <Text style={styles.hintCost}>{HINT_LETTER_COST} coin</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.hintOption, styles.hintCancel]}
+                onPress={() => setHintModalVisible(false)}
+              >
+                <Text style={styles.hintCancelText}>Vazgeç</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </SafeAreaView>
+    </Pressable>
+  );
+}
+
+// ═══════════════════════════════════════════
+//  LEGACY GAME SCREEN (Old crossword mode)
+// ═══════════════════════════════════════════
+
+function LegacyGameScreen({ id }: { id: string }) {
+  const router = useRouter();
+  const isGeneratorMode = id.startsWith('gen_');
+  const generatorPuzzleId = isGeneratorMode ? id.slice(4) : null;
+  const isBigPuzzleMode = id.startsWith('big_');
+  const bigPuzzleId = isBigPuzzleMode ? id.slice(4) : null;
+
+  let level: LevelData;
+  if (isGeneratorMode && generatorPuzzleId) {
+    const entry = useGeneratorStore.getState().getById(generatorPuzzleId);
+    level = entry?.payload ?? levels[0];
+  } else if (isBigPuzzleMode && bigPuzzleId) {
+    const entry = useBigPuzzleStore.getState().getPuzzleById(bigPuzzleId);
+    level = entry?.payload ?? levels[0];
+  } else {
+    const levelId = parseInt(id, 10);
+    level = levels.find((l) => l.id === levelId) ?? levels[0];
+  }
 
   const {
     state,
@@ -49,57 +431,45 @@ export default function GameScreen() {
   const completeLevel = useProgressStore((s) => s.completeLevel);
   const coins = useEconomyStore((s) => s.coins);
   const spendCoins = useEconomyStore((s) => s.spendCoins);
-  const onStatsPuzzleComplete = useStatsStore((s) => s.onPuzzleComplete);
 
   const [shakeWord, setShakeWord] = useState(false);
   const [correctFlash, setCorrectFlash] = useState(false);
   const [navigated, setNavigated] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [hintModalVisible, setHintModalVisible] = useState(false);
+  const [cluePopoverWord, setCluePopoverWord] = useState<Word | null>(null);
   const hintsUsedRef = useRef(0);
   const mistakesRef = useRef(0);
   const correctWordsRef = useRef(0);
   const coinsSpentRef = useRef(0);
 
+  const startCellMap = useMemo(() => buildStartCellMap(level.words), [level.words]);
   const diff = mapDifficulty(level.difficulty);
 
-  // Navigate to result on completion
   useEffect(() => {
     if (state.isComplete && !navigated) {
       setNavigated(true);
-
-      // Compute rewards via centralized rewards util
+      if (isGeneratorMode) {
+        setTimeout(() => router.replace('/(tabs)/generator'), 1200);
+        return;
+      }
       const stars = computeStars(hintsUsedRef.current, mistakesRef.current, state.timeElapsed, diff);
       const xpGained = computeXP(diff, stars, hintsUsedRef.current);
       const coinsEarned = computeCoins(diff, stars);
-
-      // Persist best stars + time
-      completeLevel(levelId, stars, state.timeElapsed, mistakesRef.current, hintsUsedRef.current);
-
-      // Award coins
+      completeLevel(level.id, stars, state.timeElapsed, mistakesRef.current, hintsUsedRef.current);
       useEconomyStore.getState().addCoins(coinsEarned);
-
-      // Award XP
-      const { levelUp } = useGamificationStore.getState().completePuzzle(
-        diff,
-        stars === 3
-      );
-
-      // Emit mission events
+      useGamificationStore.getState().completePuzzle(diff, stars === 3);
       onPuzzleCompleted(diff, 3, hintsUsedRef.current, state.timeElapsed);
-
-      // Track stats
-      onStatsPuzzleComplete({
+      useStatsStore.getState().onPuzzleComplete({
         timeSec: state.timeElapsed,
         mistakes: mistakesRef.current,
         correctWords: correctWordsRef.current,
         wrongWords: mistakesRef.current,
         isDaily: false,
       });
-
       setTimeout(() => {
         router.replace(
-          `/result/${levelId}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&xp=${xpGained}&levelUp=${levelUp}&coins=${coinsEarned}&hints=${hintsUsedRef.current}&mistakes=${mistakesRef.current}&coinsSpent=${coinsSpentRef.current}`
+          `/result/${level.id}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&xp=${xpGained}&coins=${coinsEarned}&hints=${hintsUsedRef.current}&mistakes=${mistakesRef.current}&coinsSpent=${coinsSpentRef.current}`,
         );
       }, 1200);
     }
@@ -120,23 +490,15 @@ export default function GameScreen() {
       mistakesRef.current += 1;
       setTimeout(() => setShakeWord(false), 400);
       setTimeout(() => setFeedback(null), 2000);
-      // Haptic only — no hearts or blocking
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
   }, [checkWord]);
 
-  // ── Hint System ──
-  const handleHintPress = useCallback(() => {
-    setHintModalVisible(true);
-  }, []);
-
+  const handleHintPress = useCallback(() => setHintModalVisible(true), []);
   const handleRevealLetter = useCallback(() => {
     if (!spendCoins(HINT_LETTER_COST)) {
       setHintModalVisible(false);
-      Alert.alert(
-        'Yetersiz Coin',
-        `Harf ipucu ${HINT_LETTER_COST} coin gerektirir.\nGünlük görevleri tamamlayarak coin kazan!`
-      );
+      Alert.alert('Yetersiz Coin', `${HINT_LETTER_COST} coin gerektirir.`);
       return;
     }
     revealHint();
@@ -145,265 +507,305 @@ export default function GameScreen() {
     setHintModalVisible(false);
   }, [spendCoins, revealHint]);
 
-  const handleRevealWord = useCallback(() => {
-    if (!spendCoins(HINT_WORD_COST)) {
-      setHintModalVisible(false);
-      Alert.alert(
-        'Yetersiz Coin',
-        `Kelime ipucu ${HINT_WORD_COST} coin gerektirir.\nGünlük görevleri tamamlayarak coin kazan!`
-      );
-      return;
-    }
-
-    // Reveal all cells in the selected word
-    if (state.selectedWordId) {
-      const word = wordMap.get(state.selectedWordId);
-      if (word) {
-        for (let i = 0; i < word.answer.length; i++) {
-          revealHint();
-        }
-      }
-    }
-    hintsUsedRef.current += 1;
-    coinsSpentRef.current += HINT_WORD_COST;
-    setHintModalVisible(false);
-  }, [spendCoins, revealHint, state.selectedWordId, wordMap]);
-
-  const handleSelectWord = useCallback(
-    (word: Word) => {
-      selectCell(word.startRow, word.startCol);
-    },
-    [selectCell]
-  );
-
   const selectedWordCells = getSelectedWordCells();
-  const shakeCell = shakeWord && selectedWordCells.length > 0 ? selectedWordCells[0] : null;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <TopBar
-        levelId={levelId}
+        levelId={level.id}
         timeElapsed={state.timeElapsed}
         score={state.score}
         coins={coins}
-        onBack={() => router.replace('/')}
+        onBack={() => router.back()}
         totalWords={level.words.length}
-        completedWords={state.lockedWordIds.size}
+        completedWords={state.lockedWordIds?.size ?? 0}
       />
-
-      <View style={styles.gridSection}>
-        <CrosswordGrid
-          grid={state.grid}
-          gridSize={level.gridSize}
-          selectedCell={state.selectedCell}
-          selectedWordCells={selectedWordCells}
-          onCellPress={selectCell}
-          shakeCell={shakeCell}
-          correctFlash={correctFlash}
-        />
-      </View>
-
-      <View style={styles.clueSection}>
-        <ClueList
-          words={level.words}
-          selectedWordId={state.selectedWordId}
-          selectedDirection={state.selectedDirection}
-          lockedWordIds={state.lockedWordIds}
-          onSelectWord={handleSelectWord}
-        />
-      </View>
-
+      <CrosswordGrid
+        grid={state.grid}
+        gridSize={level.gridSize}
+        selectedCell={state.selectedCell}
+        selectedWordCells={selectedWordCells}
+        onCellPress={selectCell}
+        shakeCell={shakeWord ? state.selectedCell : null}
+        correctFlash={correctFlash}
+        words={level.words}
+        selectedWordId={state.selectedWordId}
+        onClueChipPress={setCluePopoverWord}
+      />
+      <FeedbackPanel type={feedback} />
       <TurkishKeyboard
         onKeyPress={typeLetter}
         onBackspace={backspace}
         onCheck={handleCheck}
         onHint={handleHintPress}
-        disabled={state.isComplete}
       />
-
-      {/* Feedback overlay */}
-      <FeedbackPanel type={feedback} />
-
-      {/* ── Hint Bottom Sheet Modal ── */}
-      <Modal
-        visible={hintModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setHintModalVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setHintModalVisible(false)}
-        >
-          <View style={styles.hintSheet}>
-            <View style={styles.hintHandle} />
-            <Text style={styles.hintSheetTitle}>İpucu Kullan</Text>
-            <Text style={styles.hintCoinDisplay}>🪙 {coins}</Text>
-
-            <TouchableOpacity
-              style={styles.hintOption}
-              onPress={handleRevealLetter}
-            >
-              <View style={styles.hintOptionLeft}>
-                <Text style={styles.hintOptionEmoji}>🔤</Text>
-                <View>
-                  <Text style={styles.hintOptionTitle}>Harf Göster</Text>
-                  <Text style={styles.hintOptionDesc}>
-                    Seçili kelimedeki bir harfi aç
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.hintCostBadge}>
-                <Text style={styles.hintCostText}>{HINT_LETTER_COST} 🪙</Text>
-              </View>
+      {cluePopoverWord && (
+        <CluePopover
+          visible={!!cluePopoverWord}
+          word={cluePopoverWord}
+          onClose={() => setCluePopoverWord(null)}
+          hasBothDirections={false}
+          onToggleDirection={() => { }}
+        />
+      )}
+      <Modal visible={hintModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.hintCard}>
+            <Text style={styles.hintTitle}>💡 İpucu</Text>
+            <TouchableOpacity style={styles.hintOption} onPress={handleRevealLetter}>
+              <Text style={styles.hintOptionText}>Bir harf göster</Text>
+              <Text style={styles.hintCost}>{HINT_LETTER_COST} coin</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
-              style={styles.hintOption}
-              onPress={handleRevealWord}
-            >
-              <View style={styles.hintOptionLeft}>
-                <Text style={styles.hintOptionEmoji}>💡</Text>
-                <View>
-                  <Text style={styles.hintOptionTitle}>Kelimeyi Göster</Text>
-                  <Text style={styles.hintOptionDesc}>
-                    Tüm kelimeyi aç
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.hintCostBadge, { backgroundColor: colors.accentDark }]}>
-                <Text style={styles.hintCostText}>{HINT_WORD_COST} 🪙</Text>
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.hintWarning}>
-              <Text style={styles.hintWarningText}>
-                ⚠️ İpucu kullanmak yıldız sayısını düşürür
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.hintCancel}
+              style={[styles.hintOption, styles.hintCancel]}
               onPress={() => setHintModalVisible(false)}
             >
-              <Text style={styles.hintCancelText}>İptal</Text>
+              <Text style={styles.hintCancelText}>Vazgeç</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </SafeAreaView>
   );
 }
 
+// ═══════════════════════════════════════════
+//  STYLES
+// ═══════════════════════════════════════════
+
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F5F3FA',
+    backgroundColor: colors.background,
   },
-  gridSection: {
-    alignItems: 'center',
-  },
-  clueSection: {
-    flex: 1,
-    marginHorizontal: spacing.sm,
-    marginBottom: 4,
-  },
-  // ── Hint Modal ──
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: colors.overlay,
-  },
-  hintSheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xxl,
-    borderTopRightRadius: radius.xxl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xxl,
-  },
-  hintHandle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
-    marginBottom: spacing.md,
-  },
-  hintSheetTitle: {
-    ...typography.h2,
-    color: colors.text,
+  errorText: {
     textAlign: 'center',
-  },
-  hintCoinDisplay: {
-    ...typography.body,
+    marginTop: 100,
+    fontSize: 16,
     color: colors.textSecondary,
-    textAlign: 'center',
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
   },
-  hintOption: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.cardAlt,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
-  hintOptionLeft: {
-    flexDirection: 'row',
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.fill,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: spacing.sm,
+  },
+  headerCenter: {
     flex: 1,
+    alignItems: 'center',
   },
-  hintOptionEmoji: {
-    fontSize: 24,
-  },
-  hintOptionTitle: {
-    ...typography.h3,
+  headerTitle: {
+    ...typography.headline,
     color: colors.text,
-    fontSize: 15,
+    fontWeight: '700',
   },
-  hintOptionDesc: {
+  headerSub: {
     ...typography.caption,
     color: colors.textSecondary,
     marginTop: 2,
   },
-  hintCostBadge: {
-    backgroundColor: colors.accent,
-    paddingHorizontal: 12,
+  hintBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: radius.full,
+    borderRadius: 16,
+    gap: 4,
   },
-  hintCostText: {
-    ...typography.label,
-    fontWeight: '700',
-    color: colors.text,
+  coinText: {
     fontSize: 13,
+    fontWeight: '700',
+    color: colors.accent,
   },
-  hintWarning: {
-    backgroundColor: colors.accent + '15',
-    padding: spacing.sm,
-    borderRadius: radius.md,
-    marginTop: spacing.xs,
-    marginBottom: spacing.sm,
+  progressContainer: {
+    height: 3,
+    backgroundColor: colors.fill,
+    marginHorizontal: spacing.md,
+    borderRadius: 2,
+    marginBottom: 6,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  hintWarningText: {
-    ...typography.caption,
-    color: colors.accent,
+  hintCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    width: 280,
+    gap: 12,
+  },
+  hintTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  hintOption: {
+    backgroundColor: '#F3F0FF',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  hintOptionText: {
+    fontSize: 15,
     fontWeight: '600',
+    color: colors.primary,
+  },
+  hintCost: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.accent,
   },
   hintCancel: {
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    marginTop: spacing.xs,
+    backgroundColor: colors.fill,
   },
   hintCancelText: {
-    ...typography.body,
-    color: colors.textSecondary,
+    fontSize: 15,
     fontWeight: '600',
+    color: colors.textSecondary,
+    textAlign: 'center',
+    flex: 1,
+  },
+  // ── Solving mode specific ──
+  clueBarWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  closeBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.fill,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  idleHintBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    marginHorizontal: spacing.md,
+    borderRadius: 10,
+    backgroundColor: colors.fill,
+    marginBottom: 4,
+  },
+  idleHintText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textMuted,
+  },
+  hintRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginHorizontal: spacing.md,
+    marginBottom: 4,
+  },
+  randomHintBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    backgroundColor: colors.primary + '0F',
+    borderWidth: 1,
+    borderColor: colors.primary + '22',
+    minHeight: 48,
+  },
+  randomLetterBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: colors.primary + '44',
+    minHeight: 48,
+  },
+  randomHintText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primary,
+    letterSpacing: 0.1,
+  },
+  costBadge: {
+    backgroundColor: colors.accent + '22',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  costBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.accent,
+  },
+  ctaContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 10,
+    paddingBottom: 16,
+    backgroundColor: colors.background,
+  },
+  ctaButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.primary,
+    paddingVertical: 16,
+    borderRadius: 16,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  ctaText: {
+    color: '#FFF',
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  toastContainer: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(26,26,46,0.88)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginVertical: 6,
+  },
+  toastText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, ViewStyle, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
-import { radius } from '../../theme/radius';
+import { useTheme } from '../../theme/ThemeContext';
 import { spacing } from '../../theme/spacing';
 import { shadows } from '../../theme/shadows';
 
@@ -18,13 +17,30 @@ export default function Card({
     variant = 'default',
     padding = 'md',
 }: CardProps) {
+    const t = useTheme();
+    const isDark = t.id === 'black';
     return (
         <View
             style={[
                 styles.base,
-                { padding: spacing[padding] },
+                {
+                    backgroundColor: t.card,
+                    borderColor: t.border,
+                    padding: spacing[padding],
+                },
+                isDark && {
+                    shadowColor: t.shadow,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 12,
+                    elevation: 6,
+                },
                 variant === 'elevated' && styles.elevated,
-                variant === 'accent' && styles.accent,
+                variant === 'accent' && {
+                    borderWidth: 1,
+                    borderColor: t.primary + '20',
+                    ...shadows.md,
+                },
                 style,
             ]}
         >
@@ -35,17 +51,11 @@ export default function Card({
 
 const styles = StyleSheet.create({
     base: {
-        backgroundColor: colors.card,
-        borderRadius: radius.lg,
+        borderRadius: 20,
+        borderWidth: StyleSheet.hairlineWidth,
         ...shadows.sm,
     },
     elevated: {
         ...shadows.md,
-    },
-    accent: {
-        backgroundColor: colors.cardAlt,
-        borderWidth: 1.5,
-        borderColor: colors.primaryLight,
-        ...shadows.glow,
     },
 });

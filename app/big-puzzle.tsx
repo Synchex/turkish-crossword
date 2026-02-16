@@ -1,19 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     ScrollView,
     Pressable,
+    ActivityIndicator,
+    Animated,
+    Easing,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withSpring,
-} from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -27,7 +25,6 @@ import {
     BigPuzzleSize,
     BigPuzzleDifficulty,
 } from '../src/store/useBigPuzzleStore';
-import { PREBUILT_META } from '../src/data/prebuiltBigPuzzles';
 
 // ── Size Options ──
 const SIZE_OPTIONS: { value: BigPuzzleSize; label: string; enabled: boolean }[] = [
@@ -46,47 +43,162 @@ const DIFF_OPTIONS: { value: BigPuzzleDifficulty; label: string }[] = [
 // ── Theme Options ──
 const THEME_OPTIONS = ['Genel'];
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+// ── AI Loading Messages ──
+const AI_MESSAGES = [
+    'Bulmaca hazırlanıyor...',
+    'Zorluk ayarlanıyor...',
+    'İpuçları seçiliyor...',
+    'Kelimeler yerleştiriliyor...',
+    'Son kontroller yapılıyor...',
+];
+
+// ── AI Loading Overlay Component ──
+function AILoadingOverlay() {
+    const [messageIdx, setMessageIdx] = useState(0);
+    const sparkleRotation = useRef(new Animated.Value(0)).current;
+    const overlayOpacity = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        // Fade in
+        Animated.timing(overlayOpacity, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+
+        // Rotate messages every 400ms
+        const interval = setInterval(() => {
+            setMessageIdx((i) => (i + 1) % AI_MESSAGES.length);
+        }, 400);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const anim = Animated.loop(
+            Animated.sequence([
+                Animated.timing(sparkleRotation, {
+                    toValue: 15,
+                    duration: 600,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(sparkleRotation, {
+                    toValue: -15,
+                    duration: 600,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+            ])
+        );
+        anim.start();
+        return () => anim.stop();
+    }, []);
+
+    const rotateInterpolation = sparkleRotation.interpolate({
+        inputRange: [-15, 15],
+        outputRange: ['-15deg', '15deg'],
+    });
+
+    return (
+        <Animated.View
+            style={[overlayStyles.container, { opacity: overlayOpacity }]}
+        >
+            <View style={overlayStyles.card}>
+                <Animated.View style={{ transform: [{ rotate: rotateInterpolation }] }}>
+                    <Ionicons name="sparkles" size={40} color={colors.primary} />
+                </Animated.View>
+                <ActivityIndicator
+                    size="small"
+                    color={colors.primary}
+                    style={{ marginTop: spacing.md }}
+                />
+                <Text style={overlayStyles.message}>{AI_MESSAGES[messageIdx]}</Text>
+                <Text style={overlayStyles.sub}>Yapay zekâ çalışıyor</Text>
+            </View>
+        </Animated.View>
+    );
+}
+
+const overlayStyles = StyleSheet.create({
+    container: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.35)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100,
+    },
+    card: {
+        backgroundColor: colors.surface,
+        borderRadius: 24,
+        paddingVertical: spacing.xl,
+        paddingHorizontal: spacing.xxl,
+        alignItems: 'center',
+        ...shadows.lg,
+        minWidth: 240,
+    },
+    message: {
+        ...typography.headline,
+        color: colors.text,
+        marginTop: spacing.md,
+        textAlign: 'center',
+    },
+    sub: {
+        ...typography.caption,
+        color: colors.textSecondary,
+        marginTop: spacing.xs,
+    },
+});
+
+// ── Main Screen ──
 
 export default function BigPuzzleScreen() {
     const router = useRouter();
     const config = useBigPuzzleStore((s) => s.config);
     const setConfig = useBigPuzzleStore((s) => s.setConfig);
-    const isLoading = useBigPuzzleStore((s) => s.isLoading);
+    const isGenerating = useBigPuzzleStore((s) => s.isGenerating);
     const generate = useBigPuzzleStore((s) => s.generate);
-    const selectPrebuilt = useBigPuzzleStore((s) => s.selectPrebuilt);
-    const prebuiltPuzzles = useBigPuzzleStore((s) => s.prebuiltPuzzles);
+
+    const [showOverlay, setShowOverlay] = useState(false);
+    const isBusyRef = useRef(false);
 
     // CTA animation
-    const ctaScale = useSharedValue(1);
-    const ctaAnimStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: ctaScale.value }],
-    }));
+    const ctaScale = useRef(new Animated.Value(1)).current;
 
-    // ── Generate handler — always navigates (fallback is silent) ──
-    const handleGenerate = useCallback(() => {
+    // ── Generate handler with fake AI delay ──
+    const handleGenerate = useCallback(async () => {
+        if (isBusyRef.current) return;
+        isBusyRef.current = true;
+
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        const puzzleId = generate();
 
-        if (puzzleId) {
-            router.push(`/game/big_${puzzleId}`);
-        }
-        // generate() now always returns a valid ID (prebuilt fallback),
-        // so the above condition is always true.
+        // Show the AI overlay
+        setShowOverlay(true);
+
+        // Randomized minimum display time (800–1400ms)
+        const minDelay = 800 + Math.random() * 600;
+        const delayPromise = new Promise<void>((r) => setTimeout(r, minDelay));
+
+        // Run generate + minimum delay in parallel
+        const [result] = await Promise.all([generate(), delayPromise]);
+
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+        // Small extra beat before navigating
+        await new Promise<void>((r) => setTimeout(r, 150));
+
+        setShowOverlay(false);
+        isBusyRef.current = false;
+
+        router.push(`/game/big_${result.puzzleId}`);
     }, [generate, router]);
 
-    // ── Prebuilt card tap ──
-    const handlePrebuiltTap = useCallback(
-        (id: number) => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            const key = selectPrebuilt(id);
-            router.push(`/game/big_${key}`);
-        },
-        [selectPrebuilt, router],
-    );
+    const isBusy = showOverlay || isGenerating;
 
     return (
         <SafeAreaView style={styles.safe} edges={['top']}>
+            {/* ── AI Generating Overlay ── */}
+            {showOverlay && <AILoadingOverlay />}
+
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
@@ -106,82 +218,9 @@ export default function BigPuzzleScreen() {
                     </Pressable>
                     <Text style={styles.headerTitle}>Büyük Bulmaca</Text>
                     <Text style={styles.headerSub}>
-                        Rastgele büyük boy bulmaca
+                        AI destekli bulmaca üretici
                     </Text>
                 </LinearGradient>
-
-                {/* ══════════════════════════════════════ */}
-                {/* ── Hazır Bulmacalar Section ──        */}
-                {/* ══════════════════════════════════════ */}
-                <View style={styles.prebuiltSection}>
-                    <View style={styles.prebuiltHeader}>
-                        <IconBadge
-                            name="library-outline"
-                            size={22}
-                            color={colors.primary}
-                            backgroundColor={colors.primary + '14'}
-                            badgeSize={44}
-                        />
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.prebuiltTitle}>Hazır Bulmacalar</Text>
-                            <Text style={styles.prebuiltSub}>Hemen oyna</Text>
-                        </View>
-                    </View>
-
-                    {prebuiltPuzzles.map((puzzle, idx) => {
-                        const meta = PREBUILT_META.find((m) => m.id === puzzle.id);
-                        return (
-                            <Pressable
-                                key={puzzle.id}
-                                style={({ pressed }) => [
-                                    styles.puzzleCard,
-                                    pressed && styles.puzzleCardPressed,
-                                ]}
-                                onPress={() => handlePrebuiltTap(puzzle.id)}
-                            >
-                                {/* Left — Info */}
-                                <View style={styles.puzzleCardLeft}>
-                                    <Text style={styles.puzzleCardName}>
-                                        Büyük Bulmaca #{idx + 1}
-                                    </Text>
-                                    <View style={styles.tagsRow}>
-                                        <View style={styles.tag}>
-                                            <Text style={styles.tagText}>15×15</Text>
-                                        </View>
-                                        <View style={[styles.tag, styles.tagDifficulty]}>
-                                            <Text style={styles.tagText}>
-                                                {meta?.difficultyLabel ?? 'Orta'}
-                                            </Text>
-                                        </View>
-                                        <View style={[styles.tag, styles.tagTheme]}>
-                                            <Text style={styles.tagText}>
-                                                {meta?.theme ?? 'Genel'}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    {/* Progress (0% for now) */}
-                                    <View style={styles.progressRow}>
-                                        <View style={styles.progressBarBg}>
-                                            <View style={[styles.progressBarFill, { width: '0%' }]} />
-                                        </View>
-                                        <Text style={styles.progressText}>0%</Text>
-                                    </View>
-                                </View>
-
-                                {/* Right — Play button */}
-                                <LinearGradient
-                                    colors={colors.gradientPrimary as readonly [string, string]}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 1 }}
-                                    style={styles.playBtn}
-                                >
-                                    <Ionicons name="play" size={16} color={colors.textInverse} />
-                                    <Text style={styles.playBtnText}>Oyna</Text>
-                                </LinearGradient>
-                            </Pressable>
-                        );
-                    })}
-                </View>
 
                 {/* ── Status Banner ── */}
                 <View style={styles.banner}>
@@ -193,9 +232,9 @@ export default function BigPuzzleScreen() {
                         badgeSize={48}
                     />
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.bannerTitle}>Rastgele Bulmaca</Text>
+                        <Text style={styles.bannerTitle}>Yapay Zekâ Üretici</Text>
                         <Text style={styles.bannerSub}>
-                            Ayarlari sec ve hemen oynamaya basla.
+                            Ayarları seç, AI senin için bulmaca üretsin.
                         </Text>
                     </View>
                 </View>
@@ -306,38 +345,41 @@ export default function BigPuzzleScreen() {
                 </View>
 
                 {/* ── Generate CTA ── */}
-                <AnimatedPressable
-                    onPress={handleGenerate}
-                    onPressIn={() => {
-                        ctaScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-                    }}
-                    onPressOut={() => {
-                        ctaScale.value = withSpring(1, { damping: 12, stiffness: 200 });
-                    }}
-                    style={[styles.ctaWrapper, ctaAnimStyle]}
-                    disabled={isLoading}
+                <Animated.View
+                    style={[styles.ctaWrapper, { transform: [{ scale: ctaScale }] }]}
                 >
-                    <LinearGradient
-                        colors={colors.gradientPrimary as readonly [string, string]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.ctaGradient}
+                    <Pressable
+                        onPress={handleGenerate}
+                        onPressIn={() => {
+                            Animated.spring(ctaScale, { toValue: 0.96, damping: 15, stiffness: 300, mass: 1, useNativeDriver: true }).start();
+                        }}
+                        onPressOut={() => {
+                            Animated.spring(ctaScale, { toValue: 1, damping: 12, stiffness: 200, mass: 1, useNativeDriver: true }).start();
+                        }}
+                        disabled={isBusy}
                     >
-                        {isLoading ? (
-                            <Text style={styles.ctaText}>Oluşturuluyor...</Text>
-                        ) : (
-                            <>
-                                <Ionicons
-                                    name="shuffle"
-                                    size={20}
-                                    color={colors.textInverse}
-                                    style={{ marginRight: 8 }}
-                                />
-                                <Text style={styles.ctaText}>Rastgele Bulmaca Getir</Text>
-                            </>
-                        )}
-                    </LinearGradient>
-                </AnimatedPressable>
+                        <LinearGradient
+                            colors={colors.gradientPrimary as readonly [string, string]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.ctaGradient}
+                        >
+                            <Ionicons
+                                name="sparkles"
+                                size={20}
+                                color={colors.textInverse}
+                                style={{ marginRight: 8 }}
+                            />
+                            <Text style={styles.ctaText}>Bulmaca Oluştur</Text>
+                        </LinearGradient>
+                    </Pressable>
+                </Animated.View>
+
+                {/* ── AI Hint badge ── */}
+                <View style={styles.aiBadge}>
+                    <Ionicons name="sparkles-outline" size={12} color={colors.primary} />
+                    <Text style={styles.aiBadgeText}>AI ile üretilir</Text>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -377,116 +419,13 @@ const styles = StyleSheet.create({
         color: 'rgba(255,255,255,0.72)',
         marginTop: 4,
     },
-    // ══════════════════════════════
-    // ── Prebuilt Puzzles Section ──
-    // ══════════════════════════════
-    prebuiltSection: {
-        marginHorizontal: spacing.md,
-        marginTop: spacing.lg,
-    },
-    prebuiltHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.md,
-        marginBottom: spacing.md,
-    },
-    prebuiltTitle: {
-        ...typography.headline,
-        color: colors.text,
-    },
-    prebuiltSub: {
-        ...typography.caption,
-        color: colors.textSecondary,
-        marginTop: 2,
-    },
-    // ── Puzzle card ──
-    puzzleCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.card,
-        borderRadius: 16,
-        padding: spacing.md,
-        marginBottom: spacing.sm,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: colors.border,
-        ...shadows.sm,
-    },
-    puzzleCardPressed: {
-        opacity: 0.85,
-        transform: [{ scale: 0.98 }],
-    },
-    puzzleCardLeft: {
-        flex: 1,
-        marginRight: spacing.md,
-    },
-    puzzleCardName: {
-        ...typography.headline,
-        color: colors.text,
-        marginBottom: 6,
-    },
-    tagsRow: {
-        flexDirection: 'row',
-        gap: 6,
-        marginBottom: 8,
-    },
-    tag: {
-        backgroundColor: colors.primary + '14',
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-        borderRadius: 6,
-    },
-    tagDifficulty: {
-        backgroundColor: colors.accent + '18',
-    },
-    tagTheme: {
-        backgroundColor: colors.success + '18',
-    },
-    tagText: {
-        ...typography.label,
-        fontWeight: '600',
-        color: colors.textSecondary,
-    },
-    progressRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    progressBarBg: {
-        flex: 1,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: colors.fill,
-    },
-    progressBarFill: {
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: colors.primary,
-    },
-    progressText: {
-        ...typography.label,
-        color: colors.textMuted,
-        fontWeight: '600',
-    },
-    playBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-        borderRadius: 12,
-        gap: 4,
-    },
-    playBtnText: {
-        ...typography.caption,
-        fontWeight: '700',
-        color: colors.textInverse,
-    },
     // ── Banner ──
     banner: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: spacing.md,
         marginHorizontal: spacing.md,
-        marginTop: spacing.xl,
+        marginTop: spacing.lg,
         backgroundColor: colors.card,
         borderRadius: 16,
         padding: spacing.lg,
@@ -564,5 +503,18 @@ const styles = StyleSheet.create({
     ctaText: {
         ...typography.button,
         color: colors.textInverse,
+    },
+    // ── AI Badge ──
+    aiBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4,
+        marginTop: spacing.md,
+    },
+    aiBadgeText: {
+        ...typography.caption,
+        color: colors.primary,
+        fontWeight: '500',
     },
 });

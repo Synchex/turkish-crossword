@@ -1,17 +1,43 @@
 import { Tabs } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../src/theme/colors';
-import { radius } from '../../src/theme/radius';
+import { useSettingsStore } from '../../src/store/useSettingsStore';
+import { themes } from '../../src/theme/themes';
+
+function TabBarIcon({ name, color }: { name: keyof typeof Ionicons.glyphMap; color: string }) {
+    return <Ionicons name={name} size={22} color={color} />;
+}
 
 export default function TabsLayout() {
+    const themeId = useSettingsStore((s) => s.themeId);
+    const th = themes[themeId] ?? themes.purple;
+    const isDark = themeId === 'black';
+
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarStyle: styles.tabBar,
-                tabBarActiveTintColor: colors.primary,
-                tabBarInactiveTintColor: colors.textMuted,
+                tabBarActiveTintColor: th.tabActive,
+                tabBarInactiveTintColor: th.tabInactive,
                 tabBarLabelStyle: styles.tabLabel,
+                tabBarStyle: [
+                    styles.tabBar,
+                    isDark && {
+                        borderTopColor: 'rgba(255,255,255,0.04)',
+                    },
+                ],
+                tabBarBackground: () => (
+                    <BlurView
+                        intensity={isDark ? 50 : 80}
+                        tint={isDark ? 'dark' : 'systemChromeMaterial'}
+                        style={[
+                            StyleSheet.absoluteFill,
+                            isDark && { backgroundColor: 'rgba(10,15,30,0.85)' },
+                        ]}
+                    />
+                ),
             }}
         >
             <Tabs.Screen
@@ -19,7 +45,16 @@ export default function TabsLayout() {
                 options={{
                     title: 'Ana Sayfa',
                     tabBarIcon: ({ color }) => (
-                        <Text style={[styles.tabIcon, { color }]}>🏠</Text>
+                        <TabBarIcon name="home" color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="chapters"
+                options={{
+                    title: 'Bölümler',
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="map-outline" color={color} />
                     ),
                 }}
             />
@@ -28,7 +63,7 @@ export default function TabsLayout() {
                 options={{
                     title: 'Sorular',
                     tabBarIcon: ({ color }) => (
-                        <Text style={[styles.tabIcon, { color }]}>📋</Text>
+                        <TabBarIcon name="list-outline" color={color} />
                     ),
                 }}
             />
@@ -37,7 +72,25 @@ export default function TabsLayout() {
                 options={{
                     title: 'İstatistik',
                     tabBarIcon: ({ color }) => (
-                        <Text style={[styles.tabIcon, { color }]}>📊</Text>
+                        <TabBarIcon name="bar-chart-outline" color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="generator"
+                options={{
+                    title: 'Generator',
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="flask-outline" color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="settings"
+                options={{
+                    title: 'Ayarlar',
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="settings-outline" color={color} />
                     ),
                 }}
             />
@@ -47,23 +100,18 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
     tabBar: {
-        backgroundColor: colors.surface,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
-        height: 70,
-        paddingBottom: 8,
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: 'rgba(0,0,0,0.08)',
+        height: Platform.OS === 'ios' ? 88 : 70,
+        paddingBottom: Platform.OS === 'ios' ? 28 : 8,
         paddingTop: 8,
-        elevation: 8,
-        shadowColor: colors.primaryDark,
-        shadowOpacity: 0.08,
-        shadowOffset: { width: 0, height: -4 },
-        shadowRadius: 12,
+        elevation: 0,
     },
     tabLabel: {
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    tabIcon: {
-        fontSize: 22,
+        fontSize: 10,
+        fontWeight: '500',
+        letterSpacing: 0.07,
     },
 });

@@ -1,18 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withSpring,
-    withRepeat,
-    withTiming,
-    withSequence,
-    withDelay,
-    Easing,
-    interpolate,
-    cancelAnimation,
-} from 'react-native-reanimated';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, Animated, Easing } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { radius } from '../../theme/radius';
 import { shadows } from '../../theme/shadows';
@@ -33,11 +22,9 @@ interface LevelNodeProps {
     completed: boolean;
     stars: number;
     isNext: boolean;
-    index: number; // for staggered entry
+    index: number;
     onPress: () => void;
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function LevelNode({
     levelId,
@@ -50,81 +37,108 @@ export default function LevelNode({
     index,
     onPress,
 }: LevelNodeProps) {
-    // ── Shared values ──
-    const scale = useSharedValue(1);
-    const pulse = useSharedValue(1);
-    const entryOpacity = useSharedValue(0);
-    const entryTranslateY = useSharedValue(24);
-    const glowOpacity = useSharedValue(0);
+    const scale = useRef(new Animated.Value(1)).current;
+    const pulse = useRef(new Animated.Value(1)).current;
+    const entryOpacity = useRef(new Animated.Value(0)).current;
+    const entryTranslateY = useRef(new Animated.Value(24)).current;
+    const glowOpacity = useRef(new Animated.Value(0)).current;
 
-    // ── Entry animation (staggered) ──
     useEffect(() => {
         const delay = Math.min(index * 80, 600);
-        entryOpacity.value = withDelay(delay, withTiming(1, { duration: 400 }));
-        entryTranslateY.value = withDelay(
-            delay,
-            withSpring(0, { damping: 14, stiffness: 120 })
-        );
+        Animated.parallel([
+            Animated.timing(entryOpacity, {
+                toValue: 1,
+                duration: 400,
+                delay,
+                useNativeDriver: true,
+            }),
+            Animated.spring(entryTranslateY, {
+                toValue: 0,
+                damping: 14,
+                stiffness: 120,
+                mass: 1,
+                delay,
+                useNativeDriver: true,
+            }),
+        ]).start();
     }, []);
 
-    // ── Pulse for current node ──
     useEffect(() => {
         if (isNext) {
-            pulse.value = withRepeat(
-                withSequence(
-                    withTiming(1.08, { duration: 900, easing: Easing.inOut(Easing.ease) }),
-                    withTiming(1.0, { duration: 900, easing: Easing.inOut(Easing.ease) })
-                ),
-                -1,
-                false
+            const anim = Animated.loop(
+                Animated.sequence([
+                    Animated.timing(pulse, {
+                        toValue: 1.06,
+                        duration: 1000,
+                        easing: Easing.inOut(Easing.ease),
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(pulse, {
+                        toValue: 1.0,
+                        duration: 1000,
+                        easing: Easing.inOut(Easing.ease),
+                        useNativeDriver: true,
+                    }),
+                ])
             );
+            anim.start();
+            return () => anim.stop();
         } else {
-            cancelAnimation(pulse);
-            pulse.value = withTiming(1, { duration: 200 });
+            Animated.timing(pulse, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: true,
+            }).start();
         }
     }, [isNext]);
 
-    // ── 3-star glow ──
     useEffect(() => {
         if (stars === 3) {
-            glowOpacity.value = withRepeat(
-                withSequence(
-                    withTiming(1, { duration: 1200 }),
-                    withTiming(0.3, { duration: 1200 })
-                ),
-                -1,
-                true
+            const anim = Animated.loop(
+                Animated.sequence([
+                    Animated.timing(glowOpacity, {
+                        toValue: 0.5,
+                        duration: 1200,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(glowOpacity, {
+                        toValue: 0.15,
+                        duration: 1200,
+                        useNativeDriver: true,
+                    }),
+                ]),
             );
+            anim.start();
+            return () => anim.stop();
         }
     }, [stars]);
 
-    // ── Press handlers ──
     const handlePressIn = () => {
         if (!unlocked) return;
-        scale.value = withSpring(0.9, { damping: 15, stiffness: 200 });
+        Animated.spring(scale, {
+            toValue: 0.9,
+            damping: 15,
+            stiffness: 200,
+            mass: 1,
+            useNativeDriver: true,
+        }).start();
     };
     const handlePressOut = () => {
-        scale.value = withSpring(1, { damping: 10, stiffness: 180 });
+        Animated.spring(scale, {
+            toValue: 1,
+            damping: 10,
+            stiffness: 180,
+            mass: 1,
+            useNativeDriver: true,
+        }).start();
     };
     const handlePress = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress();
     };
 
-    // ── Animated styles ──
-    const containerStyle = useAnimatedStyle(() => ({
-        opacity: entryOpacity.value,
-        transform: [
-            { translateY: entryTranslateY.value },
-            { scale: scale.value * pulse.value },
-        ],
-    }));
+    const combinedScale = Animated.multiply(scale, pulse);
 
-    const glowStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(glowOpacity.value, [0, 1], [0, 0.6]),
-    }));
-
-    // ── Derived values ──
     const size = isNext ? NODE_SIZE_NEXT : NODE_SIZE;
     const innerSize = isNext ? INNER_SIZE_NEXT : INNER_SIZE;
 
@@ -136,7 +150,7 @@ export default function LevelNode({
                 : colors.secondary;
 
     const nodeColor = !unlocked
-        ? '#CBD5E0'
+        ? '#C7C7CC'
         : completed
             ? colors.success
             : isNext
@@ -144,102 +158,110 @@ export default function LevelNode({
                 : colors.primaryLight;
 
     const bgTint = !unlocked
-        ? '#E2E8F0'
+        ? '#E5E5EA'
         : completed
-            ? colors.success + '18'
+            ? colors.success + '14'
             : isNext
-                ? colors.primary + '18'
-                : colors.primaryLight + '12';
+                ? colors.primary + '14'
+                : colors.primaryLight + '0C';
 
     return (
-        <AnimatedPressable
-            onPress={handlePress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            style={[styles.wrapper, containerStyle]}
+        <Animated.View
+            style={[
+                styles.wrapper,
+                {
+                    opacity: entryOpacity,
+                    transform: [
+                        { translateY: entryTranslateY },
+                        { scale: combinedScale },
+                    ],
+                },
+            ]}
         >
-            {/* 3-star glow ring */}
-            {stars === 3 && (
-                <Animated.View
-                    style={[
-                        styles.glowRing,
-                        {
-                            width: size + 16,
-                            height: size + 16,
-                            borderRadius: (size + 16) / 2,
-                            borderColor: colors.accent,
-                        },
-                        glowStyle,
-                    ]}
-                />
-            )}
-
-            {/* Outer ring */}
-            <View
-                style={[
-                    styles.outerRing,
-                    {
-                        width: size,
-                        height: size,
-                        borderRadius: size / 2,
-                        borderColor: nodeColor,
-                        backgroundColor: bgTint,
-                    },
-                    isNext && styles.nextShadow,
-                ]}
+            <Pressable
+                onPress={handlePress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
             >
-                {/* Inner circle */}
+                {stars === 3 && (
+                    <Animated.View
+                        style={[
+                            styles.glowRing,
+                            {
+                                width: size + 16,
+                                height: size + 16,
+                                borderRadius: (size + 16) / 2,
+                                borderColor: colors.accent,
+                                opacity: glowOpacity,
+                            },
+                        ]}
+                    />
+                )}
+
                 <View
                     style={[
-                        styles.innerCircle,
+                        styles.outerRing,
                         {
-                            width: innerSize,
-                            height: innerSize,
-                            borderRadius: innerSize / 2,
-                            backgroundColor: nodeColor,
+                            width: size,
+                            height: size,
+                            borderRadius: size / 2,
+                            borderColor: nodeColor,
+                            backgroundColor: bgTint,
                         },
+                        isNext && styles.nextShadow,
                     ]}
                 >
-                    {completed ? (
-                        <Text style={[styles.checkmark, isNext && styles.checkmarkLg]}>
-                            ✓
-                        </Text>
-                    ) : unlocked ? (
-                        <Text style={[styles.levelNumber, isNext && styles.levelNumberLg]}>
-                            {levelId}
-                        </Text>
-                    ) : (
-                        <Text style={styles.lockIcon}>🔒</Text>
-                    )}
+                    <View
+                        style={[
+                            styles.innerCircle,
+                            {
+                                width: innerSize,
+                                height: innerSize,
+                                borderRadius: innerSize / 2,
+                                backgroundColor: nodeColor,
+                            },
+                        ]}
+                    >
+                        {completed ? (
+                            <Ionicons name="checkmark" size={isNext ? 28 : 24} color="#fff" />
+                        ) : unlocked ? (
+                            <Text style={[styles.levelNumber, isNext && styles.levelNumberLg]}>
+                                {levelId}
+                            </Text>
+                        ) : (
+                            <Ionicons name="lock-closed" size={18} color="#A0A0A8" />
+                        )}
+                    </View>
                 </View>
-            </View>
 
-            {/* Star rating */}
-            {completed && (
-                <View style={styles.starsRow}>
-                    {[1, 2, 3].map((i) => (
-                        <Text key={i} style={[styles.star, i <= stars && styles.starFilled]}>
-                            {i <= stars ? '★' : '☆'}
-                        </Text>
-                    ))}
-                </View>
-            )}
+                {/* Star rating */}
+                {completed && (
+                    <View style={styles.starsRow}>
+                        {[1, 2, 3].map((i) => (
+                            <Ionicons
+                                key={i}
+                                name={i <= stars ? 'star' : 'star-outline'}
+                                size={14}
+                                color={i <= stars ? colors.accent : '#C7C7CC'}
+                            />
+                        ))}
+                    </View>
+                )}
 
-            {/* Title */}
-            <Text
-                style={[styles.title, !unlocked && styles.lockedTitle]}
-                numberOfLines={1}
-            >
-                {title}
-            </Text>
-
-            {/* Difficulty badge */}
-            <View style={[styles.diffBadge, { backgroundColor: diffColor + '20' }]}>
-                <Text style={[styles.diffText, { color: diffColor }]}>
-                    {difficulty}
+                <Text
+                    style={[styles.title, !unlocked && styles.lockedTitle]}
+                    numberOfLines={1}
+                >
+                    {title}
                 </Text>
-            </View>
-        </AnimatedPressable>
+
+                <View style={[styles.diffBadge, { backgroundColor: diffColor + '18' }]}>
+                    <Text style={[styles.diffText, { color: diffColor }]}>
+                        {difficulty}
+                    </Text>
+                </View>
+            </Pressable>
+        </Animated.View>
     );
 }
 
@@ -251,16 +273,18 @@ const styles = StyleSheet.create({
     glowRing: {
         position: 'absolute',
         top: -8,
-        borderWidth: 3,
+        borderWidth: 2.5,
         zIndex: -1,
+        alignSelf: 'center',
     },
     outerRing: {
-        borderWidth: 3.5,
+        borderWidth: 3,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'center',
     },
     nextShadow: {
-        borderWidth: 4,
+        borderWidth: 3.5,
         ...shadows.glow,
     },
     innerCircle: {
@@ -268,42 +292,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         ...shadows.sm,
     },
-    checkmark: {
-        fontSize: 24,
-        fontWeight: '800',
-        color: '#fff',
-    },
-    checkmarkLg: {
-        fontSize: 28,
-    },
     levelNumber: {
         fontSize: 22,
-        fontWeight: '900',
+        fontWeight: '800',
         color: '#fff',
         letterSpacing: -0.3,
     },
     levelNumberLg: {
         fontSize: 26,
     },
-    lockIcon: {
-        fontSize: 20,
-    },
     starsRow: {
         flexDirection: 'row',
         gap: 2,
         marginTop: 5,
-    },
-    star: {
-        fontSize: 14,
-        color: '#CBD5E0',
-    },
-    starFilled: {
-        color: colors.accent,
+        alignSelf: 'center',
     },
     title: {
         ...typography.caption,
         fontSize: 12,
-        fontWeight: '700',
+        fontWeight: '600',
         color: colors.text,
         marginTop: 3,
         textAlign: 'center',
@@ -316,9 +323,10 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         borderRadius: radius.full,
         marginTop: 3,
+        alignSelf: 'center',
     },
     diffText: {
         fontSize: 10,
-        fontWeight: '700',
+        fontWeight: '600',
     },
 });
