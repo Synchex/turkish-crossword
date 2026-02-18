@@ -18,6 +18,7 @@ import { useEconomyStore, STREAK_FREEZE_COST } from '../../src/store/useEconomyS
 import { useMissionsStore, Mission } from '../../src/store/useMissionsStore';
 import { useGamificationStore, getXPForNextLevel } from '../../src/store/useGamificationStore';
 import { useDailyPuzzleStore } from '../../src/store/useDailyPuzzleStore';
+import { useLeagueStore, LEAGUE_META } from '../../src/store/useLeagueStore';
 import { DAILY_COIN_REWARD, DAILY_XP_REWARD } from '../../src/data/dailyPuzzles';
 import { levels } from '../../src/levels/levels';
 
@@ -298,7 +299,12 @@ export default function HomeScreen() {
   const claimMission = useMissionsStore((s) => s.claimMission);
   const ensureDailyMissions = useMissionsStore((s) => s.ensureDailyMissions);
 
-  const { currentStreak, longestStreak, totalXP, currentLevel: playerLevel, streakFreezes } = useGamificationStore();
+  const { currentStreak, longestStreak, totalXP, weeklyXP, currentLevel: playerLevel, streakFreezes } = useGamificationStore();
+  const league = useLeagueStore((s) => s.league);
+  const ensureWeeklyLeague = useLeagueStore((s) => s.ensureWeeklyLeague);
+  const leagueRank = useLeagueStore((s) => s.getRank(weeklyXP));
+  const promotionXP = useLeagueStore((s) => s.getPromotionThreshold());
+  const leagueMeta = LEAGUE_META[league];
 
   const [shopVisible, setShopVisible] = useState(false);
   const [missionsModalVisible, setMissionsModalVisible] = useState(false);
@@ -307,6 +313,13 @@ export default function HomeScreen() {
 
   useEffect(() => {
     ensureDailyMissions();
+    // Generate weekly league if needed
+    const weekStart = new Date();
+    const day = weekStart.getDay();
+    const diff = (day === 0 ? 6 : day - 1);
+    weekStart.setDate(weekStart.getDate() - diff);
+    const weekKey = weekStart.toISOString().split('T')[0];
+    ensureWeeklyLeague(weekKey, weeklyXP);
   }, []);
 
   const nextLevelXP = getXPForNextLevel(playerLevel);
@@ -525,6 +538,50 @@ export default function HomeScreen() {
                 </Text>
               </View>
             </View>
+          </Card>
+        </Animated.View>
+
+        {/* ── League Card ── */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <Card style={styles.leagueCard} variant="elevated" padding="lg">
+            <View style={styles.leagueRow}>
+              <View style={[styles.leagueIconBadge, { backgroundColor: leagueMeta.color + '18' }]}>
+                <Ionicons
+                  name={leagueMeta.icon as any}
+                  size={22}
+                  color={leagueMeta.color}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.leagueTitle}>{leagueMeta.label} Lig</Text>
+                <Text style={styles.leagueSub}>
+                  Sıralama: #{leagueRank} · {weeklyXP} XP bu hafta
+                </Text>
+              </View>
+            </View>
+            {promotionXP > 0 && (
+              <View style={styles.leaguePromoRow}>
+                <View style={styles.leaguePromoBarTrack}>
+                  <View
+                    style={[
+                      styles.leaguePromoBarFill,
+                      {
+                        width: `${Math.min(100, (weeklyXP / promotionXP) * 100)}%`,
+                        backgroundColor: leagueMeta.color,
+                      },
+                    ]}
+                  />
+                </View>
+                <Text style={styles.leaguePromoText}>
+                  Yükselme: {promotionXP} XP
+                </Text>
+              </View>
+            )}
           </Card>
         </Animated.View>
 
@@ -853,6 +910,51 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textSecondary,
     marginTop: 2,
+  },
+  // ── League ──
+  leagueCard: {
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+  },
+  leagueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  leagueIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  leagueTitle: {
+    ...typography.headline,
+    color: colors.text,
+  },
+  leagueSub: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  leaguePromoRow: {
+    marginTop: spacing.sm,
+  },
+  leaguePromoBarTrack: {
+    height: 6,
+    backgroundColor: colors.fill,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  leaguePromoBarFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  leaguePromoText: {
+    ...typography.caption,
+    color: colors.textMuted,
+    marginTop: 4,
+    fontSize: 11,
   },
   // ── Shop Modal ──
   modalOverlay: {

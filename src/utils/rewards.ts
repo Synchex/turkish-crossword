@@ -7,27 +7,23 @@ const TARGET_TIME: Record<string, number> = {
     hard: 540,   // 9 min
 };
 
-// ── Star Rating ──
+// ═══════════════════════════════════════════════
+// STAR RATING (unchanged logic)
+// ═══════════════════════════════════════════════
 // 3★: 0 hints, mistakes ≤ 1, time ≤ threshold
-// 2★: hints ≤ 2, mistakes ≤ 3
+// 2★: hints ≤ 1
 // 1★: puzzle completed
-//
-// Hint caps:
-// - hintsUsed > 0 → max 2 stars (blocks 3★)
-// - hintsUsed ≥ 4 → max 1 star
 export function computeStars(
     hintsUsed: number,
     mistakes: number,
     timeSec: number = 0,
     difficulty: string = 'easy'
 ): number {
-    // Hint caps first
     if (hintsUsed >= 4) return 1;
 
     const maxStarsByHints = hintsUsed > 0 ? 2 : 3;
     const targetTime = TARGET_TIME[difficulty] ?? TARGET_TIME.easy;
 
-    // 3-star check (only reachable if hintsUsed === 0)
     if (
         maxStarsByHints >= 3 &&
         hintsUsed === 0 &&
@@ -37,45 +33,86 @@ export function computeStars(
         return 3;
     }
 
-    // 2-star check
-    if (maxStarsByHints >= 2 && hintsUsed <= 2 && mistakes <= 3) {
+    if (maxStarsByHints >= 2 && hintsUsed <= 1 && mistakes <= 3) {
         return 2;
     }
 
     return 1;
 }
 
-// ── XP Rewards ──
-const BASE_XP: Record<string, number> = {
-    easy: 10,
-    medium: 20,
-    hard: 35,
-};
+// ═══════════════════════════════════════════════
+// XP CALCULATION (new Duolingo-level formula)
+// ═══════════════════════════════════════════════
 
-export function computeXP(
-    difficulty: string,
-    stars: number,
-    hintsUsed: number
-): number {
-    let xp = BASE_XP[difficulty] ?? 10;
-    if (stars === 3) xp += 5;
-    if (stars === 2) xp += 2;
-    xp -= hintsUsed * 2;
-    return Math.max(0, xp);
+export interface XPInput {
+    isBigPuzzle: boolean;
+    timeSec: number;
+    mistakes: number;
+    letterHints: number;  // random letter reveals
+    clueHints: number;    // random clue reveals
 }
 
-// ── Coin Rewards ──
-const BASE_COINS: Record<string, number> = {
-    easy: 2,
-    medium: 4,
-    hard: 7,
-};
+export interface XPResult {
+    totalXP: number;
+    baseXP: number;
+    timeBonus: number;
+    mistakePenalty: number;
+    hintPenalty: number;
+    perfectBonus: number;
+    isPerfect: boolean;
+}
 
-export function computeCoins(difficulty: string, stars: number): number {
-    let coins = BASE_COINS[difficulty] ?? 2;
-    if (stars === 3) coins += 5;
-    if (stars === 2) coins += 2;
-    return coins;
+const TIME_BONUS_MAX = 20;
+const PERFECT_BONUS = 25;
+const MISTAKE_PENALTY_PER = 3;
+const LETTER_HINT_PENALTY = 10;
+const CLUE_HINT_PENALTY = 15;
+const MIN_XP = 5;
+
+export function calculateXP(input: XPInput): XPResult {
+    const base = input.isBigPuzzle ? 150 : 50;
+
+    // Time bonus: 0–20 XP, scales inversely with time
+    // Full bonus if under 2 min, 0 bonus if over 10 min
+    const minTime = 120;
+    const maxTime = 600;
+    const clamped = Math.max(minTime, Math.min(maxTime, input.timeSec));
+    const timeFraction = 1 - (clamped - minTime) / (maxTime - minTime);
+    const timeBonus = Math.round(timeFraction * TIME_BONUS_MAX);
+
+    // Penalties
+    const mistakePenalty = input.mistakes * MISTAKE_PENALTY_PER;
+    const hintPenalty = input.letterHints * LETTER_HINT_PENALTY
+        + input.clueHints * CLUE_HINT_PENALTY;
+
+    // Perfect bonus: 0 hints total AND ≤1 mistake
+    const totalHints = input.letterHints + input.clueHints;
+    const isPerfect = totalHints === 0 && input.mistakes <= 1;
+    const perfectBonus = isPerfect ? PERFECT_BONUS : 0;
+
+    const raw = base + timeBonus - mistakePenalty - hintPenalty + perfectBonus;
+    const totalXP = Math.max(MIN_XP, raw);
+
+    return {
+        totalXP,
+        baseXP: base,
+        timeBonus,
+        mistakePenalty,
+        hintPenalty,
+        perfectBonus,
+        isPerfect,
+    };
+}
+
+// ═══════════════════════════════════════════════
+// COIN REWARDS (rebalanced: 5–15 range)
+// ═══════════════════════════════════════════════
+
+export function computeCoins(stars: number, isBigPuzzle: boolean): number {
+    const base = isBigPuzzle ? 8 : 5;
+    if (stars === 3) return base + 7;   // 12 or 15
+    if (stars === 2) return base + 3;   // 8 or 11
+    return base;                        // 5 or 8
 }
 
 // ── Map Turkish difficulty to English ──
@@ -83,4 +120,24 @@ export function mapDifficulty(d: string): Difficulty {
     if (d === 'Kolay') return 'easy';
     if (d === 'Zor') return 'hard';
     return 'medium';
+}
+
+// ═══════════════════════════════════════════════
+// LEVEL SYSTEM (new: floor(totalXP / 500) + 1)
+// ═══════════════════════════════════════════════
+
+export function getLevel(totalXP: number): number {
+    return Math.floor(totalXP / 500) + 1;
+}
+
+export function getXPForNextLevel(level: number): number {
+    return level * 500;
+}
+
+export function getLevelProgress(totalXP: number): number {
+    return totalXP % 500;
+}
+
+export function getLevelProgressPercent(totalXP: number): number {
+    return (totalXP % 500) / 500;
 }

@@ -5,13 +5,17 @@ import { getCurrentDateISO } from '../utils/dateHelpers';
 import { useEconomyStore } from './useEconomyStore';
 import { useGamificationStore } from './useGamificationStore';
 
-// ── Mission Types ──
+// ═══════════════════════════════════════════════
+// MISSION TYPES
+// ═══════════════════════════════════════════════
+
 export type MissionType =
     | 'SOLVE_PUZZLES'
     | 'SOLVE_WITHOUT_HINTS'
     | 'ENTER_CORRECT_WORDS'
     | 'FINISH_UNDER_TIME'
     | 'NO_MISTAKES_RUN'
+    | 'EARN_XP'
     | 'SOLVE_MEDIUM';
 
 export type MissionDifficulty = 'easy' | 'medium' | 'hard';
@@ -29,6 +33,39 @@ export interface Mission {
     completed: boolean;
     claimed: boolean;
     createdForDate: string;
+}
+
+// ═══════════════════════════════════════════════
+// CHEST REWARD SYSTEM
+// ═══════════════════════════════════════════════
+
+export type ChestRewardType = 'coins' | 'xp_boost' | 'streak_freeze';
+
+export interface ChestReward {
+    type: ChestRewardType;
+    label: string;
+    amount: number; // coins amount, or boost duration ms, or freeze count
+}
+
+function generateChestReward(dateStr: string): ChestReward {
+    // Seeded random from date
+    let seed = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+        seed = (seed * 31 + dateStr.charCodeAt(i)) | 0;
+    }
+    const roll = Math.abs(seed) % 100;
+
+    if (roll < 50) {
+        // 50% chance: coins (20–50)
+        const coins = 20 + (Math.abs(seed * 7) % 31);
+        return { type: 'coins', label: `${coins} Coin`, amount: coins };
+    } else if (roll < 80) {
+        // 30% chance: 2x XP boost (30 min)
+        return { type: 'xp_boost', label: '2x XP (30 dk)', amount: 30 * 60 * 1000 };
+    } else {
+        // 20% chance: streak freeze
+        return { type: 'streak_freeze', label: 'Seri Kalkanı', amount: 1 };
+    }
 }
 
 // ── Mission Templates ──
@@ -83,11 +120,11 @@ const MEDIUM_TEMPLATES: MissionTemplate[] = [
         rewardXP: 15,
     },
     {
-        type: 'ENTER_CORRECT_WORDS',
+        type: 'EARN_XP',
         difficulty: 'medium',
-        title: '15 Doğru Kelime',
-        description: '15 kelimeyi doğru gir.',
-        target: 15,
+        title: '80 XP Kazan',
+        description: 'Toplam 80 XP kazan.',
+        target: 80,
         rewardCoins: 25,
         rewardXP: 15,
     },
@@ -144,14 +181,21 @@ function generateDailyMissions(dateStr: string): Mission[] {
     }));
 }
 
-// ── Store ──
+// ═══════════════════════════════════════════════
+// STORE
+// ═══════════════════════════════════════════════
+
 interface MissionsState {
     missions: Mission[];
     lastGeneratedDate: string | null;
+    chestClaimed: boolean;
+    lastChestReward: ChestReward | null;
 
     ensureDailyMissions: () => void;
     updateProgress: (type: MissionType, amount: number) => void;
     claimMission: (id: string) => { coins: number; xp: number } | null;
+    areAllClaimed: () => boolean;
+    claimChest: () => ChestReward | null;
 }
 
 export const useMissionsStore = create<MissionsState>()(
@@ -159,6 +203,8 @@ export const useMissionsStore = create<MissionsState>()(
         (set, get) => ({
             missions: [],
             lastGeneratedDate: null,
+            chestClaimed: false,
+            lastChestReward: null,
 
             ensureDailyMissions: () => {
                 const today = getCurrentDateISO();
@@ -166,7 +212,12 @@ export const useMissionsStore = create<MissionsState>()(
 
                 if (lastGeneratedDate !== today) {
                     const newMissions = generateDailyMissions(today);
-                    set({ missions: newMissions, lastGeneratedDate: today });
+                    set({
+                        missions: newMissions,
+                        lastGeneratedDate: today,
+                        chestClaimed: false,
+                        lastChestReward: null,
+                    });
                 }
             },
 
@@ -188,9 +239,10 @@ export const useMissionsStore = create<MissionsState>()(
                 const mission = get().missions.find((m) => m.id === id);
                 if (!mission || !mission.completed || mission.claimed) return null;
 
-                // Award rewards
+                // Award coins
                 useEconomyStore.getState().addCoins(mission.rewardCoins);
-                useGamificationStore.getState().completePuzzle('easy', false); // Just award XP
+                // Award XP
+                useGamificationStore.getState().addXP(mission.rewardXP);
 
                 set((s) => ({
                     missions: s.missions.map((m) =>
@@ -199,6 +251,36 @@ export const useMissionsStore = create<MissionsState>()(
                 }));
 
                 return { coins: mission.rewardCoins, xp: mission.rewardXP };
+            },
+
+            areAllClaimed: () => {
+                const { missions } = get();
+                return missions.length > 0 && missions.every((m) => m.claimed);
+            },
+
+            claimChest: () => {
+                const state = get();
+                if (state.chestClaimed) return null;
+                if (!state.areAllClaimed()) return null;
+
+                const today = getCurrentDateISO();
+                const reward = generateChestReward(today);
+
+                // Apply reward
+                switch (reward.type) {
+                    case 'coins':
+                        useEconomyStore.getState().addCoins(reward.amount);
+                        break;
+                    case 'xp_boost':
+                        useGamificationStore.getState().activateXPBoost(reward.amount);
+                        break;
+                    case 'streak_freeze':
+                        useGamificationStore.getState().addFreezes(reward.amount);
+                        break;
+                }
+
+                set({ chestClaimed: true, lastChestReward: reward });
+                return reward;
             },
         }),
         {

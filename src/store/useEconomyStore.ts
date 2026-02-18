@@ -5,12 +5,12 @@ import { getCurrentDateISO } from '../utils/dateHelpers';
 import { useGamificationStore } from './useGamificationStore';
 import { IS_DEV, DEV_COIN_BALANCE } from '../config/devConfig';
 
-// ── Constants ──
-export const HINT_LETTER_COST = 10;
-export const HINT_WORD_COST = 25;
-export const STREAK_FREEZE_COST = 50;
-export const PUZZLE_COMPLETE_REWARD = 5;
-export const FIRST_PUZZLE_BONUS = 10;
+// ── Constants (rebalanced for Duolingo-level economy) ──
+export const HINT_LETTER_COST = 3;
+export const HINT_WORD_COST = 7;
+export const STREAK_FREEZE_COST = 200;
+export const LEVEL_UP_REWARD = 20;
+export const LEAGUE_PROMOTION_REWARD = 50;
 
 interface EconomyState {
     coins: number;
@@ -19,7 +19,8 @@ interface EconomyState {
     // Actions
     addCoins: (amount: number) => void;
     spendCoins: (amount: number) => boolean;
-    awardPuzzleCompletion: () => number;
+    awardLevelUp: () => void;
+    awardLeaguePromotion: () => void;
     buyStreakFreeze: () => boolean;
 
     // Dev helpers
@@ -43,36 +44,26 @@ export const useEconomyStore = create<EconomyState>()(
             },
 
             spendCoins: (amount) => {
-                // DEV override: always succeed, never deduct
                 if (IS_DEV) return true;
-
                 const { coins } = get();
                 if (coins < amount) return false;
                 set({ coins: coins - amount });
                 return true;
             },
 
-            awardPuzzleCompletion: () => {
-                const today = getCurrentDateISO();
-                const { firstPuzzleBonusDate } = get();
-                let reward = PUZZLE_COMPLETE_REWARD;
+            awardLevelUp: () => {
+                set((s) => ({ coins: s.coins + LEVEL_UP_REWARD }));
+            },
 
-                if (firstPuzzleBonusDate !== today) {
-                    reward += FIRST_PUZZLE_BONUS;
-                    set({ firstPuzzleBonusDate: today });
-                }
-
-                set((s) => ({ coins: s.coins + reward }));
-                return reward;
+            awardLeaguePromotion: () => {
+                set((s) => ({ coins: s.coins + LEAGUE_PROMOTION_REWARD }));
             },
 
             buyStreakFreeze: () => {
-                // DEV override
                 if (IS_DEV) {
                     useGamificationStore.getState().addFreezes(1);
                     return true;
                 }
-
                 const { coins } = get();
                 if (coins < STREAK_FREEZE_COST) return false;
                 set({ coins: coins - STREAK_FREEZE_COST });

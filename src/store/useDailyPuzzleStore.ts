@@ -66,7 +66,8 @@ export const useDailyPuzzleStore = create<DailyPuzzleState>()(
                 useEconomyStore.getState().addCoins(DAILY_COIN_REWARD);
 
                 // Award XP via gamification
-                useGamificationStore.getState().completePuzzle('easy', false);
+                useGamificationStore.getState().addXP(DAILY_XP_REWARD);
+                useGamificationStore.getState().recordPuzzleCompletion();
 
                 // Update state
                 const newDates = [todayKey, ...completedDates].slice(0, 60);

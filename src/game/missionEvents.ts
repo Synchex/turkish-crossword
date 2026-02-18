@@ -5,9 +5,10 @@ import { useMissionsStore } from '../store/useMissionsStore';
  */
 export function onPuzzleCompleted(
     difficulty: string,
-    hearts: number,
+    mistakes: number,
     hintsUsed: number,
-    timeSeconds: number
+    timeSeconds: number,
+    xpEarned: number
 ) {
     const update = useMissionsStore.getState().updateProgress;
 
@@ -19,8 +20,8 @@ export function onPuzzleCompleted(
         update('SOLVE_WITHOUT_HINTS', 1);
     }
 
-    // NO_MISTAKES_RUN — only if full hearts (3)
-    if (hearts === 3) {
+    // NO_MISTAKES_RUN — only if 0 mistakes
+    if (mistakes === 0) {
         update('NO_MISTAKES_RUN', 1);
     }
 
@@ -32,6 +33,11 @@ export function onPuzzleCompleted(
     // SOLVE_MEDIUM — only medium+ difficulty
     if (difficulty === 'medium' || difficulty === 'hard' || difficulty === 'Orta' || difficulty === 'Zor') {
         update('SOLVE_MEDIUM', 1);
+    }
+
+    // EARN_XP — track XP earned
+    if (xpEarned > 0) {
+        update('EARN_XP', xpEarned);
     }
 }
 

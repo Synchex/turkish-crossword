@@ -41,12 +41,13 @@ import { useStatsStore } from '../../src/store/useStatsStore';
 import { useGeneratorStore } from '../../src/store/useGeneratorStore';
 import { useBigPuzzleStore } from '../../src/store/useBigPuzzleStore';
 import { onPuzzleCompleted, onCorrectWordEntered } from '../../src/game/missionEvents';
-import { computeStars, computeXP, computeCoins, mapDifficulty } from '../../src/utils/rewards';
+import { computeStars, calculateXP, computeCoins, mapDifficulty } from '../../src/utils/rewards';
 import CrosswordGrid from '../../src/components/CrosswordGrid';
 import ClueList from '../../src/components/ClueList';
 import CluePopover from '../../src/components/CluePopover';
 import { Word, LevelData } from '../../src/game/types';
 import { buildStartCellMap } from '../../src/utils/crosswordHelpers';
+import { useLeagueStore } from '../../src/store/useLeagueStore';
 
 export default function GameScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -102,6 +103,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
   const [navigated, setNavigated] = useState(false);
   const [hintModalVisible, setHintModalVisible] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const coinsSpentRef = useRef(0);
 
   // Derived: should keyboard and solving UI be shown?
   const shouldShowKeyboard = isSolving && activeEntry != null;
@@ -153,15 +155,44 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
     if (state.isComplete && !navigated) {
       setNavigated(true);
       setIsSolving(false);
-      const stars = getStars();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+      // Calculate rewards
+      const stars = computeStars(state.hintsUsed, 0, state.timeElapsed, 'medium');
+      const xpResult = calculateXP({
+        isBigPuzzle: true,
+        timeSec: state.timeElapsed,
+        mistakes: 0,
+        letterHints: state.hintsUsed,
+        clueHints: 0,
+      });
+      const coinsEarned = computeCoins(stars, true);
+
+      // Update stores
+      useEconomyStore.getState().addCoins(coinsEarned);
+      const gamResult = useGamificationStore.getState().addXP(xpResult.totalXP);
+      useGamificationStore.getState().recordPuzzleCompletion();
+      if (gamResult.levelUp) {
+        useEconomyStore.getState().awardLevelUp();
+      }
+      onPuzzleCompleted('medium', 0, state.hintsUsed, state.timeElapsed, xpResult.totalXP);
+      useStatsStore.getState().onPuzzleComplete({
+        timeSec: state.timeElapsed,
+        mistakes: 0,
+        correctWords: entries.length,
+        wrongWords: 0,
+        isDaily: false,
+      });
+
+      // League rank
+      const weeklyXP = useGamificationStore.getState().weeklyXP;
+      const leagueRank = useLeagueStore.getState().getRank(weeklyXP);
+
       setTimeout(() => {
-        Alert.alert(
-          '🎉 Tebrikler!',
-          `${puzzle.title} tamamlandı!\n⭐ ${stars} yıldız\n⏱ ${formatTime(state.timeElapsed)}\n💡 ${state.hintsUsed} ipucu kullanıldı`,
-          [{ text: 'Tamam', onPress: () => router.back() }],
+        router.replace(
+          `/result/ch-${puzzleId}?stars=${stars}&time=${state.timeElapsed}&score=0&xp=${xpResult.totalXP}&coins=${coinsEarned}&hints=${state.hintsUsed}&mistakes=0&coinsSpent=${coinsSpentRef.current}&perfect=${xpResult.isPerfect ? '1' : '0'}&levelUp=${gamResult.levelUp ? 'true' : 'false'}&newLevel=${gamResult.newLevel}&leagueRank=${leagueRank}`,
         );
-      }, 800);
+      }, 1200);
     }
   }, [state.isComplete]);
 
@@ -193,6 +224,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
       return;
     }
     revealHint();
+    coinsSpentRef.current += HINT_LETTER_COST;
     setHintModalVisible(false);
   }, [spendCoins, revealHint]);
 
@@ -454,12 +486,22 @@ function LegacyGameScreen({ id }: { id: string }) {
         return;
       }
       const stars = computeStars(hintsUsedRef.current, mistakesRef.current, state.timeElapsed, diff);
-      const xpGained = computeXP(diff, stars, hintsUsedRef.current);
-      const coinsEarned = computeCoins(diff, stars);
+      const xpResult = calculateXP({
+        isBigPuzzle: false,
+        timeSec: state.timeElapsed,
+        mistakes: mistakesRef.current,
+        letterHints: hintsUsedRef.current,
+        clueHints: 0,
+      });
+      const coinsEarned = computeCoins(stars, false);
       completeLevel(level.id, stars, state.timeElapsed, mistakesRef.current, hintsUsedRef.current);
       useEconomyStore.getState().addCoins(coinsEarned);
-      useGamificationStore.getState().completePuzzle(diff, stars === 3);
-      onPuzzleCompleted(diff, 3, hintsUsedRef.current, state.timeElapsed);
+      const gamResult = useGamificationStore.getState().addXP(xpResult.totalXP);
+      useGamificationStore.getState().recordPuzzleCompletion();
+      if (gamResult.levelUp) {
+        useEconomyStore.getState().awardLevelUp();
+      }
+      onPuzzleCompleted(diff, mistakesRef.current, hintsUsedRef.current, state.timeElapsed, xpResult.totalXP);
       useStatsStore.getState().onPuzzleComplete({
         timeSec: state.timeElapsed,
         mistakes: mistakesRef.current,
@@ -467,9 +509,14 @@ function LegacyGameScreen({ id }: { id: string }) {
         wrongWords: mistakesRef.current,
         isDaily: false,
       });
+
+      // League rank
+      const weeklyXP = useGamificationStore.getState().weeklyXP;
+      const leagueRank = useLeagueStore.getState().getRank(weeklyXP);
+
       setTimeout(() => {
         router.replace(
-          `/result/${level.id}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&xp=${xpGained}&coins=${coinsEarned}&hints=${hintsUsedRef.current}&mistakes=${mistakesRef.current}&coinsSpent=${coinsSpentRef.current}`,
+          `/result/${level.id}?stars=${stars}&time=${state.timeElapsed}&score=${state.score}&xp=${xpResult.totalXP}&coins=${coinsEarned}&hints=${hintsUsedRef.current}&mistakes=${mistakesRef.current}&coinsSpent=${coinsSpentRef.current}&perfect=${xpResult.isPerfect ? '1' : '0'}&levelUp=${gamResult.levelUp ? 'true' : 'false'}&newLevel=${gamResult.newLevel}&leagueRank=${leagueRank}`,
         );
       }, 1200);
     }

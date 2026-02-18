@@ -77,7 +77,7 @@ export default function DailyScreen() {
             });
 
             // Mission events
-            onPuzzleCompleted('easy', 3, hintsUsedRef.current, state.timeElapsed);
+            onPuzzleCompleted('easy', mistakesRef.current, hintsUsedRef.current, state.timeElapsed, reward.xp);
 
             // Success haptic
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
