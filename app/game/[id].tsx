@@ -29,9 +29,9 @@ import TopBar from '../../src/components/TopBar';
 import FeedbackPanel from '../../src/components/ui/FeedbackPanel';
 import { useEconomyStore, HINT_LETTER_COST } from '../../src/store/useEconomyStore';
 import { usePuzzleProgressStore } from '../../src/store/usePuzzleProgressStore';
-import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
+import { useUIProfile, useTheme } from '../../src/theme/ThemeContext';
 
 // ── Old imports for legacy modes ──
 import { levels } from '../../src/levels/levels';
@@ -71,6 +71,9 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
   const router = useRouter();
+  const ui = useUIProfile();
+  const t = useTheme();
+  const gp = ui.gameplay;
   const puzzle = useMemo(() => getPuzzleById(puzzleId), [puzzleId]);
 
   if (!puzzle) {
@@ -297,59 +300,59 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
 
   return (
     <Pressable style={{ flex: 1 }} onPress={isSolving ? exitSolvingMode : undefined}>
-      <SafeAreaView style={styles.safe} edges={['top']}>
+      <SafeAreaView style={[styles.safe, { backgroundColor: t.background }]} edges={['top']}>
         {/* ── Header ── */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={24} color={colors.text} />
+          <TouchableOpacity onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.fill }]}>
+            <Ionicons name="chevron-back" size={24} color={t.text} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{puzzle.title}</Text>
-            <Text style={styles.headerSub}>
+            <Text style={[styles.headerTitle, { fontSize: gp.headerTitleSize, color: t.text }]}>{puzzle.title}</Text>
+            <Text style={[styles.headerSub, { fontSize: gp.headerSubSize, color: t.textSecondary }]}>
               {formatTime(state.timeElapsed)} · {lockedCount}/{totalEntries}
             </Text>
           </View>
-          <TouchableOpacity onPress={handleHintPress} style={styles.hintBtn}>
-            <Ionicons name="bulb-outline" size={20} color={colors.accent} />
-            <Text style={styles.coinText}>{coins}</Text>
+          <TouchableOpacity onPress={handleHintPress} style={[styles.hintBtn, { backgroundColor: t.fill }]}>
+            <Ionicons name="bulb-outline" size={20} color={t.accent} />
+            <Text style={[styles.coinText, { fontSize: Math.round(13 * ui.fontScale), color: t.accent }]}>{coins}</Text>
           </TouchableOpacity>
         </View>
 
         {/* ── Progress bar ── */}
-        <View style={styles.progressContainer}>
-          <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+        <View style={[styles.progressContainer, { backgroundColor: t.fill }]}>
+          <View style={[styles.progressBar, { width: `${progress * 100}%`, backgroundColor: t.primary }]} />
         </View>
 
         {/* ── Clue Bar (only when solving) ── */}
         {shouldShowKeyboard ? (
           <View style={styles.clueBarWrapper}>
             <ClueBar entry={activeEntry} canToggle={canToggle} onToggle={handleToggle} />
-            <TouchableOpacity onPress={exitSolvingMode} style={styles.closeBtn}>
-              <Ionicons name="close" size={20} color={colors.textSecondary} />
+            <TouchableOpacity onPress={exitSolvingMode} style={[styles.closeBtn, { backgroundColor: t.fill }]}>
+              <Ionicons name="close" size={20} color={t.textSecondary} />
             </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.hintRow}>
             <TouchableOpacity
-              style={styles.randomHintBtn}
+              style={[styles.randomHintBtn, { minHeight: gp.hintRowHeight, backgroundColor: t.primary + '0F', borderColor: t.primary + '22' }]}
               activeOpacity={0.75}
               onPress={handleRandomHint}
             >
-              <Ionicons name="dice-outline" size={18} color={colors.primary} />
-              <Text style={styles.randomHintText}>Rastgele İpucu</Text>
-              <View style={styles.costBadge}>
-                <Text style={styles.costBadgeText}>-{HINT_LETTER_COST}</Text>
+              <Ionicons name="dice-outline" size={Math.round(18 * ui.fontScale)} color={t.primary} />
+              <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: t.primary }]}>Rastgele İpucu</Text>
+              <View style={[styles.costBadge, { backgroundColor: t.accent + '22' }]}>
+                <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: t.accent }]}>-{HINT_LETTER_COST}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.randomLetterBtn}
+              style={[styles.randomLetterBtn, { minHeight: gp.hintRowHeight, borderColor: t.primary + '44' }]}
               activeOpacity={0.75}
               onPress={handleRandomLetter}
             >
-              <Ionicons name="text-outline" size={18} color={colors.primary} />
-              <Text style={styles.randomHintText}>Random Harf</Text>
-              <View style={styles.costBadge}>
-                <Text style={styles.costBadgeText}>-3</Text>
+              <Ionicons name="text-outline" size={Math.round(18 * ui.fontScale)} color={t.primary} />
+              <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: t.primary }]}>Random Harf</Text>
+              <View style={[styles.costBadge, { backgroundColor: t.accent + '22' }]}>
+                <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: t.accent }]}>-3</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -363,6 +366,8 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
           activeEntryCells={activeEntryCells}
           onCellPress={handleCellPress}
           correctFlash={correctFlash}
+          ui={ui}
+          theme={t}
         />
 
         {/* ── Clue List (numaralı soru listesi) ── */}
@@ -380,7 +385,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
         {/* ── Toast ── */}
         {toast && (
           <View style={styles.toastContainer}>
-            <Text style={styles.toastText}>{toast}</Text>
+            <Text style={[styles.toastText, { fontSize: gp.toastFontSize }]}>{toast}</Text>
           </View>
         )}
 
@@ -393,14 +398,14 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
             onHint={handleHintPress}
           />
         ) : (
-          <View style={styles.ctaContainer}>
+          <View style={[styles.ctaContainer, { backgroundColor: t.background }]}>
             <TouchableOpacity
-              style={styles.ctaButton}
+              style={[styles.ctaButton, { paddingVertical: gp.ctaPaddingVertical, backgroundColor: t.primary, shadowColor: t.primaryDark }]}
               activeOpacity={0.8}
               onPress={enterSolvingMode}
             >
-              <Ionicons name="pencil" size={18} color="#FFF" />
-              <Text style={styles.ctaText}>Çözmeye Başla</Text>
+              <Ionicons name="pencil" size={Math.round(18 * ui.fontScale)} color={t.textInverse} />
+              <Text style={[styles.ctaText, { fontSize: gp.ctaFontSize }]}>Çözmeye Başla</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -408,17 +413,17 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
         {/* ── Hint Modal ── */}
         <Modal visible={hintModalVisible} transparent animationType="fade">
           <View style={styles.modalOverlay}>
-            <View style={styles.hintCard}>
-              <Text style={styles.hintTitle}>💡 İpucu</Text>
-              <TouchableOpacity style={styles.hintOption} onPress={handleRevealLetter}>
-                <Text style={styles.hintOptionText}>Bir harf göster</Text>
-                <Text style={styles.hintCost}>{HINT_LETTER_COST} coin</Text>
+            <View style={[styles.hintCard, { backgroundColor: t.surface }]}>
+              <Text style={[styles.hintTitle, { fontSize: Math.round(20 * ui.fontScale), color: t.text }]}>💡 İpucu</Text>
+              <TouchableOpacity style={[styles.hintOption, { backgroundColor: t.primarySoft }]} onPress={handleRevealLetter}>
+                <Text style={[styles.hintOptionText, { fontSize: Math.round(15 * ui.fontScale), color: t.primary }]}>Bir harf göster</Text>
+                <Text style={[styles.hintCost, { fontSize: Math.round(13 * ui.fontScale), color: t.accent }]}>{HINT_LETTER_COST} coin</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.hintOption, styles.hintCancel]}
+                style={[styles.hintOption, styles.hintCancel, { backgroundColor: t.fill }]}
                 onPress={() => setHintModalVisible(false)}
               >
-                <Text style={styles.hintCancelText}>Vazgeç</Text>
+                <Text style={[styles.hintCancelText, { fontSize: Math.round(15 * ui.fontScale), color: t.textSecondary }]}>Vazgeç</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -626,13 +631,11 @@ function LegacyGameScreen({ id }: { id: string }) {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   errorText: {
     textAlign: 'center',
     marginTop: 100,
     fontSize: 16,
-    color: colors.textSecondary,
   },
   header: {
     flexDirection: 'row',
@@ -644,7 +647,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: colors.fill,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -654,18 +656,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     ...typography.headline,
-    color: colors.text,
     fontWeight: '700',
   },
   headerSub: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   hintBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.fill,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 16,
@@ -674,11 +673,9 @@ const styles = StyleSheet.create({
   coinText: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.accent,
   },
   progressContainer: {
     height: 3,
-    backgroundColor: colors.fill,
     marginHorizontal: spacing.md,
     borderRadius: 2,
     marginBottom: 6,
@@ -686,7 +683,6 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
-    backgroundColor: colors.primary,
     borderRadius: 2,
   },
   modalOverlay: {
@@ -696,7 +692,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   hintCard: {
-    backgroundColor: '#FFF',
     borderRadius: 16,
     padding: 24,
     width: 280,
@@ -709,7 +704,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   hintOption: {
-    backgroundColor: '#F3F0FF',
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -720,20 +714,15 @@ const styles = StyleSheet.create({
   hintOptionText: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.primary,
   },
   hintCost: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.accent,
   },
-  hintCancel: {
-    backgroundColor: colors.fill,
-  },
+  hintCancel: {},
   hintCancelText: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.textSecondary,
     textAlign: 'center',
     flex: 1,
   },
@@ -746,7 +735,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: colors.fill,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
@@ -759,13 +747,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: spacing.md,
     borderRadius: 10,
-    backgroundColor: colors.fill,
     marginBottom: 4,
   },
   idleHintText: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textMuted,
   },
   hintRow: {
     flexDirection: 'row',
@@ -782,9 +768,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderRadius: 14,
-    backgroundColor: colors.primary + '0F',
     borderWidth: 1,
-    borderColor: colors.primary + '22',
     minHeight: 48,
   },
   randomLetterBtn: {
@@ -798,17 +782,14 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: colors.primary + '44',
     minHeight: 48,
   },
   randomHintText: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.primary,
     letterSpacing: 0.1,
   },
   costBadge: {
-    backgroundColor: colors.accent + '22',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
@@ -816,23 +797,19 @@ const styles = StyleSheet.create({
   costBadgeText: {
     fontSize: 11,
     fontWeight: '800',
-    color: colors.accent,
   },
   ctaContainer: {
     paddingHorizontal: spacing.lg,
     paddingVertical: 10,
     paddingBottom: 16,
-    backgroundColor: colors.background,
   },
   ctaButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: colors.primary,
     paddingVertical: 16,
     borderRadius: 16,
-    shadowColor: colors.primaryDark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

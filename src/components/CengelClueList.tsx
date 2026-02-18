@@ -9,9 +9,9 @@ import {
     LayoutAnimation,
 } from 'react-native';
 import { Entry } from '../cengel/types';
-import { colors } from '../theme/colors';
 import { radius } from '../theme/radius';
 import { spacing } from '../theme/spacing';
+import { useUIProfile, useTheme } from '../theme/ThemeContext';
 
 interface Props {
     entries: Entry[];
@@ -28,6 +28,9 @@ export default function CengelClueList({
     lockedEntryIds,
     onSelectEntry,
 }: Props) {
+    const ui = useUIProfile();
+    const t = useTheme();
+    const gp = ui.gameplay;
     const [tab, setTab] = useState<'across' | 'down'>(activeDirection);
     const scrollRef = useRef<ScrollView>(null);
     const underlineAnim = useRef(
@@ -71,9 +74,12 @@ export default function CengelClueList({
     });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {
+            backgroundColor: t.surface,
+            borderColor: t.border,
+        }]}>
             {/* Tabs */}
-            <View style={styles.tabsWrapper}>
+            <View style={[styles.tabsWrapper, { borderBottomColor: t.borderLight }]}>
                 <View style={styles.tabs}>
                     <TouchableOpacity
                         style={styles.tab}
@@ -81,7 +87,11 @@ export default function CengelClueList({
                         activeOpacity={0.7}
                     >
                         <Text
-                            style={[styles.tabText, tab === 'across' && styles.activeTabText]}
+                            style={[
+                                styles.tabText,
+                                { color: t.textMuted, fontSize: gp.clueListTabFontSize },
+                                tab === 'across' && { color: t.primary, fontWeight: '700' },
+                            ]}
                         >
                             Yatay →
                         </Text>
@@ -92,13 +102,17 @@ export default function CengelClueList({
                         activeOpacity={0.7}
                     >
                         <Text
-                            style={[styles.tabText, tab === 'down' && styles.activeTabText]}
+                            style={[
+                                styles.tabText,
+                                { color: t.textMuted, fontSize: gp.clueListTabFontSize },
+                                tab === 'down' && { color: t.primary, fontWeight: '700' },
+                            ]}
                         >
                             Dikey ↓
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <Animated.View style={[styles.underline, { left: underlineLeft }]} />
+                <Animated.View style={[styles.underline, { left: underlineLeft, backgroundColor: t.primary }]} />
             </View>
 
             {/* Clue list */}
@@ -117,8 +131,14 @@ export default function CengelClueList({
                             key={entry.id}
                             style={[
                                 styles.clueRow,
-                                isSelected && styles.selectedClue,
-                                isLocked && styles.lockedClue,
+                                isSelected && {
+                                    backgroundColor: t.primary + '0C',
+                                    borderLeftWidth: 3,
+                                    borderLeftColor: t.primary,
+                                },
+                                isLocked && {
+                                    backgroundColor: t.success + '08',
+                                },
                             ]}
                             onPress={() => onSelectEntry(entry)}
                             activeOpacity={0.7}
@@ -127,11 +147,14 @@ export default function CengelClueList({
                                 style={[
                                     styles.numBadge,
                                     {
+                                        width: gp.clueListNumSize,
+                                        height: gp.clueListNumSize,
+                                        borderRadius: gp.clueListNumSize / 2,
                                         backgroundColor: isLocked
-                                            ? colors.success
+                                            ? t.success
                                             : isSelected
-                                                ? colors.primary
-                                                : colors.cardAlt,
+                                                ? t.primary
+                                                : t.cardAlt,
                                     },
                                 ]}
                             >
@@ -141,8 +164,8 @@ export default function CengelClueList({
                                         {
                                             color:
                                                 isLocked || isSelected
-                                                    ? colors.textInverse
-                                                    : colors.primary,
+                                                    ? t.textInverse
+                                                    : t.primary,
                                         },
                                     ]}
                                 >
@@ -152,14 +175,24 @@ export default function CengelClueList({
                             <Text
                                 style={[
                                     styles.clueText,
-                                    isLocked && styles.lockedText,
-                                    isSelected && styles.selectedClueText,
+                                    {
+                                        fontSize: gp.clueListFontSize,
+                                        lineHeight: gp.clueListLineHeight,
+                                        color: t.text,
+                                    },
+                                    isLocked && {
+                                        color: t.success,
+                                        textDecorationLine: 'line-through',
+                                    },
+                                    isSelected && {
+                                        fontWeight: '600',
+                                        color: t.primaryDark,
+                                    },
                                 ]}
-                                numberOfLines={2}
                             >
                                 {entry.clueText}
                             </Text>
-                            {isLocked && <Text style={styles.checkMark}>✓</Text>}
+                            {isLocked && <Text style={[styles.checkMark, { color: t.success }]}>✓</Text>}
                         </TouchableOpacity>
                     );
                 })}
@@ -171,18 +204,15 @@ export default function CengelClueList({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.surface,
         borderRadius: radius.lg,
         marginHorizontal: 12,
         marginTop: 4,
         overflow: 'hidden',
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: colors.border,
     },
     tabsWrapper: {
         position: 'relative',
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: colors.borderLight,
     },
     tabs: {
         flexDirection: 'row',
@@ -193,20 +223,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tabText: {
-        fontSize: 14,
         fontWeight: '600',
-        color: colors.textMuted,
-    },
-    activeTabText: {
-        color: colors.primary,
-        fontWeight: '700',
     },
     underline: {
         position: 'absolute',
         bottom: 0,
         width: '50%',
         height: 2.5,
-        backgroundColor: colors.primary,
         borderRadius: 2,
     },
     list: {
@@ -224,18 +247,7 @@ const styles = StyleSheet.create({
         borderRadius: radius.md,
         gap: 10,
     },
-    selectedClue: {
-        backgroundColor: colors.primary + '0C',
-        borderLeftWidth: 3,
-        borderLeftColor: colors.primary,
-    },
-    lockedClue: {
-        backgroundColor: colors.success + '08',
-    },
     numBadge: {
-        width: 26,
-        height: 26,
-        borderRadius: 13,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -244,22 +256,10 @@ const styles = StyleSheet.create({
         fontWeight: '800',
     },
     clueText: {
-        fontSize: 13,
-        color: colors.text,
         flex: 1,
-        lineHeight: 18,
-    },
-    selectedClueText: {
-        fontWeight: '600',
-        color: colors.primaryDark,
-    },
-    lockedText: {
-        color: colors.success,
-        textDecorationLine: 'line-through',
     },
     checkMark: {
         fontSize: 14,
-        color: colors.success,
         fontWeight: '700',
     },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ViewStyle, StyleSheet } from 'react-native';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme, useUIProfile } from '../../theme/ThemeContext';
 import { spacing } from '../../theme/spacing';
 import { shadows } from '../../theme/shadows';
 
@@ -18,6 +18,7 @@ export default function Card({
     padding = 'md',
 }: CardProps) {
     const t = useTheme();
+    const ui = useUIProfile();
     const isDark = t.id === 'black';
     return (
         <View
@@ -27,19 +28,21 @@ export default function Card({
                     backgroundColor: t.card,
                     borderColor: t.border,
                     padding: spacing[padding],
+                    borderRadius: ui.cardBorderRadius + 4,
+                    ...(ui.shadow === 'full' ? shadows.sm : ui.shadowStyle),
                 },
-                isDark && {
+                isDark && ui.glow && {
                     shadowColor: t.shadow,
                     shadowOffset: { width: 0, height: 4 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
                     elevation: 6,
                 },
-                variant === 'elevated' && styles.elevated,
+                variant === 'elevated' && (ui.shadow === 'full' ? styles.elevated : {}),
                 variant === 'accent' && {
                     borderWidth: 1,
                     borderColor: t.primary + '20',
-                    ...shadows.md,
+                    ...(ui.shadow === 'full' ? shadows.md : ui.shadowStyle),
                 },
                 style,
             ]}

@@ -1,9 +1,9 @@
 import React, { useCallback, useRef } from 'react';
-import { Text, StyleSheet, Pressable, ViewStyle, TextStyle, Animated } from 'react-native';
+import { Text, StyleSheet, Pressable, ViewStyle, TextStyle, Animated, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme, useUIProfile } from '../../theme/ThemeContext';
 import { typography } from '../../theme/typography';
 import { shadows } from '../../theme/shadows';
 
@@ -29,6 +29,7 @@ export default function PremiumButton({
     disabled = false,
 }: PremiumButtonProps) {
     const t = useTheme();
+    const ui = useUIProfile();
     const scale = useRef(new Animated.Value(1)).current;
     const opacity = useRef(new Animated.Value(1)).current;
 
@@ -49,9 +50,11 @@ export default function PremiumButton({
     }, [disabled, onPress]);
 
     const isSmall = size === 'small';
-    const height = isSmall ? 40 : 72;
-    const borderRadius = isSmall ? 12 : 20;
-    const iconSize = isSmall ? 16 : 24;
+    const baseHeight = isSmall ? 40 : ui.buttonMinHeight;
+    const height = Math.max(baseHeight, ui.buttonMinHeight);
+    const borderRadius = isSmall ? 12 : ui.buttonBorderRadius + 6;
+    const iconSize = isSmall ? 16 : Math.round(24 * ui.fontScale);
+    const fontSize = Math.round((isSmall ? 15 : 19) * ui.fontScale);
 
     if (variant === 'secondary') {
         return (
@@ -92,9 +95,30 @@ export default function PremiumButton({
     }
 
     const isDark = t.id === 'black';
-    // Bigger + glow for dark theme
     const finalHeight = isDark ? height + 8 : height;
     const finalRadius = isDark ? 28 : borderRadius;
+    const useGlow = ui.glow && isDark;
+    const useGradient = ui.gradients;
+
+    const buttonContent = (
+        <>
+            {icon && (
+                <Ionicons
+                    name={icon}
+                    size={iconSize}
+                    color={t.textInverse}
+                    style={styles.icon}
+                />
+            )}
+            <Text style={[
+                styles.primaryText,
+                { color: t.textInverse, fontSize },
+                textStyle,
+            ]}>
+                {title}
+            </Text>
+        </>
+    );
 
     return (
         <Animated.View
@@ -102,7 +126,7 @@ export default function PremiumButton({
                 { borderRadius: finalRadius },
                 disabled && styles.disabled,
                 { transform: [{ scale }], opacity },
-                isDark && {
+                useGlow && {
                     shadowColor: '#7C5CFF',
                     shadowOffset: { width: 0, height: 0 },
                     shadowOpacity: 0.45,
@@ -117,33 +141,34 @@ export default function PremiumButton({
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
             >
-                <LinearGradient
-                    colors={t.gradientPrimary as readonly [string, string]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[
-                        styles.gradient,
-                        { height: finalHeight, borderRadius: finalRadius },
-                        shadows.md,
-                    ]}
-                >
-                    {icon && (
-                        <Ionicons
-                            name={icon}
-                            size={iconSize}
-                            color={t.textInverse}
-                            style={styles.icon}
-                        />
-                    )}
-                    <Text style={[
-                        styles.primaryText,
-                        { color: t.textInverse },
-                        isSmall && styles.smallText,
-                        textStyle,
-                    ]}>
-                        {title}
-                    </Text>
-                </LinearGradient>
+                {useGradient ? (
+                    <LinearGradient
+                        colors={t.gradientPrimary as readonly [string, string]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={[
+                            styles.gradient,
+                            { height: finalHeight, borderRadius: finalRadius },
+                            ui.shadow === 'full' ? shadows.md : ui.shadowStyle,
+                        ]}
+                    >
+                        {buttonContent}
+                    </LinearGradient>
+                ) : (
+                    <View
+                        style={[
+                            styles.gradient,
+                            {
+                                height: finalHeight,
+                                borderRadius: finalRadius,
+                                backgroundColor: t.primary,
+                            },
+                            ui.shadowStyle,
+                        ]}
+                    >
+                        {buttonContent}
+                    </View>
+                )}
             </Pressable>
         </Animated.View>
     );

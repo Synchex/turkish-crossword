@@ -13,10 +13,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../src/theme/ThemeContext';
+import { useTheme, useUIProfile } from '../../src/theme/ThemeContext';
 import { useSettingsStore } from '../../src/store/useSettingsStore';
 import { useEconomyStore, HINT_LETTER_COST } from '../../src/store/useEconomyStore';
 import { themes, themeIds, ThemeId } from '../../src/theme/themes';
+import type { UIMode } from '../../src/theme/uiProfiles';
 import { spacing } from '../../src/theme/spacing';
 import Constants from 'expo-constants';
 
@@ -25,6 +26,7 @@ import Constants from 'expo-constants';
 // ═══════════════════════════════════
 export default function SettingsScreen() {
     const t = useTheme();
+    const ui = useUIProfile();
     const settings = useSettingsStore();
     const coins = useEconomyStore((s) => s.coins);
     const [costModalVisible, setCostModalVisible] = useState(false);
@@ -59,19 +61,28 @@ export default function SettingsScreen() {
                         ))}
                     </View>
 
-                    <SettingsRow
-                        icon="text-outline"
-                        title="Büyük Yazı"
-                        subtitle="Metin boyutunu artır"
-                        theme={t}
-                        right={
-                            <Switch
-                                value={settings.largeText}
-                                onValueChange={settings.toggleLargeText}
-                                trackColor={{ true: t.primary, false: t.border }}
-                            />
-                        }
-                    />
+                    {/* Arayüz Modu */}
+                    <Text style={[styles.rowLabel, { color: t.text }]}>Arayüz Modu</Text>
+                    <View style={styles.modeGrid}>
+                        <UIModeCard
+                            mode="modern"
+                            label="Modern"
+                            description="Gradyan, glow ve kompakt"
+                            icon="sparkles-outline"
+                            isSelected={settings.uiMode === 'modern'}
+                            onPress={() => settings.setUIMode('modern')}
+                            theme={t}
+                        />
+                        <UIModeCard
+                            mode="accessible"
+                            label="Kolay Okuma"
+                            description="Büyük yazı, yüksek kontrast"
+                            icon="eye-outline"
+                            isSelected={settings.uiMode === 'accessible'}
+                            onPress={() => settings.setUIMode('accessible')}
+                            theme={t}
+                        />
+                    </View>
                 </SettingsSection>
 
                 {/* ═══ B) Oyun ═══ */}
@@ -378,6 +389,48 @@ function CostRow({
     );
 }
 
+interface UIModeCardProps {
+    mode: UIMode;
+    label: string;
+    description: string;
+    icon: keyof typeof Ionicons.glyphMap;
+    isSelected: boolean;
+    onPress: () => void;
+    theme: any;
+}
+
+function UIModeCard({ mode, label, description, icon, isSelected, onPress, theme }: UIModeCardProps) {
+    return (
+        <TouchableOpacity
+            style={[
+                styles.modeCard,
+                {
+                    borderColor: isSelected ? theme.primary : theme.border,
+                    borderWidth: isSelected ? 2.5 : 1,
+                    backgroundColor: isSelected ? theme.primarySoft : theme.surface,
+                },
+            ]}
+            activeOpacity={0.7}
+            onPress={onPress}
+        >
+            <View style={[styles.modeIconWrap, { backgroundColor: isSelected ? theme.primary : theme.fill }]}>
+                <Ionicons name={icon} size={20} color={isSelected ? '#FFF' : theme.textSecondary} />
+            </View>
+            <Text style={[styles.modeLabel, { color: theme.text, fontWeight: isSelected ? '800' : '600' }]}>
+                {label}
+            </Text>
+            <Text style={[styles.modeDesc, { color: theme.textSecondary }]}>
+                {description}
+            </Text>
+            {isSelected && (
+                <View style={[styles.modeCheck, { backgroundColor: theme.primary }]}>
+                    <Ionicons name="checkmark" size={12} color="#FFF" />
+                </View>
+            )}
+        </TouchableOpacity>
+    );
+}
+
 // ═══════════════════════════════════
 //  STYLES
 // ═══════════════════════════════════
@@ -475,6 +528,40 @@ const styles = StyleSheet.create({
         borderRadius: 11,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    // Mode grid
+    modeGrid: {
+        flexDirection: 'row',
+        gap: 10,
+        padding: 12,
+    },
+    modeCard: {
+        flex: 1,
+        borderRadius: 14,
+        padding: 14,
+        alignItems: 'center',
+        gap: 6,
+        position: 'relative' as const,
+    },
+    modeIconWrap: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modeLabel: { fontSize: 14 },
+    modeDesc: { fontSize: 11, textAlign: 'center' as const },
+    modeCheck: {
+        position: 'absolute' as const,
+        top: 8,
+        right: 8,
+        width: 22,
+        height: 22,
+        borderRadius: 11,
+        alignItems: 'center' as const,
+        justifyContent: 'center' as const,
     },
 
     // Lang picker

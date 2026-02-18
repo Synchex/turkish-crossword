@@ -10,10 +10,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { GameCell, Entry } from '../cengel/types';
-import { colors } from '../theme/colors';
+import type { UIProfile } from '../theme/uiProfiles';
+import type { ThemeColors } from '../theme/themes';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const GRID_PADDING = 12;
 
 interface CengelGridProps {
     gameGrid: GameCell[][];
@@ -22,6 +22,8 @@ interface CengelGridProps {
     activeEntryCells: Array<{ row: number; col: number }>;
     onCellPress: (row: number, col: number) => void;
     correctFlash?: boolean;
+    ui: UIProfile;
+    theme: ThemeColors;
 }
 
 export default function CengelGrid({
@@ -31,9 +33,12 @@ export default function CengelGrid({
     activeEntryCells,
     onCellPress,
     correctFlash,
+    ui,
+    theme,
 }: CengelGridProps) {
     const [rows, cols] = gridSize;
-    const availableWidth = SCREEN_WIDTH - GRID_PADDING * 2;
+    const gridPadding = ui.gameplay.gridPadding;
+    const availableWidth = SCREEN_WIDTH - gridPadding * 2;
     const gap = 1.5;
     const cellSize = Math.floor((availableWidth - gap * (cols - 1)) / cols);
     const gridWidth = cellSize * cols + gap * (cols - 1);
@@ -47,11 +52,15 @@ export default function CengelGrid({
     }, [activeEntryCells]);
 
     return (
-        <View style={[styles.container, { paddingHorizontal: GRID_PADDING }]}>
+        <View style={[styles.container, { paddingHorizontal: gridPadding }]}>
             <View
                 style={[
                     styles.gridCard,
-                    { width: gridWidth + 8, height: gridHeight + 8 },
+                    {
+                        width: gridWidth + 8,
+                        height: gridHeight + 8,
+                        backgroundColor: theme.id === 'black' ? '#0F1424' : '#1A1A2E',
+                    },
                 ]}
             >
                 <View style={{ width: gridWidth, height: gridHeight }}>
@@ -68,6 +77,8 @@ export default function CengelGrid({
                                 isHighlighted={activeSet.has(`${r},${c}`)}
                                 onPress={() => onCellPress(r, c)}
                                 correctFlash={correctFlash}
+                                ui={ui}
+                                theme={theme}
                             />
                         )),
                     )}
@@ -86,6 +97,8 @@ interface CellComponentProps {
     isHighlighted: boolean;
     onPress: () => void;
     correctFlash?: boolean;
+    ui: UIProfile;
+    theme: ThemeColors;
 }
 
 const MemoCell = memo(function CellComponent({
@@ -96,8 +109,12 @@ const MemoCell = memo(function CellComponent({
     isHighlighted,
     onPress,
     correctFlash,
+    ui,
+    theme,
 }: CellComponentProps) {
     const scaleAnim = useRef(new Animated.Value(1)).current;
+    const gp = ui.gameplay;
+    const t = theme;
 
     useEffect(() => {
         if (cell.type === 'LETTER' && cell.userLetter) {
@@ -131,7 +148,7 @@ const MemoCell = memo(function CellComponent({
                         left,
                         width: cellSize,
                         height: cellSize,
-                        backgroundColor: '#1A1A2E',
+                        backgroundColor: t.id === 'black' ? '#0F1424' : '#1A1A2E',
                         borderRadius: 2,
                     },
                 ]}
@@ -158,7 +175,12 @@ const MemoCell = memo(function CellComponent({
                 <View
                     style={[
                         styles.clueCell,
-                        { width: cellSize, height: cellSize },
+                        {
+                            width: cellSize,
+                            height: cellSize,
+                            backgroundColor: t.id === 'black' ? '#1A2036' : '#F5F0EB',
+                            borderColor: t.border,
+                        },
                     ]}
                 >
                     {/* Text area — takes all space above arrows */}
@@ -166,10 +188,13 @@ const MemoCell = memo(function CellComponent({
                         <Text
                             style={[
                                 styles.clueText,
-                                { fontSize: cellSize * 0.18 },
+                                {
+                                    fontSize: cellSize * gp.clueFontScale,
+                                    color: t.id === 'black' ? '#9CA3AF' : '#4A3B2A',
+                                },
                             ]}
                             adjustsFontSizeToFit
-                            minimumFontScale={0.4}
+                            minimumFontScale={gp.clueTextMinScale}
                         >
                             {displayClue}
                         </Text>
@@ -181,14 +206,14 @@ const MemoCell = memo(function CellComponent({
                             <Ionicons
                                 name="arrow-forward"
                                 size={arrowSize}
-                                color={colors.primary}
+                                color={t.primary}
                             />
                         )}
                         {hasDown && (
                             <Ionicons
                                 name="arrow-down"
                                 size={arrowSize}
-                                color={colors.primary}
+                                color={t.primary}
                             />
                         )}
                     </View>
@@ -201,30 +226,30 @@ const MemoCell = memo(function CellComponent({
     const isLocked = cell.isLocked ?? false;
     const isRevealed = cell.isRevealed ?? false;
 
-    let bgColor = '#FFFFFF';
-    let borderColor = 'rgba(0,0,0,0.12)';
-    let borderW = StyleSheet.hairlineWidth;
-    let letterColor = '#1A1A2E';
+    let bgColor = t.surface;
+    let borderColor = t.border;
+    let borderW = gp.cellBorderWidth;
+    let letterColor = t.text;
 
     if (isLocked) {
-        bgColor = '#E8FAE8';
-        borderColor = colors.success;
-        borderW = 1.5;
-        letterColor = colors.successDark;
+        bgColor = t.successLight;
+        borderColor = t.success;
+        borderW = gp.highlightBorderWidth;
+        letterColor = t.successDark;
     } else if (correctFlash && isHighlighted) {
-        bgColor = '#E8FAE8';
+        bgColor = t.successLight;
     } else if (isSelected) {
-        bgColor = '#EDE7FA';
-        borderColor = colors.primary;
-        borderW = 2;
+        bgColor = t.primarySoft;
+        borderColor = t.primary;
+        borderW = gp.selectedBorderWidth;
     } else if (isHighlighted) {
-        bgColor = '#F3F0FF';
-        borderColor = colors.primaryLight;
-        borderW = 1;
+        bgColor = t.id === 'black' ? 'rgba(94,139,255,0.08)' : '#F3F0FF';
+        borderColor = t.primaryLight;
+        borderW = gp.highlightBorderWidth;
     }
 
     if (isRevealed) {
-        letterColor = colors.accent;
+        letterColor = t.accent;
     }
 
     return (
@@ -254,7 +279,7 @@ const MemoCell = memo(function CellComponent({
                     style={[
                         styles.letterText,
                         {
-                            fontSize: Math.max(12, cellSize * 0.45),
+                            fontSize: Math.max(12, cellSize * gp.letterFontScale),
                             color: letterColor,
                         },
                     ]}
@@ -273,7 +298,6 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     gridCard: {
-        backgroundColor: '#1A1A2E',
         borderRadius: 8,
         padding: 4,
         shadowColor: '#000',
@@ -288,17 +312,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     clueCell: {
-        backgroundColor: '#F5F0EB',
         borderRadius: 2,
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: 'rgba(0,0,0,0.08)',
         padding: 2,
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         overflow: 'hidden',
     },
     clueText: {
-        color: '#4A3B2A',
         fontWeight: '600',
         textAlign: 'left',
         flex: 1,
@@ -313,6 +334,6 @@ const styles = StyleSheet.create({
     letterText: {
         fontWeight: '700',
         textAlign: 'center',
-        fontFamily: undefined, // Will use system default for maximum Turkish char support
+        fontFamily: undefined,
     },
 });

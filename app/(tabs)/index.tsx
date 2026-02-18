@@ -23,7 +23,7 @@ import { DAILY_COIN_REWARD, DAILY_XP_REWARD } from '../../src/data/dailyPuzzles'
 import { levels } from '../../src/levels/levels';
 
 import { colors } from '../../src/theme/colors';
-import { useTheme } from '../../src/theme/ThemeContext';
+import { useTheme, useUIProfile } from '../../src/theme/ThemeContext';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 import { shadows } from '../../src/theme/shadows';
@@ -289,6 +289,7 @@ const mStyles = StyleSheet.create({
 export default function HomeScreen() {
   const router = useRouter();
   const t = useTheme();
+  const ui = useUIProfile();
   const progress = useProgressStore((s) => s.progress);
   const loaded = useProgressStore((s) => s.loaded);
 
@@ -399,8 +400,8 @@ export default function HomeScreen() {
               alignItems: 'center',
             }}
           >
-            <Text style={styles.heroTitle}>Kare Bulmaca</Text>
-            <Text style={styles.heroSubtitle}>Türkçe Çengel Bulmaca</Text>
+            <Text style={[styles.heroTitle, { fontSize: ui.fontSizes.hero }]}>Kare Bulmaca</Text>
+            <Text style={[styles.heroSubtitle, { fontSize: ui.fontSizes.subheadline }]}>Türkçe Çengel Bulmaca</Text>
             {IS_DEV && (
               <View style={styles.devBadge}>
                 <Text style={styles.devBadgeText}>DEV</Text>
@@ -432,14 +433,14 @@ export default function HomeScreen() {
         >
           <Card style={styles.statCard} variant="elevated" padding="md">
             <IconBadge name="checkmark-circle" size={18} color={colors.success} badgeSize={34} />
-            <Text style={[styles.statValue, { color: t.text }]}>{completedCount}</Text>
-            <Text style={[styles.statLabel, { color: t.textSecondary }]}>Tamamlanan</Text>
+            <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{completedCount}</Text>
+            <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Tamamlanan</Text>
           </Card>
 
           <Card style={styles.statCard} variant="elevated" padding="md">
             <IconBadge name="star" size={18} color={colors.accent} badgeSize={34} />
-            <Text style={[styles.statValue, { color: t.text }]}>{totalStars}</Text>
-            <Text style={[styles.statLabel, { color: t.textSecondary }]}>Yıldız</Text>
+            <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{totalStars}</Text>
+            <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Yıldız</Text>
           </Card>
 
           <TouchableOpacity
@@ -450,8 +451,8 @@ export default function HomeScreen() {
           >
             <Card style={styles.statCard} variant="elevated" padding="md">
               <IconBadge name="wallet" size={18} color={t.primary} badgeSize={34} />
-              <Text style={[styles.statValue, { color: t.text }]}>{IS_DEV ? '∞' : coins}</Text>
-              <Text style={[styles.statLabel, { color: t.textSecondary }]}>Coin</Text>
+              <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{IS_DEV ? '∞' : coins}</Text>
+              <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Coin</Text>
             </Card>
           </TouchableOpacity>
         </Animated.View>
@@ -459,7 +460,7 @@ export default function HomeScreen() {
         {/* ── Play CTA ── */}
         <View style={styles.playCta}>
           {/* Radial glow behind OYNA for dark */}
-          {isDark && (
+          {isDark && ui.glow && (
             <View style={{
               position: 'absolute',
               top: -20,
@@ -483,29 +484,41 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={[
               styles.playCard,
-              { backgroundColor: isDark ? '#131A2E' : t.card, borderColor: t.border },
-              isDark && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+              {
+                backgroundColor: isDark ? '#131A2E' : t.card,
+                borderColor: t.border,
+                minHeight: Math.round(130 * ui.spacingScale),
+                borderRadius: ui.cardBorderRadius + 8,
+                ...(ui.shadow === 'full' ? shadows.sm : ui.shadowStyle),
+              },
+              isDark && ui.glow && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
             ]}
             activeOpacity={0.82}
             onPress={() => router.push('/(tabs)/chapters')}
           >
             <IconBadge name="map-outline" size={26} color={t.primary} badgeSize={56} />
-            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text }]}>Bolumler</Text>
-            <Text style={[styles.playCardSub, { color: t.textSecondary }]}>Seviye seviye ilerle</Text>
+            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text, fontSize: ui.fontSizes.headline }]}>Bolumler</Text>
+            <Text style={[styles.playCardSub, { color: t.textSecondary, fontSize: ui.fontSizes.caption }]}>Seviye seviye ilerle</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.playCard,
-              { backgroundColor: isDark ? '#131A2E' : t.card, borderColor: t.border },
-              isDark && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+              {
+                backgroundColor: isDark ? '#131A2E' : t.card,
+                borderColor: t.border,
+                minHeight: Math.round(130 * ui.spacingScale),
+                borderRadius: ui.cardBorderRadius + 8,
+                ...(ui.shadow === 'full' ? shadows.sm : ui.shadowStyle),
+              },
+              isDark && ui.glow && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
             ]}
             activeOpacity={0.82}
             onPress={() => router.push('/big-puzzle')}
           >
             <IconBadge name="grid-outline" size={26} color={colors.accent} badgeSize={56} />
-            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text }]}>Buyuk Bulmaca</Text>
-            <Text style={[styles.playCardSub, { color: t.textSecondary }]}>Rastgele, buyuk boy</Text>
+            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text, fontSize: ui.fontSizes.headline }]}>Buyuk Bulmaca</Text>
+            <Text style={[styles.playCardSub, { color: t.textSecondary, fontSize: ui.fontSizes.caption }]}>Rastgele, buyuk boy</Text>
           </TouchableOpacity>
         </View>
 

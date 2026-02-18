@@ -5,4 +5,6 @@ export { typography } from './typography';
 export { shadows } from './shadows';
 export { themes, themeIds } from './themes';
 export type { ThemeColors, ThemeId } from './themes';
-export { ThemeProvider, useTheme } from './ThemeContext';
+export { ThemeProvider, useTheme, useUIProfile } from './ThemeContext';
+export { modernProfile, accessibleProfile, getUIProfile } from './uiProfiles';
+export type { UIProfile, UIMode } from './uiProfiles';
