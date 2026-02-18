@@ -28,6 +28,7 @@ import TurkishKeyboard from '../../src/components/TurkishKeyboard';
 import TopBar from '../../src/components/TopBar';
 import FeedbackPanel from '../../src/components/ui/FeedbackPanel';
 import { useEconomyStore, HINT_LETTER_COST } from '../../src/store/useEconomyStore';
+import { usePuzzleProgressStore } from '../../src/store/usePuzzleProgressStore';
 import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
@@ -169,6 +170,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
       const coinsEarned = computeCoins(stars, true);
 
       // Update stores
+      usePuzzleProgressStore.getState().markCompleted(puzzleId, stars, state.timeElapsed);
       useEconomyStore.getState().addCoins(coinsEarned);
       const gamResult = useGamificationStore.getState().addXP(xpResult.totalXP);
       useGamificationStore.getState().recordPuzzleCompletion();
@@ -495,6 +497,7 @@ function LegacyGameScreen({ id }: { id: string }) {
       });
       const coinsEarned = computeCoins(stars, false);
       completeLevel(level.id, stars, state.timeElapsed, mistakesRef.current, hintsUsedRef.current);
+      usePuzzleProgressStore.getState().markCompleted(String(level.id), stars, state.timeElapsed);
       useEconomyStore.getState().addCoins(coinsEarned);
       const gamResult = useGamificationStore.getState().addXP(xpResult.totalXP);
       useGamificationStore.getState().recordPuzzleCompletion();

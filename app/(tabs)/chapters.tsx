@@ -1,212 +1,172 @@
-import React from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useRef, useEffect, useMemo, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { chapters, getPuzzleById } from '../../src/cengel/puzzles/index';
-import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
-import { radius } from '../../src/theme/radius';
-import { typography } from '../../src/theme/typography';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const DIFFICULTY_COLORS = {
-    easy: '#34C759',
-    medium: '#FF9500',
-    hard: '#FF3B30',
-};
+import { useTheme } from '../../src/theme/ThemeContext';
+import { allPuzzles } from '../../src/cengel/puzzles/index';
+import { usePuzzleProgressStore } from '../../src/store/usePuzzleProgressStore';
+import MapLevelNode, { NodeState } from '../../src/components/map/MapLevelNode';
+import MapPath from '../../src/components/map/MapPath';
+import WorldBanner from '../../src/components/map/WorldBanner';
+import {
+    NODE_POSITIONS,
+    BANNER_POSITIONS,
+    MAP_HEIGHT,
+    MAP_PADDING_TOP,
+    NODE_SIZE,
+    BOSS_NODE_SIZE,
+} from '../../src/components/map/mapLayout';
 
-const DIFFICULTY_LABELS = {
-    easy: 'Kolay',
-    medium: 'Orta',
-    hard: 'Zor',
-};
+const { height: SCREEN_H } = Dimensions.get('window');
 
 export default function ChaptersScreen() {
     const router = useRouter();
+    const theme = useTheme();
+    const scrollRef = useRef<ScrollView>(null);
 
-    // TODO: Pull per-puzzle progress from store
-    const totalPuzzles = chapters.reduce((a, c) => a + c.puzzleIds.length, 0);
+    const progress = usePuzzleProgressStore((s) => s.progress);
+
+    // Derive level states
+    const levelStates = useMemo(() => {
+        return allPuzzles.map((puzzle, index) => {
+            const p = progress[puzzle.id];
+            const completed = p?.completed ?? false;
+            const stars = p?.stars ?? 0;
+
+            // Unlock logic: level 0 always unlocked, otherwise previous must be completed
+            const unlocked = index === 0 || (progress[allPuzzles[index - 1]?.id]?.completed ?? false);
+
+            let state: NodeState;
+            if (completed) {
+                state = 'completed';
+            } else if (unlocked) {
+                // Find the first incomplete unlocked level — that's the "current" one
+                const isFirst = !allPuzzles.slice(0, index).some((prev, pi) => {
+                    const pp = progress[prev.id];
+                    return !(pp?.completed);
+                }) || index === 0;
+                state = isFirst ? 'current' : 'unlocked';
+            } else {
+                state = 'locked';
+            }
+
+            return { puzzleId: puzzle.id, state, stars, index };
+        });
+    }, [progress]);
+
+    // Find current level index for auto-scroll
+    const currentIndex = useMemo(() => {
+        const idx = levelStates.findIndex(l => l.state === 'current');
+        return idx >= 0 ? idx : 0;
+    }, [levelStates]);
+
+    // First locked index for path coloring
+    const firstLockedIndex = useMemo(() => {
+        const idx = levelStates.findIndex(l => l.state === 'locked');
+        return idx >= 0 ? idx : levelStates.length;
+    }, [levelStates]);
+
+    // Auto-scroll to current level
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const node = NODE_POSITIONS[currentIndex];
+            if (node && scrollRef.current) {
+                const scrollY = Math.max(0, node.y - SCREEN_H / 2);
+                scrollRef.current.scrollTo({ y: scrollY, animated: true });
+            }
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [currentIndex]);
+
+    const handleNodePress = useCallback((puzzleId: string) => {
+        router.push(`/game/${puzzleId}`);
+    }, [router]);
 
     return (
-        <SafeAreaView style={styles.safe} edges={['top']}>
-            {/* ── Header ── */}
-            <LinearGradient
-                colors={colors.gradientPrimary as readonly [string, string]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.header}
-            >
-                <Text style={styles.headerTitle}>Bölümler</Text>
-                <View style={styles.progressBadge}>
-                    <Text style={styles.progressText}>
-                        {totalPuzzles} Bulmaca
-                    </Text>
-                </View>
-            </LinearGradient>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <SafeAreaView style={styles.flex} edges={['top']}>
+                <ScrollView
+                    ref={scrollRef}
+                    contentContainerStyle={[
+                        styles.mapContent,
+                        { height: MAP_HEIGHT + MAP_PADDING_TOP },
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                    bounces={true}
+                >
+                    {/* Map container */}
+                    <View style={styles.mapContainer}>
+                        {/* Path lines */}
+                        <MapPath
+                            nodes={NODE_POSITIONS}
+                            firstLockedIndex={firstLockedIndex}
+                        />
 
-            {/* ── Chapter List ── */}
-            <ScrollView
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-            >
-                {chapters.map((chapter) => (
-                    <View key={chapter.id} style={styles.chapterCard}>
-                        {/* Chapter header */}
-                        <View style={styles.chapterHeader}>
-                            <Text style={styles.chapterTitle}>{chapter.title}</Text>
-                            <Text style={styles.chapterSubtitle}>{chapter.subtitle}</Text>
-                        </View>
+                        {/* World banners */}
+                        {BANNER_POSITIONS.map((bp) => (
+                            <WorldBanner
+                                key={`world-${bp.worldIndex}`}
+                                worldIndex={bp.worldIndex}
+                                y={bp.y}
+                            />
+                        ))}
 
-                        {/* Puzzle list */}
-                        {chapter.puzzleIds.map((puzzleId, idx) => {
-                            const puzzle = getPuzzleById(puzzleId);
-                            if (!puzzle) return null;
-                            const diffColor = DIFFICULTY_COLORS[puzzle.difficulty] || '#999';
-                            const diffLabel = DIFFICULTY_LABELS[puzzle.difficulty] || puzzle.difficulty;
+                        {/* Level nodes */}
+                        {NODE_POSITIONS.map((nodePos) => {
+                            const levelState = levelStates[nodePos.index];
+                            if (!levelState) return null;
+
+                            const nodeSize = nodePos.isBoss ? BOSS_NODE_SIZE : NODE_SIZE;
 
                             return (
-                                <TouchableOpacity
-                                    key={puzzleId}
-                                    style={styles.puzzleRow}
-                                    activeOpacity={0.7}
-                                    onPress={() => router.push(`/game/${puzzleId}`)}
+                                <View
+                                    key={`node-${nodePos.index}`}
+                                    style={[
+                                        styles.nodeWrapper,
+                                        {
+                                            left: nodePos.x - nodeSize / 2 - 8,
+                                            top: nodePos.y - nodeSize / 2 - 8,
+                                            width: nodeSize + 16,
+                                            height: nodeSize + 30, // extra for stars
+                                        },
+                                    ]}
                                 >
-                                    {/* Number badge */}
-                                    <View style={[styles.numBadge, { backgroundColor: diffColor + '20' }]}>
-                                        <Text style={[styles.numText, { color: diffColor }]}>{idx + 1}</Text>
-                                    </View>
-
-                                    {/* Info */}
-                                    <View style={styles.puzzleInfo}>
-                                        <Text style={styles.puzzleName}>{puzzle.title}</Text>
-                                        <View style={styles.puzzleMeta}>
-                                            <Text style={styles.metaText}>
-                                                {puzzle.size[0]}×{puzzle.size[1]}
-                                            </Text>
-                                            <View style={[styles.diffDot, { backgroundColor: diffColor }]} />
-                                            <Text style={[styles.metaText, { color: diffColor }]}>
-                                                {diffLabel}
-                                            </Text>
-                                        </View>
-                                    </View>
-
-                                    {/* Arrow */}
-                                    <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-                                </TouchableOpacity>
+                                    <MapLevelNode
+                                        levelNumber={nodePos.index + 1}
+                                        state={levelState.state}
+                                        stars={levelState.stars}
+                                        isBoss={nodePos.isBoss}
+                                        onPress={() => handleNodePress(levelState.puzzleId)}
+                                    />
+                                </View>
                             );
                         })}
                     </View>
-                ))}
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    safe: {
+    container: {
         flex: 1,
-        backgroundColor: colors.background,
     },
-    header: {
-        paddingTop: spacing.lg,
-        paddingBottom: spacing.lg,
-        paddingHorizontal: spacing.lg,
-        alignItems: 'center',
-        borderBottomLeftRadius: radius.xl,
-        borderBottomRightRadius: radius.xl,
+    flex: {
+        flex: 1,
     },
-    headerTitle: {
-        ...typography.h2,
-        color: colors.textInverse,
-        textAlign: 'center',
+    mapContent: {
+        position: 'relative',
     },
-    progressBadge: {
-        marginTop: spacing.sm,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        paddingHorizontal: 14,
-        paddingVertical: 5,
-        borderRadius: radius.full,
+    mapContainer: {
+        flex: 1,
+        position: 'relative',
     },
-    progressText: {
-        ...typography.caption,
-        color: colors.textInverse,
-        fontWeight: '700',
-        fontSize: 13,
-    },
-    scrollContent: {
-        padding: spacing.md,
-        paddingBottom: 100,
-    },
-    chapterCard: {
-        backgroundColor: colors.surface,
-        borderRadius: radius.lg,
-        marginBottom: spacing.md,
-        overflow: 'hidden',
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: colors.border,
-    },
-    chapterHeader: {
-        padding: spacing.md,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: colors.border,
-    },
-    chapterTitle: {
-        ...typography.h3,
-        color: colors.text,
-    },
-    chapterSubtitle: {
-        ...typography.caption,
-        color: colors.textSecondary,
-        marginTop: 2,
-    },
-    puzzleRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: spacing.md,
-        paddingVertical: 12,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: colors.border,
-        gap: 12,
-    },
-    numBadge: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
+    nodeWrapper: {
+        position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    numText: {
-        fontSize: 14,
-        fontWeight: '800',
-    },
-    puzzleInfo: {
-        flex: 1,
-    },
-    puzzleName: {
-        ...typography.callout,
-        fontWeight: '600',
-        color: colors.text,
-    },
-    puzzleMeta: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        marginTop: 2,
-    },
-    metaText: {
-        ...typography.label,
-        color: colors.textSecondary,
-    },
-    diffDot: {
-        width: 5,
-        height: 5,
-        borderRadius: 3,
+        zIndex: 10,
     },
 });
