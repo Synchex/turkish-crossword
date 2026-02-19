@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../theme/ThemeContext';
 
 interface IconBadgeProps {
     name: keyof typeof Ionicons.glyphMap;
@@ -15,12 +15,14 @@ interface IconBadgeProps {
 export default function IconBadge({
     name,
     size = 20,
-    color = colors.primary,
+    color,
     backgroundColor,
     badgeSize = 42,
     style,
 }: IconBadgeProps) {
-    const bg = backgroundColor ?? (color + '14');
+    const t = useTheme();
+    const iconColor = color ?? t.primary;
+    const bg = backgroundColor ?? (iconColor + '14');
 
     return (
         <View
@@ -35,7 +37,7 @@ export default function IconBadge({
                 style,
             ]}
         >
-            <Ionicons name={name} size={size} color={color} />
+            <Ionicons name={name} size={size} color={iconColor} />
         </View>
     );
 }

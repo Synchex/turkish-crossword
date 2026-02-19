@@ -66,7 +66,7 @@ export default function SettingsScreen() {
                     <View style={styles.modeGrid}>
                         <UIModeCard
                             mode="modern"
-                            label="Modern"
+                            label="Pro"
                             description="Gradyan, glow ve kompakt"
                             icon="sparkles-outline"
                             isSelected={settings.uiMode === 'modern'}
@@ -75,7 +75,7 @@ export default function SettingsScreen() {
                         />
                         <UIModeCard
                             mode="accessible"
-                            label="Kolay Okuma"
+                            label="Büyük Mod"
                             description="Büyük yazı, yüksek kontrast"
                             icon="eye-outline"
                             isSelected={settings.uiMode === 'accessible'}

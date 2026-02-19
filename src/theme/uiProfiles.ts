@@ -56,30 +56,41 @@ export interface UIProfile {
 
     // ── Gameplay tokens ──
     gameplay: {
-        gridPadding: number;           // px each side around grid
-        cellBorderWidth: number;       // normal cell border
-        selectedBorderWidth: number;   // selected cell border
-        highlightBorderWidth: number;  // highlighted cell border
-        clueTextMinScale: number;      // minimumFontScale for clue cells
-        clueFontScale: number;         // clue text fontSize = cellSize * this
-        letterFontScale: number;       // letter fontSize = cellSize * this
-        keyHeight: number;             // keyboard key height
-        actionBtnHeight: number;       // keyboard action button height
-        keyFontSize: number;           // keyboard key text size
-        actionFontSize: number;        // action btn text size
-        clueListFontSize: number;      // clue list text size
-        clueListLineHeight: number;    // clue list line height
-        clueListNumSize: number;       // number badge diameter
-        clueListTabFontSize: number;   // tab text size
-        clueBarMinHeight: number;      // clue bar min height
-        clueBarFontSize: number;       // clue bar text size
-        ctaPaddingVertical: number;    // CTA button vertical padding
-        ctaFontSize: number;           // CTA button text size
-        hintRowHeight: number;         // hint row button min-height
-        hintRowFontSize: number;       // hint row text size
-        headerTitleSize: number;       // header title font size
-        headerSubSize: number;         // header subtitle font size
-        toastFontSize: number;         // toast text size
+        gridPadding: number;
+        cellBorderWidth: number;
+        selectedBorderWidth: number;
+        highlightBorderWidth: number;
+        clueTextMinScale: number;
+        clueFontScale: number;
+        letterFontScale: number;
+        keyHeight: number;
+        actionBtnHeight: number;
+        keyFontSize: number;
+        actionFontSize: number;
+        clueListFontSize: number;
+        clueListLineHeight: number;
+        clueListNumSize: number;
+        clueListTabFontSize: number;
+        clueBarMinHeight: number;
+        clueBarFontSize: number;
+        ctaPaddingVertical: number;
+        ctaFontSize: number;
+        hintRowHeight: number;
+        hintRowFontSize: number;
+        headerTitleSize: number;
+        headerSubSize: number;
+        toastFontSize: number;
+    };
+
+    // ── Home screen tokens ──
+    home: {
+        statCardMinHeight: number;
+        playCardMinHeight: number;
+        heroTitleSize: number;
+        heroSubSize: number;
+        streakIconSize: number;
+        sectionTitleSize: number;
+        showMoreDefault: boolean;  // "Daha Fazla" starts expanded?
     };
 }
 
@@ -152,6 +163,16 @@ export const modernProfile: UIProfile = {
         headerTitleSize: 17,
         headerSubSize: 13,
         toastFontSize: 14,
+    },
+
+    home: {
+        statCardMinHeight: 80,
+        playCardMinHeight: 130,
+        heroTitleSize: 34,
+        heroSubSize: 15,
+        streakIconSize: 22,
+        sectionTitleSize: 13,
+        showMoreDefault: true,
     },
 };
 
@@ -226,6 +247,16 @@ export const accessibleProfile: UIProfile = {
         headerTitleSize: 21,
         headerSubSize: 16,
         toastFontSize: 17,
+    },
+
+    home: {
+        statCardMinHeight: 100,
+        playCardMinHeight: 150,
+        heroTitleSize: 42,
+        heroSubSize: 18,
+        streakIconSize: 28,
+        sectionTitleSize: 16,
+        showMoreDefault: false,
     },
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  Dimensions,
+  Easing,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,292 +23,433 @@ import { useDailyPuzzleStore } from '../../src/store/useDailyPuzzleStore';
 import { useLeagueStore, LEAGUE_META } from '../../src/store/useLeagueStore';
 import { DAILY_COIN_REWARD, DAILY_XP_REWARD } from '../../src/data/dailyPuzzles';
 import { levels } from '../../src/levels/levels';
-
-import { colors } from '../../src/theme/colors';
 import { useTheme, useUIProfile } from '../../src/theme/ThemeContext';
 import { spacing } from '../../src/theme/spacing';
-import { typography } from '../../src/theme/typography';
 import { shadows } from '../../src/theme/shadows';
-import Card from '../../src/components/ui/Card';
 import IconBadge from '../../src/components/ui/IconBadge';
-import PremiumButton from '../../src/components/ui/PremiumButton';
-import DailyMissionsButtonCard from '../../src/components/DailyMissionsButtonCard';
 import MissionsModalSheet from '../../src/components/MissionsModalSheet';
 import PlayChooserPanel from '../../src/components/PlayChooserPanel';
 import DeveloperPanel from '../../src/components/DeveloperPanel';
 import { IS_DEV } from '../../src/config/devConfig';
 
-// ── Daily Puzzle Card ──
-function DailyPuzzleCard({ router }: { router: ReturnType<typeof useRouter> }) {
-  const t = useTheme();
-  const completedToday = useDailyPuzzleStore((s) => s.completedToday);
-  const todayPuzzle = useDailyPuzzleStore((s) => s.getTodayPuzzle)();
+const { width: SW } = Dimensions.get('window');
+
+// ═══════════════════════════════════════════════
+//  FLOATING PARTICLES
+// ═══════════════════════════════════════════════
+function FloatingParticles() {
+  const dots = useMemo(() =>
+    Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      x: new Animated.Value(Math.random() * SW),
+      y: new Animated.Value(Math.random() * 260),
+      o: new Animated.Value(Math.random() * 0.25 + 0.03),
+      s: Math.random() * 3 + 1.5,
+      d: Math.random() * 5000 + 3000,
+    })),
+    []);
+
+  useEffect(() => {
+    dots.forEach((p) => {
+      const loop = () => {
+        Animated.parallel([
+          Animated.timing(p.y, { toValue: Math.random() * 260, duration: p.d, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+          Animated.timing(p.x, { toValue: Math.random() * SW, duration: p.d * 1.2, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+          Animated.sequence([
+            Animated.timing(p.o, { toValue: Math.random() * 0.35 + 0.05, duration: p.d / 2, useNativeDriver: true }),
+            Animated.timing(p.o, { toValue: Math.random() * 0.1, duration: p.d / 2, useNativeDriver: true }),
+          ]),
+        ]).start(loop);
+      };
+      loop();
+    });
+  }, []);
 
   return (
-    <TouchableOpacity
-      style={[dpStyles.card, { backgroundColor: t.card, borderColor: t.border }]}
-      activeOpacity={0.85}
-      onPress={() => {
-        if (!completedToday) router.push('/daily');
-      }}
-    >
-      <View style={dpStyles.left}>
-        <IconBadge
-          name="today-outline"
-          size={22}
-          color={colors.accent}
-          backgroundColor={colors.accent + '14'}
-          badgeSize={44}
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {dots.map((p) => (
+        <Animated.View
+          key={p.id}
+          style={{
+            position: 'absolute',
+            width: p.s,
+            height: p.s,
+            borderRadius: p.s / 2,
+            backgroundColor: '#FFF',
+            opacity: p.o,
+            transform: [{ translateX: p.x }, { translateY: p.y }],
+          }}
         />
-        <View style={{ flex: 1 }}>
-          <Text style={dpStyles.title}>Bugünün Bulmacası</Text>
-          <Text style={dpStyles.sub}>{todayPuzzle.title}</Text>
-          <View style={dpStyles.rewardsRow}>
-            <Ionicons name="wallet-outline" size={12} color={colors.textSecondary} />
-            <Text style={dpStyles.rewards}> {DAILY_COIN_REWARD}</Text>
-            <Text style={dpStyles.rewardsDot}>  ·  </Text>
-            <Ionicons name="sparkles" size={12} color={colors.textSecondary} />
-            <Text style={dpStyles.rewards}> {DAILY_XP_REWARD} XP</Text>
-          </View>
-        </View>
-      </View>
-      <View style={[dpStyles.ctaBadge, completedToday && dpStyles.ctaDone, !completedToday && { backgroundColor: t.primary }]}>
-        <Text style={[dpStyles.ctaText, completedToday && dpStyles.ctaDoneText]}>
-          {completedToday ? 'Tamamlandı' : 'Başla'}
-        </Text>
-        {!completedToday && (
-          <Ionicons name="play" size={14} color={colors.textInverse} style={{ marginLeft: 4 }} />
-        )}
-        {completedToday && (
-          <Ionicons name="checkmark-circle" size={14} color={colors.success} style={{ marginLeft: 4 }} />
-        )}
-      </View>
-    </TouchableOpacity>
+      ))}
+    </View>
   );
 }
 
-const dpStyles = StyleSheet.create({
-  card: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: spacing.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    flexDirection: 'column',
-    gap: spacing.sm,
-    ...shadows.md,
-  },
-  left: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  title: {
-    ...typography.headline,
-    color: colors.text,
-  },
-  sub: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  rewardsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  rewards: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-  rewardsDot: {
-    ...typography.caption,
-    color: colors.textMuted,
-  },
-  ctaBadge: {
-    backgroundColor: colors.primary,
-    paddingVertical: 10,
-    borderRadius: 12,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  ctaDone: {
-    backgroundColor: colors.fill,
-  },
-  ctaText: {
-    ...typography.subheadline,
-    fontWeight: '600',
-    color: colors.textInverse,
-  },
-  ctaDoneText: {
-    color: colors.success,
-  },
-});
+// ═══════════════════════════════════════════════
+//  XP PROGRESS RING
+// ═══════════════════════════════════════════════
+function XPRing({
+  level,
+  progress,
+  size,
+  isDark,
+  primaryColor,
+}: {
+  level: number;
+  progress: number;
+  size: number;
+  isDark: boolean;
+  primaryColor: string;
+}) {
+  const pulse = useRef(new Animated.Value(1)).current;
+  const glow = useRef(new Animated.Value(0.2)).current;
 
-// ── Mission Card (inline) ──
-function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: string) => void }) {
-  const progressPercent = Math.min(1, mission.progress / mission.target);
-  const diffColors: Record<string, string> = {
-    easy: colors.success,
-    medium: colors.accent,
-    hard: colors.secondary,
-  };
-  const barColor = diffColors[mission.difficulty] ?? colors.primary;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1.05, duration: 2200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 2200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
+    ).start();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(glow, { toValue: 0.5, duration: 1800, useNativeDriver: true }),
+        Animated.timing(glow, { toValue: 0.2, duration: 1800, useNativeDriver: true }),
+      ]),
+    ).start();
+  }, []);
+
+  const r = 4;
+  const inner = size - r * 2 - 4;
+
+  // Build 4-segment ring from progress ratio
+  const filled = '#FFFFFF';
+  const empty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.2)';
 
   return (
-    <View style={mStyles.card}>
-      <View style={mStyles.cardHeader}>
-        <View style={[mStyles.diffBadge, { backgroundColor: barColor }]}>
-          <Text style={mStyles.diffText}>
-            {mission.difficulty === 'easy' ? 'Kolay' : mission.difficulty === 'medium' ? 'Orta' : 'Zor'}
+    <Animated.View style={{ transform: [{ scale: pulse }], alignItems: 'center', justifyContent: 'center' }}>
+      {/* Glow */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          width: size + 20,
+          height: size + 20,
+          borderRadius: (size + 20) / 2,
+          backgroundColor: primaryColor,
+          opacity: glow,
+        }}
+      />
+      {/* Ring */}
+      <View
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderWidth: r,
+          borderTopColor: progress > 0 ? filled : empty,
+          borderRightColor: progress > 0.25 ? filled : empty,
+          borderBottomColor: progress > 0.5 ? filled : empty,
+          borderLeftColor: progress > 0.75 ? filled : empty,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Inner */}
+        <View
+          style={{
+            width: inner,
+            height: inner,
+            borderRadius: inner / 2,
+            backgroundColor: isDark ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.12)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={rs.num}>{level}</Text>
+          <Text style={rs.label}>SEVİYE</Text>
+        </View>
+      </View>
+    </Animated.View>
+  );
+}
+const rs = StyleSheet.create({
+  num: { fontSize: 30, fontWeight: '900', color: '#FFF', letterSpacing: -1 },
+  label: { fontSize: 8, fontWeight: '700', color: 'rgba(255,255,255,0.6)', letterSpacing: 2, marginTop: -2 },
+});
+
+// ═══════════════════════════════════════════════
+//  MOTIVATIONAL MICROCOPY
+// ═══════════════════════════════════════════════
+function getMotivation(
+  streak: number,
+  xpToLevel: number,
+  completedToday: boolean,
+  totalCompleted: number,
+): string {
+  if (completedToday) return 'Bugün harika gidiyorsun!';
+  if (xpToLevel <= 50) return 'Seviye atlamana az kaldı!';
+  if (streak >= 7) return `${streak} gün! Efsane seri!`;
+  if (streak >= 3) return 'Serini korumaya devam!';
+  if (streak === 0) return 'Bugün serine başla!';
+  if (totalCompleted === 0) return 'İlk bulmacana hazır mısın?';
+  return 'Yolculuğuna devam et!';
+}
+
+// ═══════════════════════════════════════════════
+//  MINI PROGRESSION MAP
+// ═══════════════════════════════════════════════
+function MiniMap({
+  progress,
+  currentId,
+  total,
+  primaryColor,
+  isDark,
+  textColor,
+  mutedColor,
+  fs,
+}: {
+  progress: { levelId: number; completed: boolean; stars: number }[];
+  currentId: number;
+  total: number;
+  primaryColor: string;
+  isDark: boolean;
+  textColor: string;
+  mutedColor: string;
+  fs: number;
+}) {
+  const mapRef = useRef<ScrollView>(null);
+  const nodeSize = Math.round(40 * fs);
+  const gap = 8;
+  const showCount = Math.min(total, 20); // show max 20 nodes
+  const startId = Math.max(1, currentId - 5);
+  const nodes = Array.from({ length: showCount }, (_, i) => {
+    const id = startId + i;
+    const p = progress.find((x) => x.levelId === id);
+    return { id, completed: p?.completed ?? false, stars: p?.stars ?? 0, isCurrent: id === currentId, locked: id > currentId };
+  });
+
+  useEffect(() => {
+    const idx = nodes.findIndex((n) => n.isCurrent);
+    if (idx > 2 && mapRef.current) {
+      setTimeout(() => mapRef.current?.scrollTo({ x: Math.max(0, (nodeSize + gap) * (idx - 2)), animated: false }), 100);
+    }
+  }, [currentId]);
+
+  const currentPulse = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(currentPulse, { toValue: 1.15, duration: 1000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(currentPulse, { toValue: 1, duration: 1000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
+    ).start();
+  }, []);
+
+  return (
+    <ScrollView
+      ref={mapRef}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 20, gap, alignItems: 'center', paddingVertical: 8 }}
+    >
+      {nodes.map((n) => {
+        const bg = n.completed
+          ? primaryColor
+          : n.isCurrent
+            ? primaryColor + '30'
+            : isDark
+              ? 'rgba(255,255,255,0.04)'
+              : 'rgba(0,0,0,0.04)';
+        const borderCol = n.isCurrent
+          ? primaryColor
+          : n.completed
+            ? 'transparent'
+            : isDark
+              ? 'rgba(255,255,255,0.08)'
+              : 'rgba(0,0,0,0.06)';
+        const txtCol = n.completed ? '#FFF' : n.locked ? mutedColor : textColor;
+
+        const inner = (
+          <View
+            style={{
+              width: nodeSize,
+              height: nodeSize,
+              borderRadius: nodeSize / 2,
+              backgroundColor: bg,
+              borderWidth: n.isCurrent ? 2.5 : 1,
+              borderColor: borderCol,
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: n.locked ? 0.4 : 1,
+            }}
+          >
+            {n.completed ? (
+              <Ionicons name="checkmark" size={Math.round(16 * fs)} color="#FFF" />
+            ) : n.locked ? (
+              <Ionicons name="lock-closed" size={Math.round(12 * fs)} color={mutedColor} />
+            ) : (
+              <Text style={{ fontSize: Math.round(13 * fs), fontWeight: '700', color: txtCol }}>{n.id}</Text>
+            )}
+          </View>
+        );
+
+        return n.isCurrent ? (
+          <Animated.View key={n.id} style={{ transform: [{ scale: currentPulse }] }}>
+            {inner}
+          </Animated.View>
+        ) : (
+          <View key={n.id}>{inner}</View>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+// ═══════════════════════════════════════════════
+//  INLINE MISSION ROW
+// ═══════════════════════════════════════════════
+function MissionRow({
+  mission,
+  onClaim,
+  t,
+  fs,
+  isDark,
+}: {
+  mission: Mission;
+  onClaim: (id: string) => void;
+  t: any;
+  fs: number;
+  isDark: boolean;
+}) {
+  const pct = Math.min(1, mission.progress / mission.target);
+  const barColor = mission.difficulty === 'easy' ? t.success : mission.difficulty === 'medium' ? t.accent : t.secondary;
+
+  return (
+    <View
+      style={[
+        missionStyles.row,
+        {
+          backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+          borderColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+        },
+      ]}
+    >
+      <View style={missionStyles.rowLeft}>
+        {/* Progress circle */}
+        <View
+          style={[
+            missionStyles.progressCircle,
+            {
+              borderColor: mission.completed ? barColor : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
+              backgroundColor: mission.completed ? barColor + '15' : 'transparent',
+            },
+          ]}
+        >
+          {mission.completed ? (
+            <Ionicons name="checkmark" size={14} color={barColor} />
+          ) : (
+            <Text style={{ fontSize: Math.round(10 * fs), fontWeight: '700', color: t.textSecondary }}>
+              {mission.progress}/{mission.target}
+            </Text>
+          )}
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={[
+              missionStyles.mTitle,
+              { color: t.text, fontSize: Math.round(13 * fs) },
+              mission.claimed && { textDecorationLine: 'line-through', color: t.textMuted },
+            ]}
+            numberOfLines={1}
+          >
+            {mission.title}
           </Text>
-        </View>
-        <View style={mStyles.rewardsRow}>
-          <Ionicons name="wallet-outline" size={11} color={colors.textSecondary} />
-          <Text style={mStyles.reward}> {mission.rewardCoins}  ·  </Text>
-          <Ionicons name="sparkles" size={11} color={colors.textSecondary} />
-          <Text style={mStyles.reward}> {mission.rewardXP} XP</Text>
+          {/* Mini progress bar */}
+          {!mission.completed && (
+            <View style={[missionStyles.miniBar, { backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : t.fill }]}>
+              <View style={[missionStyles.miniBarFill, { width: `${pct * 100}%`, backgroundColor: barColor }]} />
+            </View>
+          )}
         </View>
       </View>
-
-      <Text style={mStyles.title}>{mission.title}</Text>
-      <Text style={mStyles.desc}>{mission.description}</Text>
-
-      <View style={mStyles.progressTrack}>
-        <View style={[mStyles.progressFill, { width: `${progressPercent * 100}%`, backgroundColor: barColor }]} />
-      </View>
-      <Text style={mStyles.progressText}>{mission.progress}/{mission.target}</Text>
-
-      {mission.completed && !mission.claimed && (
+      {/* Reward / Claim */}
+      {mission.completed && !mission.claimed ? (
         <TouchableOpacity
-          style={[mStyles.claimBtn, { backgroundColor: barColor }]}
+          style={[missionStyles.claimBtn, { backgroundColor: barColor }]}
           onPress={() => onClaim(mission.id)}
         >
-          <Text style={mStyles.claimText}>Ödülü Al</Text>
+          <Text style={missionStyles.claimText}>Al</Text>
         </TouchableOpacity>
-      )}
-      {mission.claimed && (
-        <View style={mStyles.claimedBadge}>
-          <Ionicons name="checkmark-circle" size={16} color={colors.success} />
-          <Text style={mStyles.claimedText}> Alındı</Text>
+      ) : (
+        <View style={missionStyles.xpBadge}>
+          <Text style={[missionStyles.xpText, { color: t.textMuted, fontSize: Math.round(11 * fs) }]}>
+            +{mission.rewardXP}
+          </Text>
         </View>
       )}
     </View>
   );
 }
 
-const mStyles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
+const missionStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 14,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    ...shadows.sm,
+    borderWidth: 1,
+    marginBottom: 6,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  diffBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  diffText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: colors.textInverse,
-  },
-  rewardsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  reward: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    fontSize: 11,
-  },
-  title: {
-    ...typography.headline,
-    color: colors.text,
-    fontSize: 15,
-  },
-  desc: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  progressTrack: {
-    height: 4,
-    backgroundColor: colors.fill,
-    borderRadius: 2,
-    marginTop: spacing.sm,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
-  },
-  progressText: {
-    ...typography.label,
-    color: colors.textMuted,
-    marginTop: 4,
-    textAlign: 'right',
-  },
-  claimBtn: {
-    marginTop: spacing.sm,
-    paddingVertical: 8,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  claimText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textInverse,
-  },
-  claimedBadge: {
-    marginTop: spacing.sm,
-    flexDirection: 'row',
+  rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
+  progressCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  claimedText: {
-    ...typography.caption,
-    color: colors.success,
-    fontWeight: '600',
-  },
+  mTitle: { fontWeight: '600' },
+  miniBar: { height: 3, borderRadius: 1.5, marginTop: 4, overflow: 'hidden' },
+  miniBarFill: { height: '100%', borderRadius: 1.5 },
+  claimBtn: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10 },
+  claimText: { fontSize: 12, fontWeight: '700', color: '#FFF' },
+  xpBadge: {},
+  xpText: { fontWeight: '700' },
 });
 
-// ── Main Home Screen ──
+// ═══════════════════════════════════════════════
+//  MAIN HOME SCREEN
+// ═══════════════════════════════════════════════
+
 export default function HomeScreen() {
   const router = useRouter();
   const t = useTheme();
   const ui = useUIProfile();
+  const fs = ui.fontScale;
+  const isDark = t.id === 'black';
+  const isBig = ui.mode === 'accessible';
+
+  // ── Stores ──
   const progress = useProgressStore((s) => s.progress);
   const loaded = useProgressStore((s) => s.loaded);
-
   const coins = useEconomyStore((s) => s.coins);
   const buyStreakFreeze = useEconomyStore((s) => s.buyStreakFreeze);
-
   const missions = useMissionsStore((s) => s.missions);
   const claimMission = useMissionsStore((s) => s.claimMission);
   const ensureDailyMissions = useMissionsStore((s) => s.ensureDailyMissions);
-
-  const { currentStreak, longestStreak, totalXP, weeklyXP, currentLevel: playerLevel, streakFreezes } = useGamificationStore();
+  const { currentStreak, longestStreak, totalXP, weeklyXP, currentLevel: playerLevel, streakFreezes } =
+    useGamificationStore();
   const league = useLeagueStore((s) => s.league);
   const ensureWeeklyLeague = useLeagueStore((s) => s.ensureWeeklyLeague);
   const leagueRank = useLeagueStore((s) => s.getRank(weeklyXP));
   const promotionXP = useLeagueStore((s) => s.getPromotionThreshold());
   const leagueMeta = LEAGUE_META[league];
+  const completedToday = useDailyPuzzleStore((s) => s.completedToday);
+  const todayPuzzle = useDailyPuzzleStore((s) => s.getTodayPuzzle)();
 
+  // ── UI State ──
   const [shopVisible, setShopVisible] = useState(false);
   const [missionsModalVisible, setMissionsModalVisible] = useState(false);
   const [devPanelVisible, setDevPanelVisible] = useState(false);
@@ -314,403 +457,414 @@ export default function HomeScreen() {
 
   useEffect(() => {
     ensureDailyMissions();
-    // Generate weekly league if needed
-    const weekStart = new Date();
-    const day = weekStart.getDay();
-    const diff = (day === 0 ? 6 : day - 1);
-    weekStart.setDate(weekStart.getDate() - diff);
-    const weekKey = weekStart.toISOString().split('T')[0];
-    ensureWeeklyLeague(weekKey, weeklyXP);
+    const ws = new Date();
+    const d = ws.getDay();
+    ws.setDate(ws.getDate() - (d === 0 ? 6 : d - 1));
+    ensureWeeklyLeague(ws.toISOString().split('T')[0], weeklyXP);
   }, []);
 
+  // ── Derived ──
   const nextLevelXP = getXPForNextLevel(playerLevel);
   const prevLevelXP = playerLevel === 1 ? 0 : getXPForNextLevel(playerLevel - 1);
   const levelProgress = Math.min(1, Math.max(0, (totalXP - prevLevelXP) / (nextLevelXP - prevLevelXP)));
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
   const completedCount = progress.filter((p) => p.completed).length;
   const totalStars = progress.reduce((sum, p) => sum + p.stars, 0);
+  const nextLevelId = progress.find((p) => !p.completed)?.levelId ?? levels.length;
+  const xpToNext = nextLevelXP - totalXP;
+  const completedMissions = missions.filter((m) => m.completed).length;
 
-  const handleClaimMission = (id: string) => {
-    const result = claimMission(id);
-    if (result) {
-      Alert.alert('Ödül Alındı', `${result.coins} coin kazandın!`);
-    }
-  };
+  // ── Motivational text ──
+  const motivation = useMemo(
+    () => getMotivation(currentStreak, xpToNext, completedToday, completedCount),
+    [currentStreak, xpToNext, completedToday, completedCount],
+  );
 
-  const handleBuyFreeze = () => {
-    if (buyStreakFreeze()) {
-      Alert.alert('Satın Alındı', '1 Seri Dondurucu eklendi.');
-    } else {
-      Alert.alert('Yetersiz Coin', `Seri dondurucu ${STREAK_FREEZE_COST} coin gerektirir.`);
-    }
-  };
+  // ── Animations ──
+  const heroFade = useRef(new Animated.Value(0)).current;
+  const heroSlide = useRef(new Animated.Value(50)).current;
+  const ctaScale = useRef(new Animated.Value(0.85)).current;
+  const ctaOpacity = useRef(new Animated.Value(0)).current;
+  const ctaBounce = useRef(new Animated.Value(0)).current;
+  const bodyFade = useRef(new Animated.Value(0)).current;
+  const bodySlide = useRef(new Animated.Value(40)).current;
+
+  useEffect(() => {
+    Animated.stagger(180, [
+      Animated.parallel([
+        Animated.timing(heroFade, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(heroSlide, { toValue: 0, duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      ]),
+      Animated.parallel([
+        Animated.spring(ctaScale, { toValue: 1, friction: 4, tension: 50, useNativeDriver: true }),
+        Animated.timing(ctaOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+      ]),
+      Animated.parallel([
+        Animated.timing(bodyFade, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(bodySlide, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      ]),
+    ]).start();
+
+    // CTA idle bounce
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(ctaBounce, { toValue: -4, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(ctaBounce, { toValue: 0, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
+    ).start();
+  }, []);
+
+  // ── Handlers ──
+  const handleClaimMission = useCallback((id: string) => {
+    const r = claimMission(id);
+    if (r) Alert.alert('Ödül Alındı', `${r.coins} coin kazandın!`);
+  }, [claimMission]);
+
+  const handleBuyFreeze = useCallback(() => {
+    if (buyStreakFreeze()) Alert.alert('Satın Alındı', '1 Seri Dondurucu eklendi.');
+    else Alert.alert('Yetersiz Coin', `Seri dondurucu ${STREAK_FREEZE_COST} coin gerektirir.`);
+  }, [buyStreakFreeze]);
 
   if (!loaded) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Yükleniyor...</Text>
+      <View style={[s.center, { backgroundColor: t.background }]}>
+        <Text style={{ color: t.textSecondary, fontSize: 16 }}>Yükleniyor...</Text>
       </View>
     );
   }
 
-  const isDark = t.id === 'black';
+  // ── XP for next level display ──
+  const baseXP = 40; // rough XP per puzzle for the preview
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: t.background }]} edges={['top']}>
-      {/* Gradient background for dark theme */}
-      {isDark && (
-        <LinearGradient
-          colors={['#0B1020', '#05070F']}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── Hero Header ── */}
-        <LinearGradient
-          colors={isDark ? ['#5E8BFF', '#7B61FF'] as const : t.gradientPrimary as readonly [string, string]}
-          start={isDark ? { x: 0, y: 0 } : { x: 0, y: 0 }}
-          end={isDark ? { x: 1, y: 1 } : { x: 1, y: 1 }}
-          style={styles.hero}
-        >
-          <Animated.View
-            style={{
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-              alignItems: 'center',
-            }}
-          >
-            <Text style={[styles.heroTitle, { fontSize: ui.fontSizes.hero }]}>Kare Bulmaca</Text>
-            <Text style={[styles.heroSubtitle, { fontSize: ui.fontSizes.subheadline }]}>Türkçe Çengel Bulmaca</Text>
-            {IS_DEV && (
-              <View style={styles.devBadge}>
-                <Text style={styles.devBadgeText}>DEV</Text>
-              </View>
-            )}
+    <View style={{ flex: 1, backgroundColor: t.background }}>
+      {isDark && <LinearGradient colors={['#0B1020', '#060A14']} style={StyleSheet.absoluteFill} />}
 
-            {/* XP Progress */}
-            <View style={styles.xpContainer}>
-              <View style={styles.levelBadge}>
-                <Text style={styles.levelText}>{playerLevel}</Text>
+      <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} bounces>
+        {/* ╔══════════════════════════════════╗
+            ║        HERO SECTION (40%)        ║
+            ╚══════════════════════════════════╝ */}
+        <LinearGradient
+          colors={isDark
+            ? ['#1A1040', '#0F1D40', '#0B1020'] as const
+            : [...t.gradientPrimary, t.primaryDark] as readonly [string, string, string]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0.8, y: 1 }}
+          style={s.hero}
+        >
+          <FloatingParticles />
+          <SafeAreaView edges={['top']} style={s.heroSafe}>
+            <Animated.View style={{ opacity: heroFade, transform: [{ translateY: heroSlide }], alignItems: 'center', width: '100%' }}>
+              {/* Top Bar */}
+              <View style={s.topBar}>
+                <TouchableOpacity
+                  style={s.coinPill}
+                  activeOpacity={0.7}
+                  onLongPress={() => IS_DEV && setDevPanelVisible(true)}
+                  delayLongPress={2000}
+                >
+                  <Ionicons name="wallet" size={13} color="#FFD700" />
+                  <Text style={s.coinPillText}>{IS_DEV ? '∞' : coins}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={s.shopPill} onPress={() => setShopVisible(true)}>
+                  <Ionicons name="bag-outline" size={15} color="rgba(255,255,255,0.85)" />
+                </TouchableOpacity>
               </View>
-              <View style={styles.xpBarTrack}>
-                <View style={[styles.xpBarFill, { width: `${levelProgress * 100}%` }]} />
+
+              {/* XP Ring + Level */}
+              <XPRing
+                level={playerLevel}
+                progress={levelProgress}
+                size={isBig ? 104 : 90}
+                isDark={isDark}
+                primaryColor={t.primary}
+              />
+
+              {/* XP Text */}
+              <Text style={[s.xpText, { fontSize: Math.round(12 * fs) }]}>
+                {totalXP - prevLevelXP} / {nextLevelXP - prevLevelXP} XP
+              </Text>
+
+              {/* Motivational microcopy */}
+              <Text style={[s.motivation, { fontSize: Math.round(14 * fs) }]}>{motivation}</Text>
+
+              {/* Badge Chips */}
+              <View style={s.chips}>
+                {/* Streak */}
+                <View style={[s.chip, currentStreak > 0 && { backgroundColor: 'rgba(255,103,35,0.2)' }]}>
+                  <Ionicons name="flame" size={Math.round(14 * fs)} color="#FF6723" />
+                  <Text style={[s.chipText, { fontSize: Math.round(12 * fs) }]}>{currentStreak}</Text>
+                </View>
+                {/* Stars */}
+                <View style={s.chip}>
+                  <Ionicons name="star" size={Math.round(13 * fs)} color="#FFD700" />
+                  <Text style={[s.chipText, { fontSize: Math.round(12 * fs) }]}>{totalStars}</Text>
+                </View>
+                {/* League */}
+                <View style={[s.chip, { backgroundColor: leagueMeta.color + '22' }]}>
+                  <Ionicons name={leagueMeta.icon as any} size={Math.round(13 * fs)} color={leagueMeta.color} />
+                  <Text style={[s.chipText, { fontSize: Math.round(11 * fs), color: leagueMeta.color }]}>#{leagueRank}</Text>
+                </View>
               </View>
-              <Text style={styles.xpLabelText}>{totalXP} XP</Text>
-            </View>
-          </Animated.View>
+            </Animated.View>
+          </SafeAreaView>
         </LinearGradient>
 
-        {/* ── Stats Row ── */}
+        {/* ╔══════════════════════════════════╗
+            ║       CONTINUE CTA (dominant)    ║
+            ╚══════════════════════════════════╝ */}
         <Animated.View
           style={[
-            styles.statsRow,
+            s.ctaOuter,
             {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
+              opacity: ctaOpacity,
+              transform: [{ scale: ctaScale }, { translateY: ctaBounce }],
             },
           ]}
         >
-          <Card style={styles.statCard} variant="elevated" padding="md">
-            <IconBadge name="checkmark-circle" size={18} color={colors.success} badgeSize={34} />
-            <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{completedCount}</Text>
-            <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Tamamlanan</Text>
-          </Card>
-
-          <Card style={styles.statCard} variant="elevated" padding="md">
-            <IconBadge name="star" size={18} color={colors.accent} badgeSize={34} />
-            <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{totalStars}</Text>
-            <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Yıldız</Text>
-          </Card>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onLongPress={() => IS_DEV && setDevPanelVisible(true)}
-            delayLongPress={2000}
-            style={{ flex: 1 }}
-          >
-            <Card style={styles.statCard} variant="elevated" padding="md">
-              <IconBadge name="wallet" size={18} color={t.primary} badgeSize={34} />
-              <Text style={[styles.statValue, { color: t.text, fontSize: ui.fontSizes.h3 }]}>{IS_DEV ? '∞' : coins}</Text>
-              <Text style={[styles.statLabel, { color: t.textSecondary, fontSize: ui.fontSizes.label }]}>Coin</Text>
-            </Card>
+          <TouchableOpacity activeOpacity={0.88} onPress={() => router.push(`/game/${nextLevelId}`)}>
+            {/* Glow */}
+            {ui.glow && (
+              <View style={[s.ctaGlow, { backgroundColor: t.primary, shadowColor: t.primary }]} />
+            )}
+            <LinearGradient
+              colors={isDark ? ['#5E8BFF', '#7B61FF'] as const : t.gradientPrimary as readonly [string, string]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[s.ctaBtn, { minHeight: isBig ? 82 : 72 }]}
+            >
+              <View style={s.ctaContent}>
+                <Text style={[s.ctaTitle, { fontSize: Math.round(21 * fs) }]}>Yolculuğa Devam</Text>
+                <View style={s.ctaMetaRow}>
+                  <Text style={[s.ctaMeta, { fontSize: Math.round(12 * fs) }]}>Seviye {nextLevelId}</Text>
+                  <View style={s.ctaXpChip}>
+                    <Ionicons name="sparkles" size={10} color="rgba(255,255,255,0.9)" />
+                    <Text style={[s.ctaXpText, { fontSize: Math.round(11 * fs) }]}>+{baseXP} XP</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={s.ctaArrow}>
+                <Ionicons name="arrow-forward" size={Math.round(22 * fs)} color="#FFF" />
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </Animated.View>
 
-        {/* ── Play CTA ── */}
-        <View style={styles.playCta}>
-          {/* Radial glow behind OYNA for dark */}
-          {isDark && ui.glow && (
-            <View style={{
-              position: 'absolute',
-              top: -20,
-              left: '15%',
-              right: '15%',
-              height: 120,
-              borderRadius: 60,
-              backgroundColor: 'rgba(94,139,255,0.08)',
-            }} />
-          )}
-          <PremiumButton
-            title="OYNA"
-            icon="play"
-            onPress={() => setPlayModeVisible(true)}
-            style={{ width: '100%' }}
-          />
-        </View>
-
-        {/* ── Play Mode Cards (always visible) ── */}
-        <View style={styles.playCardsRow}>
+        {/* ╔══════════════════════════════════╗
+            ║       PLAY MODE CARDS            ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.playRow, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
           <TouchableOpacity
-            style={[
-              styles.playCard,
-              {
-                backgroundColor: isDark ? '#131A2E' : t.card,
-                borderColor: t.border,
-                minHeight: Math.round(130 * ui.spacingScale),
-                borderRadius: ui.cardBorderRadius + 8,
-                ...(ui.shadow === 'full' ? shadows.sm : ui.shadowStyle),
-              },
-              isDark && ui.glow && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+            style={[s.playCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.05)' : t.border },
+            isDark && ui.glow && { shadowColor: t.primary, shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
             ]}
             activeOpacity={0.82}
             onPress={() => router.push('/(tabs)/chapters')}
           >
-            <IconBadge name="map-outline" size={26} color={t.primary} badgeSize={56} />
-            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text, fontSize: ui.fontSizes.headline }]}>Bolumler</Text>
-            <Text style={[styles.playCardSub, { color: t.textSecondary, fontSize: ui.fontSizes.caption }]}>Seviye seviye ilerle</Text>
+            <View style={[s.playIcon, { backgroundColor: t.primary + '12' }]}>
+              <Ionicons name="map-outline" size={Math.round(22 * fs)} color={t.primary} />
+            </View>
+            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(15 * fs) }]}>Bölümler</Text>
+            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(11 * fs) }]}>Seviye seviye</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.playCard,
-              {
-                backgroundColor: isDark ? '#131A2E' : t.card,
-                borderColor: t.border,
-                minHeight: Math.round(130 * ui.spacingScale),
-                borderRadius: ui.cardBorderRadius + 8,
-                ...(ui.shadow === 'full' ? shadows.sm : ui.shadowStyle),
-              },
-              isDark && ui.glow && { shadowColor: t.shadow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16 },
+            style={[s.playCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.05)' : t.border },
+            isDark && ui.glow && { shadowColor: t.accent, shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
             ]}
             activeOpacity={0.82}
             onPress={() => router.push('/big-puzzle')}
           >
-            <IconBadge name="grid-outline" size={26} color={colors.accent} badgeSize={56} />
-            <Text style={[styles.playCardTitle, { color: isDark ? '#F3F4F6' : t.text, fontSize: ui.fontSizes.headline }]}>Buyuk Bulmaca</Text>
-            <Text style={[styles.playCardSub, { color: t.textSecondary, fontSize: ui.fontSizes.caption }]}>Rastgele, buyuk boy</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.playHint}>
-          Son kaldigin yer: Seviye {progress.find((p) => !p.completed)?.levelId ?? levels.length}
-        </Text>
-
-        {/* ── Daily Streak Card ── */}
-        <Animated.View
-          style={{
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          }}
-        >
-          <Card style={styles.streakCard} variant="accent" padding="lg">
-            <View style={styles.streakRow}>
-              <IconBadge
-                name="flame"
-                size={22}
-                color="#FF6723"
-                backgroundColor="#FF672318"
-                badgeSize={44}
-              />
-              <View>
-                <Text style={styles.streakTitle}>{currentStreak} Günlük Seri</Text>
-                <Text style={styles.streakSub}>
-                  {longestStreak > 0
-                    ? `En uzun seri: ${longestStreak} gün`
-                    : 'Her gün oyna, seriyi koru!'}
-                </Text>
-              </View>
+            <View style={[s.playIcon, { backgroundColor: t.accent + '12' }]}>
+              <Ionicons name="grid-outline" size={Math.round(22 * fs)} color={t.accent} />
             </View>
-          </Card>
+            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(15 * fs) }]}>Büyük Bulmaca</Text>
+            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(11 * fs) }]}>Rastgele boy</Text>
+          </TouchableOpacity>
         </Animated.View>
 
-        {/* ── League Card ── */}
-        <Animated.View
-          style={{
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          }}
-        >
-          <Card style={styles.leagueCard} variant="elevated" padding="lg">
-            <View style={styles.leagueRow}>
-              <View style={[styles.leagueIconBadge, { backgroundColor: leagueMeta.color + '18' }]}>
-                <Ionicons
-                  name={leagueMeta.icon as any}
-                  size={22}
-                  color={leagueMeta.color}
-                />
+        {/* ╔══════════════════════════════════╗
+            ║     PROGRESSION MAP PREVIEW      ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
+          <Text style={[s.sectionTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>İlerleme Haritası</Text>
+          <View style={[s.mapCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border },
+          isDark && ui.glow && { shadowColor: t.primary, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+          ]}>
+            <MiniMap
+              progress={progress}
+              currentId={nextLevelId}
+              total={levels.length}
+              primaryColor={t.primary}
+              isDark={isDark}
+              textColor={t.text}
+              mutedColor={t.textMuted}
+              fs={fs}
+            />
+          </View>
+        </Animated.View>
+
+        {/* ╔══════════════════════════════════╗
+            ║       DAILY CHALLENGE CARD       ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
+          <TouchableOpacity
+            style={[s.depthCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border },
+            isDark && ui.glow && { shadowColor: t.accent, shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+            ]}
+            activeOpacity={0.85}
+            onPress={() => !completedToday && router.push('/daily')}
+          >
+            <View style={s.dcRow}>
+              <View style={[s.dcIcon, { backgroundColor: t.accent + '14' }]}>
+                <Ionicons name="today-outline" size={Math.round(24 * fs)} color={t.accent} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.leagueTitle}>{leagueMeta.label} Lig</Text>
-                <Text style={styles.leagueSub}>
-                  Sıralama: #{leagueRank} · {weeklyXP} XP bu hafta
-                </Text>
+                <Text style={[s.dcTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>Bugünün Bulmacası</Text>
+                <View style={{ flexDirection: 'row', gap: 8, marginTop: 3 }}>
+                  <View style={s.dcReward}>
+                    <Ionicons name="sparkles" size={10} color={t.accent} />
+                    <Text style={[s.dcRewardText, { color: t.accent }]}>+{DAILY_XP_REWARD} XP</Text>
+                  </View>
+                  <View style={s.dcReward}>
+                    <Ionicons name="wallet-outline" size={10} color={t.textSecondary} />
+                    <Text style={[s.dcRewardText, { color: t.textSecondary }]}>+{DAILY_COIN_REWARD}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={[s.dcBadge, completedToday ? { backgroundColor: t.success + '18' } : { backgroundColor: t.accent }]}>
+                <Ionicons name={completedToday ? 'checkmark' : 'play'} size={16} color={completedToday ? t.success : '#FFF'} />
               </View>
             </View>
-            {promotionXP > 0 && (
-              <View style={styles.leaguePromoRow}>
-                <View style={styles.leaguePromoBarTrack}>
-                  <View
-                    style={[
-                      styles.leaguePromoBarFill,
-                      {
-                        width: `${Math.min(100, (weeklyXP / promotionXP) * 100)}%`,
-                        backgroundColor: leagueMeta.color,
-                      },
-                    ]}
-                  />
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* ╔══════════════════════════════════╗
+            ║       DAILY MISSIONS INLINE      ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
+          <View style={s.sectionHeader}>
+            <Text style={[s.sectionTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>Günlük Görevler</Text>
+            <Text style={[s.sectionBadge, { color: t.primary, fontSize: Math.round(12 * fs) }]}>
+              {completedMissions}/{missions.length}
+            </Text>
+          </View>
+          <View style={[s.depthCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border, paddingVertical: 10, gap: 0 },
+          isDark && ui.glow && { shadowColor: t.primary, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+          ]}>
+            {missions.map((m) => (
+              <MissionRow key={m.id} mission={m} onClaim={handleClaimMission} t={t} fs={fs} isDark={isDark} />
+            ))}
+          </View>
+        </Animated.View>
+
+        {/* ╔══════════════════════════════════╗
+            ║         LEAGUE + SOCIAL          ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
+          <Text style={[s.sectionTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>Haftalık Lig</Text>
+          <View style={[s.depthCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border },
+          isDark && ui.glow && { shadowColor: leagueMeta.color, shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+          ]}>
+            <View style={s.dcRow}>
+              <View style={[s.dcIcon, { backgroundColor: leagueMeta.color + '14' }]}>
+                <Ionicons name={leagueMeta.icon as any} size={Math.round(24 * fs)} color={leagueMeta.color} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.dcTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>{leagueMeta.label} Lig</Text>
+                <Text style={[s.dcSubMeta, { color: t.textSecondary, fontSize: Math.round(12 * fs) }]}>
+                  #{leagueRank}  ·  {weeklyXP} XP
+                </Text>
+              </View>
+              {leagueRank <= 3 && (
+                <View style={[s.top3Badge, { backgroundColor: '#FFD700' + '20' }]}>
+                  <Ionicons name="trophy" size={14} color="#FFD700" />
                 </View>
-                <Text style={styles.leaguePromoText}>
-                  Yükselme: {promotionXP} XP
+              )}
+            </View>
+            {promotionXP > 0 && (
+              <View style={s.leagueBar}>
+                <View style={[s.leagueBarTrack, { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : t.fill }]}>
+                  <View style={[s.leagueBarFill, { width: `${Math.min(100, (weeklyXP / promotionXP) * 100)}%`, backgroundColor: leagueMeta.color }]} />
+                </View>
+                <Text style={[s.leagueBarText, { color: t.textMuted, fontSize: Math.round(10 * fs) }]}>
+                  {promotionXP} XP
                 </Text>
               </View>
             )}
-          </Card>
-        </Animated.View>
-
-        {/* ── Shop Button ── */}
-        <Animated.View
-          style={[
-            styles.ctaContainer,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.shopButton}
-            onPress={() => setShopVisible(true)}
-          >
-            <Ionicons name="bag-outline" size={16} color={t.primary} style={{ marginRight: 6 }} />
-            <Text style={[styles.shopButtonText, { color: t.primary }]}>Mağaza</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
-        {/* ── Daily Puzzle Card ── */}
-        <DailyPuzzleCard router={router} />
-
-        {/* ── Daily Missions Card Button ── */}
-        <DailyMissionsButtonCard
-          completedCount={missions.filter((m) => m.completed).length}
-          totalCount={missions.length}
-          onPress={() => setMissionsModalVisible(true)}
-        />
-      </ScrollView>
-
-      {/* ── Shop Modal ── */}
-      <Modal
-        visible={shopVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShopVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShopVisible(false)}
-        >
-          <View style={styles.shopSheet}>
-            <View style={styles.shopHandle} />
-            <Text style={styles.shopTitle}>Mağaza</Text>
-            <View style={styles.shopCoinsRow}>
-              <Ionicons name="wallet" size={16} color={colors.textSecondary} />
-              <Text style={styles.shopCoins}> {coins} Coin</Text>
-            </View>
-
-            {/* Streak Freeze */}
-            <TouchableOpacity style={styles.shopItem} onPress={handleBuyFreeze}>
-              <View style={styles.shopItemLeft}>
-                <IconBadge
-                  name="snow"
-                  size={20}
-                  color="#5AC8FA"
-                  backgroundColor="#5AC8FA14"
-                  badgeSize={40}
-                />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.shopItemTitle}>Seri Dondurucu</Text>
-                  <Text style={styles.shopItemDesc}>
-                    1 gün oynamasan da serin korunsun (Mevcut: {streakFreezes})
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.shopPriceBadge, { backgroundColor: t.primary }]}>
-                <Text style={styles.shopPriceText}>{STREAK_FREEZE_COST}</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Info card */}
-            <View style={styles.shopInfoCard}>
-              <View style={styles.shopInfoTitleRow}>
-                <Ionicons name="information-circle-outline" size={16} color={t.primary} />
-                <Text style={[styles.shopInfoTitle, { color: t.primary }]}> İpuçları</Text>
-              </View>
-              <Text style={styles.shopInfoDesc}>
-                Oyun sırasında İpucu butonuna basarak harf veya kelime açabilirsin.
-                {'\n'}Harf: 10 coin  ·  Kelime: 25 coin
+            <View style={s.leagueHint}>
+              <Ionicons name="information-circle-outline" size={12} color={t.textMuted} />
+              <Text style={[s.leagueHintText, { color: t.textMuted, fontSize: Math.round(11 * fs) }]}>
+                İlk 3 bonus XP kazanır
               </Text>
             </View>
+          </View>
+        </Animated.View>
 
-            <TouchableOpacity
-              style={styles.shopClose}
-              onPress={() => setShopVisible(false)}
-            >
-              <Text style={styles.shopCloseText}>Kapat</Text>
+        {/* ╔══════════════════════════════════╗
+            ║         STREAK CARD              ║
+            ╚══════════════════════════════════╝ */}
+        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
+          <View style={[s.depthCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border },
+          isDark && ui.glow && { shadowColor: '#FF6723', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+          ]}>
+            <View style={s.dcRow}>
+              <View style={[s.dcIcon, { backgroundColor: '#FF672314' }]}>
+                <Ionicons name="flame" size={Math.round(24 * fs)} color="#FF6723" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.dcTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>
+                  {currentStreak} Günlük Seri
+                </Text>
+                <Text style={[s.dcSubMeta, { color: t.textSecondary, fontSize: Math.round(12 * fs) }]}>
+                  {longestStreak > 0 ? `En uzun: ${longestStreak} gün` : 'Her gün oyna!'}
+                </Text>
+              </View>
+              <View style={s.streakFireNum}>
+                <Text style={[s.streakNumText, { color: '#FF6723', fontSize: Math.round(20 * fs) }]}>{currentStreak}</Text>
+              </View>
+            </View>
+          </View>
+        </Animated.View>
+
+        <View style={{ height: 110 }} />
+      </ScrollView>
+
+      {/* ════ MODALS ════ */}
+
+      <Modal visible={shopVisible} transparent animationType="slide" onRequestClose={() => setShopVisible(false)}>
+        <TouchableOpacity style={s.overlay} activeOpacity={1} onPress={() => setShopVisible(false)}>
+          <View style={[s.shopSheet, { backgroundColor: isDark ? t.surface : t.card }]}>
+            <View style={[s.handle, { backgroundColor: t.fill }]} />
+            <Text style={[s.shopTitle, { color: t.text }]}>Mağaza</Text>
+            <View style={s.shopCoinsRow}>
+              <Ionicons name="wallet" size={14} color={t.accent} />
+              <Text style={{ color: t.textSecondary, fontSize: 14, fontWeight: '600', marginLeft: 4 }}>{coins} Coin</Text>
+            </View>
+            <TouchableOpacity style={[s.shopItem, { backgroundColor: isDark ? t.surface2 : t.cardAlt }]} onPress={handleBuyFreeze}>
+              <View style={s.shopItemL}>
+                <IconBadge name="snow" size={18} color="#5AC8FA" backgroundColor="#5AC8FA14" badgeSize={38} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.shopItemT, { color: t.text }]}>Seri Dondurucu</Text>
+                  <Text style={[s.shopItemD, { color: t.textSecondary }]}>Mevcut: {streakFreezes}</Text>
+                </View>
+              </View>
+              <View style={[s.shopPrice, { backgroundColor: t.primary }]}>
+                <Text style={s.shopPriceT}>{STREAK_FREEZE_COST}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={[s.shopClose, { backgroundColor: t.primarySoft }]} onPress={() => setShopVisible(false)}>
+              <Text style={[s.shopCloseT, { color: t.primary }]}>Kapat</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
 
-      {/* ── Play Chooser Panel ── */}
       <PlayChooserPanel
         visible={playModeVisible}
         onClose={() => setPlayModeVisible(false)}
         options={[
-          {
-            title: 'Bolumler',
-            subtitle: 'Seviye seviye ilerle',
-            icon: 'map-outline',
-            iconColor: t.primary,
-            onPress: () => router.push('/(tabs)/chapters'),
-          },
-          {
-            title: 'Buyuk Bulmaca',
-            subtitle: 'Rastgele, buyuk boy',
-            icon: 'grid-outline',
-            iconColor: colors.accent,
-            onPress: () => router.push('/big-puzzle'),
-          },
+          { title: 'Bölümler', subtitle: 'Seviye seviye ilerle', icon: 'map-outline', iconColor: t.primary, onPress: () => router.push('/(tabs)/chapters') },
+          { title: 'Büyük Bulmaca', subtitle: 'Rastgele, büyük boy', icon: 'grid-outline', iconColor: t.accent, onPress: () => router.push('/big-puzzle') },
         ]}
       />
 
@@ -721,358 +875,96 @@ export default function HomeScreen() {
         onClose={() => setMissionsModalVisible(false)}
       />
 
-      {/* ── Developer Panel (hidden, DEV only) ── */}
-      <DeveloperPanel
-        visible={devPanelVisible}
-        onClose={() => setDevPanelVisible(false)}
-      />
-    </SafeAreaView>
+      <DeveloperPanel visible={devPanelVisible} onClose={() => setDevPanelVisible(false)} />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    ...typography.headline,
-    color: colors.textSecondary,
-  },
-  scrollContent: {
-    paddingBottom: 120,
-  },
-  // ── Hero ──
-  hero: {
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xxl,
-    alignItems: 'center',
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-  },
-  xpContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  levelBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.28)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  levelText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textInverse,
-  },
-  xpBarTrack: {
-    width: 100,
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  xpBarFill: {
-    height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.85)',
-    borderRadius: 2,
-  },
-  xpLabelText: {
-    ...typography.label,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '600',
-  },
-  heroTitle: {
-    ...typography.hero,
-    color: colors.textInverse,
-    textAlign: 'center',
-  },
-  heroSubtitle: {
-    ...typography.subheadline,
-    color: 'rgba(255,255,255,0.72)',
-    marginTop: spacing.xs,
-  },
-  devBadge: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 6,
-    marginTop: 6,
-  },
-  devBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  // ── Stats ──
-  statsRow: {
-    flexDirection: 'row',
-    marginHorizontal: spacing.md,
-    marginTop: -spacing.lg,
-    gap: spacing.sm,
-  },
-  statCard: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 4,
-  },
-  statValue: {
-    ...typography.h3,
-    color: colors.text,
-  },
-  statLabel: {
-    ...typography.label,
-    color: colors.textSecondary,
-  },
-  // ── Play CTA ──
-  playCta: {
-    alignItems: 'center',
-    marginHorizontal: spacing.md,
-    marginTop: spacing.xl,
-    marginBottom: 0,
-  },
-  playCardsRow: {
-    flexDirection: 'row',
-    marginHorizontal: spacing.md,
-    marginTop: 14,
-    gap: 12,
-  },
-  playCard: {
-    flex: 1,
-    minHeight: 130,
-    backgroundColor: colors.card,
-    borderRadius: 24,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    ...shadows.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.sm,
-    gap: 4,
-  },
-  playCardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text,
-    marginTop: 6,
-    textAlign: 'center',
-    letterSpacing: -0.2,
-  },
-  playCardSub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  playHint: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
-    marginHorizontal: spacing.md,
-  },
-  // ── CTA ──
-  ctaContainer: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.md,
-    alignItems: 'center',
-  },
-  shopButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    backgroundColor: colors.fill,
-  },
-  shopButtonText: {
-    ...typography.subheadline,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  // ── Streak ──
-  streakCard: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.md,
-  },
-  streakRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  streakTitle: {
-    ...typography.headline,
-    color: colors.text,
-  },
-  streakSub: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  // ── League ──
-  leagueCard: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.sm,
-  },
-  leagueRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  leagueIconBadge: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  leagueTitle: {
-    ...typography.headline,
-    color: colors.text,
-  },
-  leagueSub: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  leaguePromoRow: {
-    marginTop: spacing.sm,
-  },
-  leaguePromoBarTrack: {
-    height: 6,
-    backgroundColor: colors.fill,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  leaguePromoBarFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  leaguePromoText: {
-    ...typography.caption,
-    color: colors.textMuted,
-    marginTop: 4,
-    fontSize: 11,
-  },
-  // ── Shop Modal ──
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: colors.overlay,
-  },
-  shopSheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xxl,
-  },
-  shopHandle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.fill,
-    alignSelf: 'center',
-    marginBottom: spacing.md,
-  },
-  shopTitle: {
-    ...typography.h2,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  shopCoinsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-  },
-  shopCoins: {
-    ...typography.body,
-    color: colors.textSecondary,
-  },
-  shopItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.cardAlt,
-    padding: spacing.md,
-    borderRadius: 14,
-    marginBottom: spacing.sm,
-  },
-  shopItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    flex: 1,
-  },
-  shopItemTitle: {
-    ...typography.headline,
-    color: colors.text,
-    fontSize: 15,
-  },
-  shopItemDesc: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
-    maxWidth: 200,
-  },
-  shopPriceBadge: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  shopPriceText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textInverse,
-  },
-  shopInfoCard: {
-    backgroundColor: colors.fill,
-    padding: spacing.md,
-    borderRadius: 14,
-    marginTop: spacing.sm,
-  },
-  shopInfoTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  shopInfoTitle: {
-    ...typography.subheadline,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  shopInfoDesc: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 4,
-    lineHeight: 18,
-  },
-  shopClose: {
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    marginTop: spacing.sm,
-  },
-  shopCloseText: {
-    ...typography.body,
-    color: colors.textSecondary,
-    fontWeight: '600',
-  },
+// ═══════════════════════════════════════════════
+//  STYLES
+// ═══════════════════════════════════════════════
+
+const s = StyleSheet.create({
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scroll: { paddingBottom: 20 },
+
+  // Hero
+  hero: { paddingBottom: 30, overflow: 'hidden' },
+  heroSafe: { alignItems: 'center', paddingTop: 4 },
+  topBar: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20, marginBottom: 10 },
+  coinPill: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 12, paddingVertical: 5, borderRadius: 20 },
+  coinPillText: { fontSize: 13, fontWeight: '700', color: '#FFD700' },
+  shopPill: { backgroundColor: 'rgba(255,255,255,0.1)', width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+
+  xpText: { color: 'rgba(255,255,255,0.6)', fontWeight: '600', marginTop: 10 },
+  motivation: { color: '#FFFFFF', fontWeight: '700', marginTop: 6, textAlign: 'center', letterSpacing: -0.2 },
+  chips: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14 },
+  chipText: { color: '#FFF', fontWeight: '700' },
+
+  // CTA
+  ctaOuter: { marginHorizontal: 20, marginTop: -18 },
+  ctaGlow: { position: 'absolute', top: 6, left: 24, right: 24, height: '100%', borderRadius: 24, opacity: 0.2, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.5, shadowRadius: 24, elevation: 12 },
+  ctaBtn: { borderRadius: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, ...shadows.lg },
+  ctaContent: { gap: 3 },
+  ctaTitle: { color: '#FFF', fontWeight: '800', letterSpacing: -0.3 },
+  ctaMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  ctaMeta: { color: 'rgba(255,255,255,0.7)', fontWeight: '500' },
+  ctaXpChip: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: 'rgba(255,255,255,0.15)', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8 },
+  ctaXpText: { color: 'rgba(255,255,255,0.9)', fontWeight: '700' },
+  ctaArrow: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' },
+
+  // Play
+  playRow: { flexDirection: 'row', marginHorizontal: 20, marginTop: 20, gap: 12 },
+  playCard: { flex: 1, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center', paddingVertical: 20, paddingHorizontal: 10, gap: 4, ...shadows.sm },
+  playIcon: { width: 46, height: 46, borderRadius: 15, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  playTitle: { fontWeight: '700', textAlign: 'center', letterSpacing: -0.2 },
+  playSub: { textAlign: 'center' },
+
+  // Sections
+  section: { marginHorizontal: 20, marginTop: 20 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  sectionTitle: { fontWeight: '800', letterSpacing: -0.3, marginBottom: 8 },
+  sectionBadge: { fontWeight: '800' },
+
+  // Depth Cards
+  depthCard: { borderRadius: 22, padding: 16, borderWidth: StyleSheet.hairlineWidth, ...shadows.sm, gap: 12 },
+  dcRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  dcIcon: { width: 50, height: 50, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  dcTitle: { fontWeight: '700', letterSpacing: -0.2 },
+  dcSubMeta: { fontWeight: '500', marginTop: 2 },
+  dcReward: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  dcRewardText: { fontSize: 11, fontWeight: '700' },
+  dcBadge: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
+
+  // Map
+  mapCard: { borderRadius: 22, borderWidth: StyleSheet.hairlineWidth, paddingVertical: 10, ...shadows.sm },
+
+  // League
+  leagueBar: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  leagueBarTrack: { flex: 1, height: 5, borderRadius: 3, overflow: 'hidden' },
+  leagueBarFill: { height: '100%', borderRadius: 3 },
+  leagueBarText: { fontWeight: '600' },
+  leagueHint: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  leagueHintText: { fontWeight: '500' },
+  top3Badge: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+
+  // Streak
+  streakFireNum: { backgroundColor: '#FF672312', width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  streakNumText: { fontWeight: '900' },
+
+  // Modal / Shop
+  overlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' },
+  shopSheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingHorizontal: 24, paddingTop: 12, paddingBottom: 40 },
+  handle: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
+  shopTitle: { fontSize: 20, fontWeight: '800', textAlign: 'center', letterSpacing: -0.3 },
+  shopCoinsRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 4, marginBottom: 20 },
+  shopItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 14, borderRadius: 16, marginBottom: 10 },
+  shopItemL: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
+  shopItemT: { fontSize: 15, fontWeight: '600' },
+  shopItemD: { fontSize: 12, marginTop: 2 },
+  shopPrice: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 12 },
+  shopPriceT: { fontSize: 14, fontWeight: '700', color: '#FFF' },
+  shopClose: { alignItems: 'center', paddingVertical: 14, borderRadius: 14, marginTop: 10 },
+  shopCloseT: { fontSize: 15, fontWeight: '700' },
 });
