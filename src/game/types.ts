@@ -34,6 +34,8 @@ export interface LevelProgress {
   levelId: number;
   unlocked: boolean;
   completed: boolean;
+  status: 'not_started' | 'in_progress' | 'completed';
+  updatedAt: number; // Date.now() timestamp
   stars: number; // 0-3
   bestTime: number; // seconds
   bestMistakes: number;

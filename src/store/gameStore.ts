@@ -11,6 +11,7 @@ interface ProgressStore {
   loaded: boolean;
   loadProgress: () => Promise<void>;
   saveProgress: () => Promise<void>;
+  markInProgress: (levelId: number) => void;
   completeLevel: (
     levelId: number,
     stars: number,
@@ -25,6 +26,8 @@ const defaultProgress = (count: number): LevelProgress[] =>
     levelId: i + 1,
     unlocked: IS_DEV || i === 0,
     completed: false,
+    status: 'not_started' as const,
+    updatedAt: 0,
     stars: 0,
     bestTime: 0,
     bestMistakes: 999,
@@ -40,15 +43,15 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       const json = await AsyncStorage.getItem(STORAGE_KEY);
       if (json) {
         const data = JSON.parse(json);
-        // Migrate old shapes that lack the new fields
         const migrated = (data.progress ?? defaultProgress(6)).map(
-          (p: LevelProgress) => ({
+          (p: any) => ({
             ...p,
             bestMistakes: p.bestMistakes ?? 999,
             bestHintsUsed: p.bestHintsUsed ?? 999,
+            status: p.status ?? (p.completed ? 'completed' : 'not_started'),
+            updatedAt: p.updatedAt ?? 0,
           })
         );
-        // Extend if new levels were added
         const totalLevels = levels.length;
         if (migrated.length < totalLevels) {
           for (let i = migrated.length; i < totalLevels; i++) {
@@ -56,6 +59,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
               levelId: i + 1,
               unlocked: IS_DEV,
               completed: false,
+              status: 'not_started',
+              updatedAt: 0,
               stars: 0,
               bestTime: 0,
               bestMistakes: 999,
@@ -84,6 +89,19 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
     }
   },
 
+  markInProgress: (levelId) => {
+    set((state) => {
+      const progress = state.progress.map((p) => {
+        if (p.levelId === levelId && p.status !== 'completed') {
+          return { ...p, status: 'in_progress' as const, updatedAt: Date.now() };
+        }
+        return p;
+      });
+      setTimeout(() => get().saveProgress(), 0);
+      return { progress };
+    });
+  },
+
   completeLevel: (levelId, stars, time, mistakes = 0, hintsUsed = 0) => {
     set((state) => {
       const progress = state.progress.map((p) => {
@@ -91,6 +109,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
           return {
             ...p,
             completed: true,
+            status: 'completed' as const,
+            updatedAt: Date.now(),
             stars: Math.max(p.stars, stars),
             bestTime: p.bestTime === 0 ? time : Math.min(p.bestTime, time),
             bestMistakes: Math.min(p.bestMistakes, mistakes),

@@ -27,10 +27,14 @@ import { useTheme, useUIProfile } from '../../src/theme/ThemeContext';
 import { spacing } from '../../src/theme/spacing';
 import { shadows } from '../../src/theme/shadows';
 import IconBadge from '../../src/components/ui/IconBadge';
+import ContinueButton from '../../src/components/ui/ContinueButton';
 import MissionsModalSheet from '../../src/components/MissionsModalSheet';
 import PlayChooserPanel from '../../src/components/PlayChooserPanel';
 import DeveloperPanel from '../../src/components/DeveloperPanel';
 import { IS_DEV } from '../../src/config/devConfig';
+import { usePuzzleProgressStore } from '../../src/store/usePuzzleProgressStore';
+import { allPuzzles } from '../../src/cengel/puzzles/index';
+import { getResumePuzzleId, getPuzzleLevelNumber, logContinueDecision } from '../../src/utils/continueLevel';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -434,6 +438,7 @@ export default function HomeScreen() {
   // ── Stores ──
   const progress = useProgressStore((s) => s.progress);
   const loaded = useProgressStore((s) => s.loaded);
+  const puzzleProgress = usePuzzleProgressStore((s) => s.progress);
   const coins = useEconomyStore((s) => s.coins);
   const buyStreakFreeze = useEconomyStore((s) => s.buyStreakFreeze);
   const missions = useMissionsStore((s) => s.missions);
@@ -469,7 +474,14 @@ export default function HomeScreen() {
   const levelProgress = Math.min(1, Math.max(0, (totalXP - prevLevelXP) / (nextLevelXP - prevLevelXP)));
   const completedCount = progress.filter((p) => p.completed).length;
   const totalStars = progress.reduce((sum, p) => sum + p.stars, 0);
-  const nextLevelId = progress.find((p) => !p.completed)?.levelId ?? levels.length;
+
+  // Resume target from çengel puzzle progress
+  const allPuzzleIds = useMemo(() => allPuzzles.map((p) => p.id), []);
+  const resumePuzzleId = useMemo(
+    () => getResumePuzzleId(allPuzzleIds, puzzleProgress) ?? allPuzzleIds[0] ?? '1',
+    [allPuzzleIds, puzzleProgress],
+  );
+  const resumeLevelNum = getPuzzleLevelNumber(resumePuzzleId, allPuzzleIds);
   const xpToNext = nextLevelXP - totalXP;
   const completedMissions = missions.filter((m) => m.completed).length;
 
@@ -484,7 +496,6 @@ export default function HomeScreen() {
   const heroSlide = useRef(new Animated.Value(50)).current;
   const ctaScale = useRef(new Animated.Value(0.85)).current;
   const ctaOpacity = useRef(new Animated.Value(0)).current;
-  const ctaBounce = useRef(new Animated.Value(0)).current;
   const bodyFade = useRef(new Animated.Value(0)).current;
   const bodySlide = useRef(new Animated.Value(40)).current;
 
@@ -503,14 +514,6 @@ export default function HomeScreen() {
         Animated.timing(bodySlide, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       ]),
     ]).start();
-
-    // CTA idle bounce
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(ctaBounce, { toValue: -4, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-        Animated.timing(ctaBounce, { toValue: 0, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-      ]),
-    ).start();
   }, []);
 
   // ── Handlers ──
@@ -614,39 +617,24 @@ export default function HomeScreen() {
             ╚══════════════════════════════════╝ */}
         <Animated.View
           style={[
-            s.ctaOuter,
-            {
-              opacity: ctaOpacity,
-              transform: [{ scale: ctaScale }, { translateY: ctaBounce }],
-            },
+            { opacity: ctaOpacity, transform: [{ scale: ctaScale }] },
           ]}
         >
-          <TouchableOpacity activeOpacity={0.88} onPress={() => router.push(`/game/${nextLevelId}`)}>
-            {/* Glow */}
-            {ui.glow && (
-              <View style={[s.ctaGlow, { backgroundColor: t.primary, shadowColor: t.primary }]} />
-            )}
-            <LinearGradient
-              colors={isDark ? ['#5E8BFF', '#7B61FF'] as const : t.gradientPrimary as readonly [string, string]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[s.ctaBtn, { minHeight: isBig ? 82 : 72 }]}
-            >
-              <View style={s.ctaContent}>
-                <Text style={[s.ctaTitle, { fontSize: Math.round(21 * fs) }]}>Yolculuğa Devam</Text>
-                <View style={s.ctaMetaRow}>
-                  <Text style={[s.ctaMeta, { fontSize: Math.round(12 * fs) }]}>Seviye {nextLevelId}</Text>
-                  <View style={s.ctaXpChip}>
-                    <Ionicons name="sparkles" size={10} color="rgba(255,255,255,0.9)" />
-                    <Text style={[s.ctaXpText, { fontSize: Math.round(11 * fs) }]}>+{baseXP} XP</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={s.ctaArrow}>
-                <Ionicons name="arrow-forward" size={Math.round(22 * fs)} color="#FFF" />
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+          <ContinueButton
+            title="Yolculuğa Devam"
+            subtitle={`Bölüm ${resumeLevelNum}`}
+            xpLabel={`+${baseXP} XP`}
+            onPress={() => {
+              logContinueDecision(resumePuzzleId, resumeLevelNum);
+              router.push(`/game/${resumePuzzleId}`);
+            }}
+            primaryColors={isDark ? ['#5E8BFF', '#7B61FF'] as const : t.gradientPrimary as readonly [string, string]}
+            glowColor={t.primary}
+            isDark={isDark}
+            isBig={isBig}
+            fontScale={fs}
+            glowEnabled={!!ui.glow}
+          />
         </Animated.View>
 
         {/* ╔══════════════════════════════════╗
@@ -692,7 +680,7 @@ export default function HomeScreen() {
           ]}>
             <MiniMap
               progress={progress}
-              currentId={nextLevelId}
+              currentId={resumeLevelNum}
               total={levels.length}
               primaryColor={t.primary}
               isDark={isDark}

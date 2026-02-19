@@ -52,6 +52,8 @@ export default function DeveloperPanel({ visible, onClose }: Props) {
                                 levelId: i + 1,
                                 unlocked: i === 0,
                                 completed: false,
+                                status: 'not_started' as const,
+                                updatedAt: 0,
                                 stars: 0,
                                 bestTime: 0,
                                 bestMistakes: 999,

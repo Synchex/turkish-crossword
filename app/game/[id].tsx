@@ -468,6 +468,7 @@ function LegacyGameScreen({ id }: { id: string }) {
   } = useCrosswordGame(level);
 
   const completeLevel = useProgressStore((s) => s.completeLevel);
+  const markInProgress = useProgressStore((s) => s.markInProgress);
   const coins = useEconomyStore((s) => s.coins);
   const spendCoins = useEconomyStore((s) => s.spendCoins);
 
@@ -484,6 +485,13 @@ function LegacyGameScreen({ id }: { id: string }) {
 
   const startCellMap = useMemo(() => buildStartCellMap(level.words), [level.words]);
   const diff = mapDifficulty(level.difficulty);
+
+  // Mark level as in-progress immediately on mount (story mode only)
+  useEffect(() => {
+    if (!isGeneratorMode && !isBigPuzzleMode) {
+      markInProgress(level.id);
+    }
+  }, [level.id]);
 
   useEffect(() => {
     if (state.isComplete && !navigated) {
