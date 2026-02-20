@@ -4,6 +4,7 @@ import { UIProfile, getUIProfile } from './uiProfiles';
 import { useSettingsStore } from '../store/useSettingsStore';
 
 const ThemeContext = createContext<ThemeColors>(themes.purple);
+export { ThemeContext };
 const UIProfileContext = createContext<UIProfile>(getUIProfile('modern'));
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

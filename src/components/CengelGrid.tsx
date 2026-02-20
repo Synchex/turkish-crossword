@@ -1,4 +1,4 @@
-import React, { memo, useRef, useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useRef, useMemo } from 'react';
 import {
     View,
     Text,
@@ -12,6 +12,8 @@ import * as Haptics from 'expo-haptics';
 import { GameCell, Entry } from '../cengel/types';
 import type { UIProfile } from '../theme/uiProfiles';
 import type { ThemeColors } from '../theme/themes';
+import type { CellFeedback } from '../hooks/useCellFeedback';
+import { cellKey } from '../hooks/useCellFeedback';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -24,6 +26,7 @@ interface CengelGridProps {
     correctFlash?: boolean;
     ui: UIProfile;
     theme: ThemeColors;
+    cellFeedback?: CellFeedback;
 }
 
 export default function CengelGrid({
@@ -35,6 +38,7 @@ export default function CengelGrid({
     correctFlash,
     ui,
     theme,
+    cellFeedback,
 }: CengelGridProps) {
     const [rows, cols] = gridSize;
     const gridPadding = ui.gameplay.gridPadding;
@@ -59,7 +63,7 @@ export default function CengelGrid({
                     {
                         width: gridWidth + 8,
                         height: gridHeight + 8,
-                        backgroundColor: theme.id === 'black' ? '#0F1424' : '#1A1A2E',
+                        backgroundColor: '#1A1A2E',
                     },
                 ]}
             >
@@ -79,6 +83,7 @@ export default function CengelGrid({
                                 correctFlash={correctFlash}
                                 ui={ui}
                                 theme={theme}
+                                cellFeedback={cellFeedback}
                             />
                         )),
                     )}
@@ -99,6 +104,7 @@ interface CellComponentProps {
     correctFlash?: boolean;
     ui: UIProfile;
     theme: ThemeColors;
+    cellFeedback?: CellFeedback;
 }
 
 const MemoCell = memo(function CellComponent({
@@ -111,11 +117,20 @@ const MemoCell = memo(function CellComponent({
     correctFlash,
     ui,
     theme,
+    cellFeedback,
 }: CellComponentProps) {
     const scaleAnim = useRef(new Animated.Value(1)).current;
+
     const gp = ui.gameplay;
     const t = theme;
 
+    // Register with cellFeedback
+    const feedbackVals = useMemo(() => {
+        if (!cellFeedback) return null;
+        return cellFeedback.getValues(cellKey(cell.row, cell.col));
+    }, [cellFeedback, cell.row, cell.col]);
+
+    // Letter entry bounce
     useEffect(() => {
         if (cell.type === 'LETTER' && cell.userLetter) {
             Animated.sequence([
@@ -127,11 +142,18 @@ const MemoCell = memo(function CellComponent({
                 Animated.spring(scaleAnim, {
                     toValue: 1,
                     friction: 4,
+                    tension: 250,
                     useNativeDriver: true,
                 }),
             ]).start();
         }
     }, [cell.type === 'LETTER' ? cell.userLetter : '']);
+
+    // Combine transforms
+    const combinedTranslateX = feedbackVals ? feedbackVals.shakeX : new Animated.Value(0);
+    const combinedScale = feedbackVals
+        ? Animated.multiply(scaleAnim, feedbackVals.scale)
+        : scaleAnim;
 
     const top = cell.row * (cellSize + gap);
     const left = cell.col * (cellSize + gap);
@@ -148,7 +170,7 @@ const MemoCell = memo(function CellComponent({
                         left,
                         width: cellSize,
                         height: cellSize,
-                        backgroundColor: t.id === 'black' ? '#0F1424' : '#1A1A2E',
+                        backgroundColor: '#1A1A2E',
                         borderRadius: 2,
                     },
                 ]}
@@ -178,7 +200,7 @@ const MemoCell = memo(function CellComponent({
                         {
                             width: cellSize,
                             height: cellSize,
-                            backgroundColor: t.id === 'black' ? '#1A2036' : '#F5F0EB',
+                            backgroundColor: '#F5F0EB',
                             borderColor: t.border,
                         },
                     ]}
@@ -190,7 +212,7 @@ const MemoCell = memo(function CellComponent({
                                 styles.clueText,
                                 {
                                     fontSize: cellSize * gp.clueFontScale,
-                                    color: t.id === 'black' ? '#9CA3AF' : '#4A3B2A',
+                                    color: '#4A3B2A',
                                 },
                             ]}
                             adjustsFontSizeToFit
@@ -243,7 +265,7 @@ const MemoCell = memo(function CellComponent({
         borderColor = t.primary;
         borderW = gp.selectedBorderWidth;
     } else if (isHighlighted) {
-        bgColor = t.id === 'black' ? 'rgba(94,139,255,0.08)' : '#F3F0FF';
+        bgColor = '#F3F0FF';
         borderColor = t.primaryLight;
         borderW = gp.highlightBorderWidth;
     }
@@ -251,6 +273,14 @@ const MemoCell = memo(function CellComponent({
     if (isRevealed) {
         letterColor = t.accent;
     }
+
+    // Flash border color
+    const flashBorderColor = feedbackVals
+        ? feedbackVals.flashOpacity.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['transparent', feedbackVals.flashType === 'correct' ? '#34D399' : '#F87171'],
+        })
+        : undefined;
 
     return (
         <TouchableOpacity
@@ -271,16 +301,34 @@ const MemoCell = memo(function CellComponent({
                         borderColor,
                         borderWidth: borderW,
                         borderRadius: 3,
-                        transform: [{ scale: scaleAnim }],
+                        transform: [{ translateX: combinedTranslateX }, { scale: combinedScale }],
                     },
                 ]}
             >
+                {/* Feedback flash overlay */}
+                {feedbackVals && (
+                    <Animated.View
+                        style={[
+                            StyleSheet.absoluteFill,
+                            {
+                                borderRadius: 3,
+                                zIndex: 0,
+                                borderWidth: 2,
+                                borderColor: flashBorderColor,
+                                opacity: feedbackVals.flashOpacity,
+                            },
+                        ]}
+                        pointerEvents="none"
+                    />
+                )}
+
                 <Text
                     style={[
                         styles.letterText,
                         {
                             fontSize: Math.max(12, cellSize * gp.letterFontScale),
                             color: letterColor,
+                            zIndex: 1,
                         },
                     ]}
                 >
@@ -309,7 +357,6 @@ const styles = StyleSheet.create({
     cell: {
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',
     },
     clueCell: {
         borderRadius: 2,

@@ -13,6 +13,8 @@ import { CellData, Word } from '../game/types';
 import { colors } from '../theme/colors';
 import { radius } from '../theme/radius';
 import { buildStartCellMap, StartCellInfo } from '../utils/crosswordHelpers';
+import type { CellFeedback } from '../hooks/useCellFeedback';
+import { cellKey } from '../hooks/useCellFeedback';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_H_PADDING = 16;
@@ -29,6 +31,8 @@ interface Props {
   words?: Word[];
   selectedWordId?: string | null;
   onClueChipPress?: (word: Word) => void;
+  // ── Cell feedback ──
+  cellFeedback?: CellFeedback;
 }
 
 export default function CrosswordGrid({
@@ -42,6 +46,7 @@ export default function CrosswordGrid({
   words,
   selectedWordId,
   onClueChipPress,
+  cellFeedback,
 }: Props) {
   const GAP = 2.5;
   const cardInnerPad = 8;
@@ -81,6 +86,7 @@ export default function CrosswordGrid({
                   startInfo={startInfo}
                   selectedWordId={selectedWordId ?? null}
                   onClueChipPress={onClueChipPress}
+                  cellFeedback={cellFeedback}
                 />
               );
             })
@@ -104,6 +110,7 @@ interface CellProps {
   startInfo?: StartCellInfo;
   selectedWordId: string | null;
   onClueChipPress?: (word: Word) => void;
+  cellFeedback?: CellFeedback;
 }
 
 const MemoCell = memo(function Cell({
@@ -118,9 +125,16 @@ const MemoCell = memo(function Cell({
   startInfo,
   selectedWordId,
   onClueChipPress,
+  cellFeedback,
 }: CellProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const shakeAnim = useRef(new Animated.Value(0)).current;
+
+  // Register with cellFeedback — get (or create) the animated values for this cell
+  const feedbackVals = useMemo(() => {
+    if (!cellFeedback) return null;
+    return cellFeedback.getValues(cellKey(cell.row, cell.col));
+  }, [cellFeedback, cell.row, cell.col]);
 
   // Letter entry bounce
   useEffect(() => {
@@ -151,7 +165,7 @@ const MemoCell = memo(function Cell({
     }).start();
   }, [isSelected]);
 
-  // Wrong answer shake
+  // Wrong answer shake (legacy prop-driven)
   useEffect(() => {
     if (shouldShake) {
       Animated.sequence([
@@ -164,6 +178,15 @@ const MemoCell = memo(function Cell({
       ]).start();
     }
   }, [shouldShake]);
+
+  // Combine transforms: base scale + feedback scale, base shake + feedback shake
+  const combinedTranslateX = feedbackVals
+    ? Animated.add(shakeAnim, feedbackVals.shakeX)
+    : shakeAnim;
+
+  const combinedScale = feedbackVals
+    ? Animated.multiply(scaleAnim, feedbackVals.scale)
+    : scaleAnim;
 
   // Top / left position with gaps
   const top = cell.row * (cellSize + gap);
@@ -231,6 +254,14 @@ const MemoCell = memo(function Cell({
   const chipFont = Math.max(6, cellSize * 0.17);
   const chipPadH = Math.max(2, cellSize * 0.06);
 
+  // Flash border color: interpolate from opacity
+  const flashBorderColor = feedbackVals
+    ? feedbackVals.flashOpacity.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['transparent', feedbackVals.flashType === 'correct' ? '#34D399' : '#F87171'],
+    })
+    : undefined;
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -250,11 +281,28 @@ const MemoCell = memo(function Cell({
             borderColor,
             borderWidth: borderW,
             borderRadius: radius.md,
-            transform: [{ translateX: shakeAnim }, { scale: scaleAnim }],
+            transform: [{ translateX: combinedTranslateX }, { scale: combinedScale }],
           },
           elevationStyle,
         ]}
       >
+        {/* Feedback flash overlay */}
+        {feedbackVals && (
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                borderRadius: radius.md,
+                zIndex: 0,
+                borderWidth: 2.5,
+                borderColor: flashBorderColor,
+                opacity: feedbackVals.flashOpacity,
+              },
+            ]}
+            pointerEvents="none"
+          />
+        )}
+
         {/* ── Purple clue chip(s) ── */}
         {hasAcrossStart && (
           <ClueChip
@@ -289,6 +337,7 @@ const MemoCell = memo(function Cell({
               fontSize: cellSize * 0.44,
               color: letterColor,
               marginTop: (hasAcrossStart || hasDownStart) ? chipH * 0.3 : 0,
+              zIndex: 1,
             },
           ]}
         >

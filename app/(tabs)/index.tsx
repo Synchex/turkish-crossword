@@ -11,6 +11,7 @@ import {
   Dimensions,
   Easing,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,6 +30,8 @@ import { shadows } from '../../src/theme/shadows';
 import IconBadge from '../../src/components/ui/IconBadge';
 import ContinueButton from '../../src/components/ui/ContinueButton';
 import MissionsModalSheet from '../../src/components/MissionsModalSheet';
+import { useAchievementsStore } from '../../src/store/useAchievementsStore';
+import { ACHIEVEMENTS } from '../../src/achievements/achievementDefs';
 import PlayChooserPanel from '../../src/components/PlayChooserPanel';
 import DeveloperPanel from '../../src/components/DeveloperPanel';
 import { IS_DEV } from '../../src/config/devConfig';
@@ -484,6 +487,8 @@ export default function HomeScreen() {
   const resumeLevelNum = getPuzzleLevelNumber(resumePuzzleId, allPuzzleIds);
   const xpToNext = nextLevelXP - totalXP;
   const completedMissions = missions.filter((m) => m.completed).length;
+  const achUnlockedCount = useAchievementsStore((s) => s.unlockedIds.length);
+  const achTotal = ACHIEVEMENTS.length;
 
   // ── Motivational text ──
   const motivation = useMemo(
@@ -568,9 +573,41 @@ export default function HomeScreen() {
                   <Ionicons name="wallet" size={13} color="#FFD700" />
                   <Text style={s.coinPillText}>{IS_DEV ? '∞' : coins}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={s.shopPill} onPress={() => setShopVisible(true)}>
-                  <Ionicons name="bag-outline" size={15} color="rgba(255,255,255,0.85)" />
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <TouchableOpacity
+                    style={s.shopPill}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      router.push('/achievements');
+                    }}
+                  >
+                    <Ionicons name="trophy" size={15} color="#FFD700" />
+                    {achTotal > 0 && (
+                      <View style={s.achBadge}>
+                        <Text style={s.achBadgeText}>{achUnlockedCount}</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={s.shopPill}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setMissionsModalVisible(true);
+                    }}
+                  >
+                    <Ionicons name="checkbox-outline" size={15} color="rgba(255,255,255,0.85)" />
+                    <View style={[s.achBadge, completedMissions >= missions.length && completedMissions > 0 ? { backgroundColor: '#34C759' } : {}]}>
+                      <Text style={s.achBadgeText}>
+                        {completedMissions >= missions.length && completedMissions > 0 ? '✓' : `${completedMissions}`}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.shopPill} onPress={() => setShopVisible(true)}>
+                    <Ionicons name="bag-outline" size={15} color="rgba(255,255,255,0.85)" />
+                  </TouchableOpacity>
+                </View>
               </View>
 
               {/* XP Ring + Level */}
@@ -595,7 +632,9 @@ export default function HomeScreen() {
                 {/* Streak */}
                 <View style={[s.chip, currentStreak > 0 && { backgroundColor: 'rgba(255,103,35,0.2)' }]}>
                   <Ionicons name="flame" size={Math.round(14 * fs)} color="#FF6723" />
-                  <Text style={[s.chipText, { fontSize: Math.round(12 * fs) }]}>{currentStreak}</Text>
+                  <Text style={[s.chipText, { fontSize: Math.round(11 * fs) }]}>
+                    {currentStreak > 0 ? `${currentStreak} Gün Seri` : 'Seri Başlat'}
+                  </Text>
                 </View>
                 {/* Stars */}
                 <View style={s.chip}>
@@ -670,6 +709,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </Animated.View>
 
+
         {/* ╔══════════════════════════════════╗
             ║     PROGRESSION MAP PREVIEW      ║
             ╚══════════════════════════════════╝ */}
@@ -724,25 +764,6 @@ export default function HomeScreen() {
               </View>
             </View>
           </TouchableOpacity>
-        </Animated.View>
-
-        {/* ╔══════════════════════════════════╗
-            ║       DAILY MISSIONS INLINE      ║
-            ╚══════════════════════════════════╝ */}
-        <Animated.View style={[s.section, { opacity: bodyFade, transform: [{ translateY: bodySlide }] }]}>
-          <View style={s.sectionHeader}>
-            <Text style={[s.sectionTitle, { color: t.text, fontSize: Math.round(16 * fs) }]}>Günlük Görevler</Text>
-            <Text style={[s.sectionBadge, { color: t.primary, fontSize: Math.round(12 * fs) }]}>
-              {completedMissions}/{missions.length}
-            </Text>
-          </View>
-          <View style={[s.depthCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.04)' : t.border, paddingVertical: 10, gap: 0 },
-          isDark && ui.glow && { shadowColor: t.primary, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
-          ]}>
-            {missions.map((m) => (
-              <MissionRow key={m.id} mission={m} onClaim={handleClaimMission} t={t} fs={fs} isDark={isDark} />
-            ))}
-          </View>
         </Animated.View>
 
         {/* ╔══════════════════════════════════╗
@@ -883,6 +904,8 @@ const s = StyleSheet.create({
   coinPill: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 12, paddingVertical: 5, borderRadius: 20 },
   coinPillText: { fontSize: 13, fontWeight: '700', color: '#FFD700' },
   shopPill: { backgroundColor: 'rgba(255,255,255,0.1)', width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  achBadge: { position: 'absolute', top: -4, right: -4, backgroundColor: '#FF6723', minWidth: 16, height: 16, borderRadius: 8, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
+  achBadgeText: { fontSize: 9, fontWeight: '800', color: '#FFF' },
 
   xpText: { color: 'rgba(255,255,255,0.6)', fontWeight: '600', marginTop: 10 },
   motivation: { color: '#FFFFFF', fontWeight: '700', marginTop: 6, textAlign: 'center', letterSpacing: -0.2 },
@@ -910,7 +933,7 @@ const s = StyleSheet.create({
   playSub: { textAlign: 'center' },
 
   // Sections
-  section: { marginHorizontal: 20, marginTop: 20 },
+  section: { marginHorizontal: 20, marginTop: 14 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   sectionTitle: { fontWeight: '800', letterSpacing: -0.3, marginBottom: 8 },
   sectionBadge: { fontWeight: '800' },

@@ -6,6 +6,7 @@ import { useGamificationStore } from '../src/store/useGamificationStore';
 import { useMissionsStore } from '../src/store/useMissionsStore';
 import { useDailyPuzzleStore } from '../src/store/useDailyPuzzleStore';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
+import AchievementToast from '../src/components/AchievementToast';
 
 function AppContent() {
   const t = useTheme();
@@ -35,7 +36,9 @@ function AppContent() {
         <Stack.Screen name="game/[id]" />
         <Stack.Screen name="result/[id]" />
         <Stack.Screen name="daily" />
+        <Stack.Screen name="achievements" />
       </Stack>
+      <AchievementToast />
     </>
   );
 }
@@ -47,3 +50,4 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+

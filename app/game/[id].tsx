@@ -49,6 +49,9 @@ import CluePopover from '../../src/components/CluePopover';
 import { Word, LevelData } from '../../src/game/types';
 import { buildStartCellMap } from '../../src/utils/crosswordHelpers';
 import { useLeagueStore } from '../../src/store/useLeagueStore';
+import { useCellFeedback, cellKey } from '../../src/hooks/useCellFeedback';
+import { getGameplayLightTheme } from '../../src/theme/themes';
+import { ThemeContext } from '../../src/theme/ThemeContext';
 
 export default function GameScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -74,6 +77,9 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
   const ui = useUIProfile();
   const t = useTheme();
   const gp = ui.gameplay;
+  // Force light-mode colors for the gameplay area
+  const gameplayTheme = useMemo(() => getGameplayLightTheme(t), [t]);
+  const gt = gameplayTheme; // shorthand for gameplay theme
   const puzzle = useMemo(() => getPuzzleById(puzzleId), [puzzleId]);
 
   if (!puzzle) {
@@ -97,6 +103,8 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
     getStars,
     entries,
   } = useCengelGame(puzzle);
+
+  const cellFeedback = useCellFeedback();
 
   const coins = useEconomyStore((s) => s.coins);
   const spendCoins = useEconomyStore((s) => s.spendCoins);
@@ -203,22 +211,27 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
 
   // ── Check ──
   const handleCheck = useCallback(() => {
-    const result = checkWord();
+    const { result, cells } = checkWord();
     if (result === 'correct') {
       setCorrectFlash(true);
       setFeedback('correct');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      const keys = cells.map((c) => cellKey(c.row, c.col));
+      cellFeedback.animateBatchCorrect(keys);
       setTimeout(() => setCorrectFlash(false), 600);
       setTimeout(() => setFeedback(null), 2000);
+      // Exit solving mode only on correct answer
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setIsSolving(false);
     } else if (result === 'wrong') {
       setFeedback('wrong');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      const correctKeys = cells.filter((c) => c.isCorrect).map((c) => cellKey(c.row, c.col));
+      const wrongKeys = cells.filter((c) => !c.isCorrect).map((c) => cellKey(c.row, c.col));
+      if (correctKeys.length > 0) cellFeedback.animateBatchCorrect(correctKeys);
+      cellFeedback.animateBatchWrong(wrongKeys);
       setTimeout(() => setFeedback(null), 2000);
+      // Stay in solving mode — do NOT exit
     }
-    // Exit solving mode after check
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsSolving(false);
-  }, [checkWord]);
+  }, [checkWord, cellFeedback]);
 
   // ── Hints ──
   const handleHintPress = useCallback(() => setHintModalVisible(true), []);
@@ -323,61 +336,67 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
           <View style={[styles.progressBar, { width: `${progress * 100}%`, backgroundColor: t.primary }]} />
         </View>
 
-        {/* ── Clue Bar (only when solving) ── */}
-        {shouldShowKeyboard ? (
-          <View style={styles.clueBarWrapper}>
-            <ClueBar entry={activeEntry} canToggle={canToggle} onToggle={handleToggle} />
-            <TouchableOpacity onPress={exitSolvingMode} style={[styles.closeBtn, { backgroundColor: t.fill }]}>
-              <Ionicons name="close" size={20} color={t.textSecondary} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.hintRow}>
-            <TouchableOpacity
-              style={[styles.randomHintBtn, { minHeight: gp.hintRowHeight, backgroundColor: t.primary + '0F', borderColor: t.primary + '22' }]}
-              activeOpacity={0.75}
-              onPress={handleRandomHint}
-            >
-              <Ionicons name="dice-outline" size={Math.round(18 * ui.fontScale)} color={t.primary} />
-              <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: t.primary }]}>Rastgele İpucu</Text>
-              <View style={[styles.costBadge, { backgroundColor: t.accent + '22' }]}>
-                <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: t.accent }]}>-{HINT_LETTER_COST}</Text>
+        {/* ── Gameplay area: always light mode ── */}
+        <ThemeContext.Provider value={gameplayTheme}>
+          <View style={{ flex: 1, backgroundColor: '#F9FAFB', borderRadius: 12, marginHorizontal: 4, marginTop: 2, paddingBottom: 4 }}>
+            {/* ── Clue Bar or Hint Row ── */}
+            {shouldShowKeyboard ? (
+              <View style={styles.clueBarWrapper}>
+                <ClueBar entry={activeEntry} canToggle={canToggle} onToggle={handleToggle} />
+                <TouchableOpacity onPress={exitSolvingMode} style={[styles.closeBtn, { backgroundColor: gt.fill }]}>
+                  <Ionicons name="close" size={20} color={gt.textSecondary} />
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.randomLetterBtn, { minHeight: gp.hintRowHeight, borderColor: t.primary + '44' }]}
-              activeOpacity={0.75}
-              onPress={handleRandomLetter}
-            >
-              <Ionicons name="text-outline" size={Math.round(18 * ui.fontScale)} color={t.primary} />
-              <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: t.primary }]}>Random Harf</Text>
-              <View style={[styles.costBadge, { backgroundColor: t.accent + '22' }]}>
-                <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: t.accent }]}>-3</Text>
+            ) : (
+              <View style={styles.hintRow}>
+                <TouchableOpacity
+                  style={[styles.randomHintBtn, { minHeight: gp.hintRowHeight, backgroundColor: gt.primary + '0F', borderColor: gt.primary + '22' }]}
+                  activeOpacity={0.75}
+                  onPress={handleRandomHint}
+                >
+                  <Ionicons name="dice-outline" size={Math.round(18 * ui.fontScale)} color={gt.primary} />
+                  <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: gt.primary }]}>Rastgele İpucu</Text>
+                  <View style={[styles.costBadge, { backgroundColor: gt.accent + '22' }]}>
+                    <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: gt.accent }]}>-{HINT_LETTER_COST}</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.randomLetterBtn, { minHeight: gp.hintRowHeight, borderColor: gt.primary + '44' }]}
+                  activeOpacity={0.75}
+                  onPress={handleRandomLetter}
+                >
+                  <Ionicons name="text-outline" size={Math.round(18 * ui.fontScale)} color={gt.primary} />
+                  <Text style={[styles.randomHintText, { fontSize: gp.hintRowFontSize, color: gt.primary }]}>Random Harf</Text>
+                  <View style={[styles.costBadge, { backgroundColor: gt.accent + '22' }]}>
+                    <Text style={[styles.costBadgeText, { fontSize: Math.round(11 * ui.fontScale), color: gt.accent }]}>-3</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            )}
+
+            {/* ── Grid ── */}
+            <CengelGrid
+              gameGrid={state.gameGrid}
+              gridSize={puzzle.size}
+              selectedCell={state.selectedCell}
+              activeEntryCells={activeEntryCells}
+              onCellPress={handleCellPress}
+              correctFlash={correctFlash}
+              ui={ui}
+              theme={gameplayTheme}
+              cellFeedback={cellFeedback}
+            />
+
+            {/* ── Clue List (numaralı soru listesi) ── */}
+            <CengelClueList
+              entries={entries}
+              activeEntryId={state.activeEntryId}
+              activeDirection={state.activeDirection}
+              lockedEntryIds={state.lockedEntryIds}
+              onSelectEntry={handleSelectEntry}
+            />
           </View>
-        )}
-
-        {/* ── Grid ── */}
-        <CengelGrid
-          gameGrid={state.gameGrid}
-          gridSize={puzzle.size}
-          selectedCell={state.selectedCell}
-          activeEntryCells={activeEntryCells}
-          onCellPress={handleCellPress}
-          correctFlash={correctFlash}
-          ui={ui}
-          theme={t}
-        />
-
-        {/* ── Clue List (numaralı soru listesi) ── */}
-        <CengelClueList
-          entries={entries}
-          activeEntryId={state.activeEntryId}
-          activeDirection={state.activeDirection}
-          lockedEntryIds={state.lockedEntryIds}
-          onSelectEntry={handleSelectEntry}
-        />
+        </ThemeContext.Provider>
 
         {/* ── Feedback ── */}
         <FeedbackPanel type={feedback} />
@@ -467,6 +486,8 @@ function LegacyGameScreen({ id }: { id: string }) {
     wordMap,
   } = useCrosswordGame(level);
 
+  const cellFeedback = useCellFeedback();
+
   const completeLevel = useProgressStore((s) => s.completeLevel);
   const markInProgress = useProgressStore((s) => s.markInProgress);
   const coins = useEconomyStore((s) => s.coins);
@@ -539,11 +560,13 @@ function LegacyGameScreen({ id }: { id: string }) {
   }, [state.isComplete]);
 
   const handleCheck = useCallback(() => {
-    const result = checkWord();
+    const { result, cells } = checkWord();
     if (result === 'correct') {
       setCorrectFlash(true);
       setFeedback('correct');
       correctWordsRef.current += 1;
+      const keys = cells.map((c) => cellKey(c.row, c.col));
+      cellFeedback.animateBatchCorrect(keys);
       setTimeout(() => setCorrectFlash(false), 600);
       setTimeout(() => setFeedback(null), 2000);
       onCorrectWordEntered();
@@ -551,11 +574,14 @@ function LegacyGameScreen({ id }: { id: string }) {
       setShakeWord(true);
       setFeedback('wrong');
       mistakesRef.current += 1;
+      const correctKeys = cells.filter((c) => c.isCorrect).map((c) => cellKey(c.row, c.col));
+      const wrongKeys = cells.filter((c) => !c.isCorrect).map((c) => cellKey(c.row, c.col));
+      if (correctKeys.length > 0) cellFeedback.animateBatchCorrect(correctKeys);
+      cellFeedback.animateBatchWrong(wrongKeys);
       setTimeout(() => setShakeWord(false), 400);
       setTimeout(() => setFeedback(null), 2000);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
-  }, [checkWord]);
+  }, [checkWord, cellFeedback]);
 
   const handleHintPress = useCallback(() => setHintModalVisible(true), []);
   const handleRevealLetter = useCallback(() => {
@@ -594,6 +620,7 @@ function LegacyGameScreen({ id }: { id: string }) {
         words={level.words}
         selectedWordId={state.selectedWordId}
         onClueChipPress={setCluePopoverWord}
+        cellFeedback={cellFeedback}
       />
       <FeedbackPanel type={feedback} />
       <TurkishKeyboard

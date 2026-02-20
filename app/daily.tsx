@@ -26,6 +26,7 @@ import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
 import { typography } from '../src/theme/typography';
+import { useCellFeedback, cellKey } from '../src/hooks/useCellFeedback';
 
 export default function DailyScreen() {
     const router = useRouter();
@@ -46,6 +47,8 @@ export default function DailyScreen() {
         getSelectedWordCells,
         wordMap,
     } = useCrosswordGame(puzzle);
+
+    const cellFeedback = useCellFeedback();
 
     const [shakeWord, setShakeWord] = useState(false);
     const [correctFlash, setCorrectFlash] = useState(false);
@@ -90,11 +93,13 @@ export default function DailyScreen() {
     }, [state.isComplete]);
 
     const handleCheck = useCallback(() => {
-        const result = checkWord();
+        const { result, cells } = checkWord();
         if (result === 'correct') {
             setCorrectFlash(true);
             setFeedback('correct');
             correctWordsRef.current += 1;
+            const keys = cells.map((c) => cellKey(c.row, c.col));
+            cellFeedback.animateBatchCorrect(keys);
             setTimeout(() => setCorrectFlash(false), 600);
             setTimeout(() => setFeedback(null), 2000);
             onCorrectWordEntered();
@@ -102,12 +107,14 @@ export default function DailyScreen() {
             setShakeWord(true);
             setFeedback('wrong');
             mistakesRef.current += 1;
+            const correctKeys = cells.filter((c) => c.isCorrect).map((c) => cellKey(c.row, c.col));
+            const wrongKeys = cells.filter((c) => !c.isCorrect).map((c) => cellKey(c.row, c.col));
+            if (correctKeys.length > 0) cellFeedback.animateBatchCorrect(correctKeys);
+            cellFeedback.animateBatchWrong(wrongKeys);
             setTimeout(() => setShakeWord(false), 400);
             setTimeout(() => setFeedback(null), 2000);
-            // Haptic only — no blocking
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
-    }, [checkWord]);
+    }, [checkWord, cellFeedback]);
 
     const handleHintPress = useCallback(() => {
         setHintModalVisible(true);
@@ -171,6 +178,7 @@ export default function DailyScreen() {
                     onCellPress={selectCell}
                     shakeCell={shakeCell}
                     correctFlash={correctFlash}
+                    cellFeedback={cellFeedback}
                 />
             </View>
 

@@ -191,3 +191,36 @@ export const themes: Record<ThemeId, ThemeColors> = {
 };
 
 export const themeIds: ThemeId[] = ['purple', 'blue', 'red', 'black'];
+
+/**
+ * Returns a copy of the given theme with forced light-mode surfaces.
+ * Primary/accent colors are preserved so selection highlighting stays consistent.
+ * Use this to force the gameplay area to always render as light.
+ */
+export function getGameplayLightTheme(base: ThemeColors): ThemeColors {
+    return {
+        ...base,
+        id: base.id,
+        // Force light surfaces
+        background: '#F2F2F7',
+        surface: '#FFFFFF',
+        surface2: '#F2F2F7',
+        card: '#FFFFFF',
+        cardAlt: '#F2F2F7',
+        fill: 'rgba(120,120,128,0.12)',
+        glass: 'rgba(255,255,255,0.72)',
+        overlay: 'rgba(0,0,0,0.4)',
+        // Force light text
+        text: '#1C1C1E',
+        textSecondary: '#8E8E93',
+        textMuted: '#C7C7CC',
+        textInverse: '#FFFFFF',
+        // Force light borders
+        border: 'rgba(0,0,0,0.08)',
+        borderLight: 'rgba(0,0,0,0.04)',
+        // Force light success colors
+        successLight: '#E8FAE8',
+        successDark: '#248A3D',
+    };
+}
+

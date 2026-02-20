@@ -175,8 +175,9 @@ export function useCrosswordGame(level: LevelData) {
     });
   }, []);
 
-  const checkWord = useCallback((): 'correct' | 'wrong' | null => {
+  const checkWord = useCallback((): { result: 'correct' | 'wrong' | null; cells: Array<{ row: number; col: number; isCorrect: boolean }> } => {
     let result: 'correct' | 'wrong' | null = null;
+    let cellResults: Array<{ row: number; col: number; isCorrect: boolean }> = [];
     setState((s) => {
       if (!s.selectedWordId) return s;
       const word = wordMap.current.get(s.selectedWordId);
@@ -184,6 +185,13 @@ export function useCrosswordGame(level: LevelData) {
 
       const cells = getWordCells(word);
       const userAnswer = cells.map((c) => s.grid[c.row][c.col].userLetter).join('');
+
+      // Build per-cell correctness
+      cellResults = cells.map((c) => ({
+        row: c.row,
+        col: c.col,
+        isCorrect: s.grid[c.row][c.col].userLetter === s.grid[c.row][c.col].letter,
+      }));
 
       if (userAnswer.length < word.answer.length) {
         result = 'wrong';
@@ -211,7 +219,7 @@ export function useCrosswordGame(level: LevelData) {
       result = 'wrong';
       return s;
     });
-    return result;
+    return { result, cells: cellResults };
   }, [level.words]);
 
   const revealHint = useCallback((): boolean => {

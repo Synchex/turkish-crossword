@@ -151,8 +151,9 @@ export function useCengelGame(puzzle: Puzzle) {
     }, []);
 
     // ── Check word ──
-    const checkWord = useCallback((): 'correct' | 'wrong' | null => {
+    const checkWord = useCallback((): { result: 'correct' | 'wrong' | null; cells: Array<{ row: number; col: number; isCorrect: boolean }> } => {
         let result: 'correct' | 'wrong' | null = null;
+        let cellResults: Array<{ row: number; col: number; isCorrect: boolean }> = [];
         setState((s) => {
             if (!s.activeEntryId) return s;
             const entry = s.entries.find((e) => e.id === s.activeEntryId);
@@ -164,6 +165,16 @@ export function useCengelGame(puzzle: Puzzle) {
                     return cell.type === 'LETTER' ? (cell.userLetter ?? '') : '';
                 })
                 .join('');
+
+            // Build per-cell correctness
+            cellResults = entry.cells.map((c) => {
+                const cell = s.gameGrid[c.row][c.col];
+                return {
+                    row: c.row,
+                    col: c.col,
+                    isCorrect: cell.type === 'LETTER' ? (cell.userLetter ?? '') === (cell.solution ?? '') : true,
+                };
+            });
 
             if (userAnswer.length < entry.length) {
                 result = 'wrong';
@@ -191,7 +202,7 @@ export function useCengelGame(puzzle: Puzzle) {
             result = 'wrong';
             return s;
         });
-        return result;
+        return { result, cells: cellResults };
     }, []);
 
     // ── Reveal hint (active entry) ──
