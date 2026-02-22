@@ -9,6 +9,7 @@ export interface SettingsState {
     uiMode: UIMode;
     haptics: boolean;
     sound: boolean;
+    music: boolean;
     autoCheck: boolean;
     showWrongInRed: boolean;
     largeText: boolean;
@@ -19,6 +20,7 @@ export interface SettingsState {
     setUIMode: (mode: UIMode) => void;
     toggleHaptics: () => void;
     toggleSound: () => void;
+    toggleMusic: () => void;
     toggleAutoCheck: () => void;
     toggleShowWrongInRed: () => void;
     toggleLargeText: () => void;
@@ -32,6 +34,7 @@ export const useSettingsStore = create<SettingsState>()(
             uiMode: 'modern' as UIMode,
             haptics: true,
             sound: true,
+            music: true,
             autoCheck: false,
             showWrongInRed: false,
             largeText: false,
@@ -41,6 +44,7 @@ export const useSettingsStore = create<SettingsState>()(
             setUIMode: (mode) => set({ uiMode: mode }),
             toggleHaptics: () => set((s) => ({ haptics: !s.haptics })),
             toggleSound: () => set((s) => ({ sound: !s.sound })),
+            toggleMusic: () => set((s) => ({ music: !s.music })),
             toggleAutoCheck: () => set((s) => ({ autoCheck: !s.autoCheck })),
             toggleShowWrongInRed: () => set((s) => ({ showWrongInRed: !s.showWrongInRed })),
             toggleLargeText: () => set((s) => ({ largeText: !s.largeText })),

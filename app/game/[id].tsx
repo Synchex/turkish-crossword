@@ -32,6 +32,7 @@ import { usePuzzleProgressStore } from '../../src/store/usePuzzleProgressStore';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 import { useUIProfile, useTheme } from '../../src/theme/ThemeContext';
+import { useAudioManager } from '../../src/hooks/useAudioManager';
 
 // ── Old imports for legacy modes ──
 import { levels } from '../../src/levels/levels';
@@ -117,6 +118,9 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
   const [toast, setToast] = useState<string | null>(null);
   const coinsSpentRef = useRef(0);
 
+  // ── Audio ──
+  const { playSfx } = useAudioManager();
+
   // Derived: should keyboard and solving UI be shown?
   const shouldShowKeyboard = isSolving && activeEntry != null;
 
@@ -168,6 +172,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
       setNavigated(true);
       setIsSolving(false);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSfx('puzzleComplete');
 
       // Calculate rewards
       const stars = computeStars(state.hintsUsed, 0, state.timeElapsed, 'medium');
@@ -215,6 +220,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
     if (result === 'correct') {
       setCorrectFlash(true);
       setFeedback('correct');
+      playSfx('correctWord');
       const keys = cells.map((c) => cellKey(c.row, c.col));
       cellFeedback.animateBatchCorrect(keys);
       setTimeout(() => setCorrectFlash(false), 600);
@@ -224,6 +230,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
       setIsSolving(false);
     } else if (result === 'wrong') {
       setFeedback('wrong');
+      playSfx('wrongWord');
       const correctKeys = cells.filter((c) => c.isCorrect).map((c) => cellKey(c.row, c.col));
       const wrongKeys = cells.filter((c) => !c.isCorrect).map((c) => cellKey(c.row, c.col));
       if (correctKeys.length > 0) cellFeedback.animateBatchCorrect(correctKeys);
@@ -412,7 +419,10 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
         {/* ── Bottom area: Keyboard OR CTA ── */}
         {shouldShowKeyboard ? (
           <TurkishKeyboard
-            onKeyPress={typeLetter}
+            onKeyPress={(key) => {
+              playSfx('keyPress');
+              typeLetter(key);
+            }}
             onBackspace={backspace}
             onCheck={handleCheck}
             onHint={handleHintPress}
@@ -505,6 +515,9 @@ function LegacyGameScreen({ id }: { id: string }) {
   const correctWordsRef = useRef(0);
   const coinsSpentRef = useRef(0);
 
+  // ── Audio ──
+  const { playSfx: playSfxLegacy } = useAudioManager();
+
   const startCellMap = useMemo(() => buildStartCellMap(level.words), [level.words]);
   const diff = mapDifficulty(level.difficulty);
 
@@ -518,6 +531,7 @@ function LegacyGameScreen({ id }: { id: string }) {
   useEffect(() => {
     if (state.isComplete && !navigated) {
       setNavigated(true);
+      playSfxLegacy('puzzleComplete');
       if (isGeneratorMode) {
         setTimeout(() => router.replace('/(tabs)/generator'), 1200);
         return;
@@ -565,6 +579,7 @@ function LegacyGameScreen({ id }: { id: string }) {
     if (result === 'correct') {
       setCorrectFlash(true);
       setFeedback('correct');
+      playSfxLegacy('correctWord');
       correctWordsRef.current += 1;
       const keys = cells.map((c) => cellKey(c.row, c.col));
       cellFeedback.animateBatchCorrect(keys);
@@ -574,6 +589,7 @@ function LegacyGameScreen({ id }: { id: string }) {
     } else if (result === 'wrong') {
       setShakeWord(true);
       setFeedback('wrong');
+      playSfxLegacy('wrongWord');
       mistakesRef.current += 1;
       const correctKeys = cells.filter((c) => c.isCorrect).map((c) => cellKey(c.row, c.col));
       const wrongKeys = cells.filter((c) => !c.isCorrect).map((c) => cellKey(c.row, c.col));
@@ -625,7 +641,10 @@ function LegacyGameScreen({ id }: { id: string }) {
       />
       <FeedbackPanel type={feedback} />
       <TurkishKeyboard
-        onKeyPress={typeLetter}
+        onKeyPress={(key) => {
+          playSfxLegacy('keyPress');
+          typeLetter(key);
+        }}
         onBackspace={backspace}
         onCheck={handleCheck}
         onHint={handleHintPress}

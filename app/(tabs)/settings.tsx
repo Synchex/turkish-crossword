@@ -101,9 +101,22 @@ export default function SettingsScreen() {
                         }
                     />
                     <SettingsRow
+                        icon="musical-notes-outline"
+                        title="Müzik"
+                        subtitle="Arka plan müziği"
+                        theme={t}
+                        right={
+                            <Switch
+                                value={settings.music}
+                                onValueChange={settings.toggleMusic}
+                                trackColor={{ true: t.primary, false: t.border }}
+                            />
+                        }
+                    />
+                    <SettingsRow
                         icon="volume-high-outline"
-                        title="Ses"
-                        subtitle="Oyun sesleri"
+                        title="Ses Efektleri"
+                        subtitle="Tuş ve oyun sesleri"
                         theme={t}
                         right={
                             <Switch

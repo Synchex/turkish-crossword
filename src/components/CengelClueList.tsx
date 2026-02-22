@@ -8,10 +8,12 @@ import {
     Animated,
     LayoutAnimation,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Entry } from '../cengel/types';
 import { radius } from '../theme/radius';
 import { spacing } from '../theme/spacing';
 import { useUIProfile, useTheme } from '../theme/ThemeContext';
+import { useSpeech } from '../hooks/useSpeech';
 
 interface Props {
     entries: Entry[];
@@ -33,9 +35,18 @@ export default function CengelClueList({
     const gp = ui.gameplay;
     const [tab, setTab] = useState<'across' | 'down'>(activeDirection);
     const scrollRef = useRef<ScrollView>(null);
+    const [speakingId, setSpeakingId] = useState<string | null>(null);
+    const { speak, stop, isSpeaking } = useSpeech();
+
     const underlineAnim = useRef(
         new Animated.Value(activeDirection === 'across' ? 0 : 1),
     ).current;
+
+    useEffect(() => {
+        if (!isSpeaking) {
+            setSpeakingId(null);
+        }
+    }, [isSpeaking]);
 
     useEffect(() => {
         setTab(activeDirection);
@@ -192,6 +203,28 @@ export default function CengelClueList({
                             >
                                 {entry.clueText}
                             </Text>
+
+                            {/* Read Aloud Button */}
+                            <TouchableOpacity
+                                style={styles.speakerBtn}
+                                onPress={() => {
+                                    if (speakingId === entry.id) {
+                                        stop();
+                                        setSpeakingId(null);
+                                    } else {
+                                        setSpeakingId(entry.id);
+                                        speak(entry.clueText);
+                                    }
+                                }}
+                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            >
+                                <Ionicons
+                                    name={speakingId === entry.id ? "volume-high" : "volume-medium"}
+                                    size={Math.round(18 * ui.fontScale)}
+                                    color={speakingId === entry.id ? t.primary : t.border}
+                                />
+                            </TouchableOpacity>
+
                             {isLocked && <Text style={[styles.checkMark, { color: t.success }]}>✓</Text>}
                         </TouchableOpacity>
                     );
@@ -257,6 +290,11 @@ const styles = StyleSheet.create({
     },
     clueText: {
         flex: 1,
+    },
+    speakerBtn: {
+        padding: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     checkMark: {
         fontSize: 14,
