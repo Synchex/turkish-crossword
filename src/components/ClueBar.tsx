@@ -8,6 +8,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Entry } from '../cengel/types';
 import { useUIProfile, useTheme } from '../theme/ThemeContext';
+import { useSpeech } from '../hooks/useSpeech';
 
 interface ClueBarProps {
     entry: Entry | null;
@@ -20,6 +21,12 @@ export default function ClueBar({ entry, canToggle, onToggle }: ClueBarProps) {
     const ui = useUIProfile();
     const t = useTheme();
     const gp = ui.gameplay;
+    const { speak, stop, isSpeaking } = useSpeech();
+
+    // Stop speaking if the active clue changes
+    React.useEffect(() => {
+        stop();
+    }, [entry?.id, stop]);
 
     if (!entry) {
         return (
@@ -28,14 +35,14 @@ export default function ClueBar({ entry, canToggle, onToggle }: ClueBarProps) {
                 backgroundColor: t.surface,
                 borderColor: t.border,
             }]}>
-                <Text style={[styles.placeholder, { fontSize: gp.clueBarFontSize, color: t.textMuted }]}>Bir hücreye dokun</Text>
+                <Text style={[styles.placeholder, { fontSize: 15, color: t.textMuted }]}>Bir hücreye dokun</Text>
             </View>
         );
     }
 
     const dirLabel = entry.direction === 'across' ? 'Yatay' : 'Dikey';
     const dirIcon = entry.direction === 'across' ? 'arrow-forward' : 'arrow-down';
-    const toggleSize = Math.max(32, ui.minTouchTarget * 0.7);
+    const ttsSize = Math.max(30, ui.minTouchTarget * 0.65);
 
     return (
         <View style={[styles.bar, {
@@ -43,40 +50,43 @@ export default function ClueBar({ entry, canToggle, onToggle }: ClueBarProps) {
             backgroundColor: t.surface,
             borderColor: t.border,
         }]}>
-            {/* Direction badge */}
+            {/* Compact direction badge */}
             <View style={[styles.badge, { backgroundColor: t.primarySoft }]}>
-                <Ionicons name={dirIcon} size={Math.round(14 * ui.fontScale)} color={t.primary} />
-                <Text style={[styles.badgeText, { fontSize: Math.round(12 * ui.fontScale), color: t.primary }]}>{dirLabel}</Text>
-                <Text style={[styles.lengthText, { fontSize: Math.round(11 * ui.fontScale), color: t.primaryLight }]}>· {entry.length} harf</Text>
+                <Ionicons name={dirIcon} size={12} color={t.primary} />
+                <Text style={[styles.badgeText, { color: t.primary }]}>{dirLabel} · {entry.length}</Text>
             </View>
 
-            {/* Full clue text */}
+            {/* Full clue text — maximum space, dynamic font */}
             <Text
                 style={[styles.clueText, {
-                    fontSize: gp.clueBarFontSize,
-                    lineHeight: gp.clueBarFontSize + 4,
+                    fontSize: entry.clueText.length <= 25 ? 20 : entry.clueText.length <= 45 ? 18 : 16,
+                    lineHeight: entry.clueText.length <= 25 ? 26 : entry.clueText.length <= 45 ? 24 : 22,
                     color: t.text,
                 }]}
                 numberOfLines={2}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
             >
                 {entry.clueText}
             </Text>
 
-            {/* Toggle button */}
-            {canToggle && (
-                <TouchableOpacity
-                    style={[styles.toggleBtn, {
-                        width: toggleSize,
-                        height: toggleSize,
-                        borderRadius: toggleSize / 2,
-                        backgroundColor: t.primarySoft,
-                    }]}
-                    onPress={onToggle}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                    <Ionicons name="swap-vertical" size={Math.round(18 * ui.fontScale)} color={t.primary} />
-                </TouchableOpacity>
-            )}
+            {/* Read Aloud button — only icon on right */}
+            <TouchableOpacity
+                style={[styles.ttsBtn, {
+                    width: ttsSize,
+                    height: ttsSize,
+                    borderRadius: ttsSize / 2,
+                    backgroundColor: isSpeaking ? t.primary : t.primarySoft,
+                }]}
+                onPress={() => isSpeaking ? stop() : speak(entry.clueText)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+                <Ionicons
+                    name={isSpeaking ? "volume-high" : "volume-medium"}
+                    size={16}
+                    color={isSpeaking ? t.textInverse : t.primary}
+                />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -85,8 +95,8 @@ const styles = StyleSheet.create({
     bar: {
         marginHorizontal: 12,
         marginBottom: 6,
-        paddingHorizontal: 14,
-        paddingVertical: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
         borderRadius: 12,
         borderWidth: StyleSheet.hairlineWidth,
         flexDirection: 'row',
@@ -106,23 +116,24 @@ const styles = StyleSheet.create({
     badge: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 8,
+        paddingHorizontal: 6,
+        paddingVertical: 3,
+        borderRadius: 6,
         gap: 3,
     },
     badgeText: {
+        fontSize: 12,
         fontWeight: '700',
-    },
-    lengthText: {
-        fontWeight: '500',
     },
     clueText: {
         flex: 1,
+        flexShrink: 1,
+        minWidth: 0,
         fontWeight: '500',
     },
-    toggleBtn: {
+    ttsBtn: {
         justifyContent: 'center',
         alignItems: 'center',
+        flexShrink: 0,
     },
 });
