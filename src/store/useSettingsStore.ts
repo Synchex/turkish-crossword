@@ -34,7 +34,7 @@ export const useSettingsStore = create<SettingsState>()(
             uiMode: 'modern' as UIMode,
             haptics: true,
             sound: true,
-            music: true,
+            music: false,
             autoCheck: false,
             showWrongInRed: false,
             largeText: false,

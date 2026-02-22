@@ -1,10 +1,3 @@
-/**
- * useAudioManager — React hook to manage AudioManager lifecycle.
- *
- * Preloads sounds on mount, starts music, stops/unloads on unmount.
- * Also watches music setting changes at runtime.
- */
-
 import { useEffect, useRef, useCallback } from 'react';
 import { audioManager, SfxName } from '../audio/AudioManager';
 import { useSettingsStore } from '../store/useSettingsStore';
@@ -14,7 +7,7 @@ export function useAudioManager() {
     const soundEnabled = useSettingsStore((s) => s.sound);
     const hasPreloaded = useRef(false);
 
-    // Preload on mount, unload on unmount
+    // Preload on mount, unload on unmount — NO auto-play
     useEffect(() => {
         let mounted = true;
 
@@ -22,7 +15,6 @@ export function useAudioManager() {
             await audioManager.preloadSounds();
             if (mounted) {
                 hasPreloaded.current = true;
-                await audioManager.playMusic();
             }
         })();
 
@@ -33,14 +25,14 @@ export function useAudioManager() {
         };
     }, []);
 
-    // React to music toggle change at runtime
+    // React to music toggle change at runtime (user manually enables/disables)
     useEffect(() => {
         if (hasPreloaded.current) {
             audioManager.onMusicSettingChanged(musicEnabled);
         }
     }, [musicEnabled]);
 
-    // Convenience SFX function that checks setting internally
+    // Convenience SFX function
     const playSfx = useCallback((name: SfxName) => {
         audioManager.playSfx(name);
     }, []);

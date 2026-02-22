@@ -1,13 +1,11 @@
 /**
- * generate_sounds.js — Synthesize premium, calm puzzle-style audio
+ * generate_sounds.js — Synthesize premium, minimal puzzle SFX
  *
- * Generates WAV files with sine-wave synthesis:
- *   • key_press:       Soft muted tap (very short)
- *   • button_tap:      Subtle click
- *   • correct_word:    Gentle ascending two-note chime
- *   • wrong_word:      Soft low muted hum
- *   • puzzle_complete: Elegant ascending arpeggio (4 notes)
- *   • bg_music:        Calm ambient pad loop (~25s)
+ * Design philosophy: NO sine beeps, NO arcade tones.
+ * Use filtered noise bursts for clicks, shaped noise for thuds,
+ * and very subtle harmonics for chimes.
+ *
+ * All sounds are extremely short and soft.
  */
 
 const fs = require('fs');
@@ -30,22 +28,17 @@ function writeWav(filePath, samples, sampleRate = SAMPLE_RATE) {
     const buffer = Buffer.alloc(headerSize + dataSize);
     let offset = 0;
 
-    // RIFF header
     buffer.write('RIFF', offset); offset += 4;
     buffer.writeUInt32LE(36 + dataSize, offset); offset += 4;
     buffer.write('WAVE', offset); offset += 4;
-
-    // fmt chunk
     buffer.write('fmt ', offset); offset += 4;
     buffer.writeUInt32LE(16, offset); offset += 4;
-    buffer.writeUInt16LE(1, offset); offset += 2; // PCM
+    buffer.writeUInt16LE(1, offset); offset += 2;
     buffer.writeUInt16LE(numChannels, offset); offset += 2;
     buffer.writeUInt32LE(sampleRate, offset); offset += 4;
     buffer.writeUInt32LE(byteRate, offset); offset += 4;
     buffer.writeUInt16LE(blockAlign, offset); offset += 2;
     buffer.writeUInt16LE(bitsPerSample, offset); offset += 2;
-
-    // data chunk
     buffer.write('data', offset); offset += 4;
     buffer.writeUInt32LE(dataSize, offset); offset += 4;
 
@@ -56,132 +49,115 @@ function writeWav(filePath, samples, sampleRate = SAMPLE_RATE) {
     }
 
     fs.writeFileSync(filePath, buffer);
-    console.log(`✓ ${path.basename(filePath)} (${(buffer.length / 1024).toFixed(1)} KB, ${(numSamples / sampleRate).toFixed(2)}s)`);
-}
-
-// ── Audio helpers ──
-
-function sine(freq, t) {
-    return Math.sin(2 * Math.PI * freq * t);
-}
-
-// Soft envelope with attack/decay
-function envelope(t, duration, attack = 0.01, decay = 0.1) {
-    if (t < attack) return t / attack;
-    if (t > duration - decay) return Math.max(0, (duration - t) / decay);
-    return 1;
-}
-
-// Soft fade envelope for ambient pads
-function padEnvelope(t, duration, fadeIn = 2, fadeOut = 3) {
-    if (t < fadeIn) return t / fadeIn;
-    if (t > duration - fadeOut) return Math.max(0, (duration - t) / fadeOut);
-    return 1;
+    const ms = (numSamples / sampleRate * 1000).toFixed(0);
+    console.log(`  ✓ ${path.basename(filePath).padEnd(22)} ${ms}ms  ${(buffer.length / 1024).toFixed(1)} KB`);
 }
 
 function generateSamples(duration, fn) {
-    const numSamples = Math.floor(SAMPLE_RATE * duration);
-    const samples = new Float64Array(numSamples);
-    for (let i = 0; i < numSamples; i++) {
-        const t = i / SAMPLE_RATE;
-        samples[i] = fn(t, duration);
+    const n = Math.floor(SAMPLE_RATE * duration);
+    const out = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+        out[i] = fn(i / SAMPLE_RATE, duration);
     }
-    return samples;
+    return out;
+}
+
+// ── Noise source (seeded for consistency) ──
+let noiseSeed = 42;
+function noise() {
+    noiseSeed = (noiseSeed * 1103515245 + 12345) & 0x7fffffff;
+    return (noiseSeed / 0x7fffffff) * 2 - 1;
+}
+
+// Simple one-pole lowpass
+function lpFilter(samples, cutoff) {
+    const rc = 1 / (2 * Math.PI * cutoff);
+    const dt = 1 / SAMPLE_RATE;
+    const alpha = dt / (rc + dt);
+    const out = new Float64Array(samples.length);
+    out[0] = samples[0] * alpha;
+    for (let i = 1; i < samples.length; i++) {
+        out[i] = out[i - 1] + alpha * (samples[i] - out[i - 1]);
+    }
+    return out;
 }
 
 // ── Sound generators ──
 
 function genKeyPress() {
-    // Very short, soft muted click — like touching glass
-    const duration = 0.06;
-    return generateSamples(duration, (t, d) => {
-        const env = envelope(t, d, 0.002, 0.04);
-        // High-frequency soft tap with quick decay
-        const tap = sine(3200, t) * 0.15 + sine(4800, t) * 0.08;
-        return tap * env * Math.exp(-t * 80);
+    // Ultra-short filtered noise burst — like tapping a wooden surface
+    // Duration: ~55ms
+    const duration = 0.055;
+    const raw = generateSamples(duration, (t, d) => {
+        // Sharp attack, very fast exponential decay
+        const env = Math.exp(-t * 120) * 0.5;
+        return noise() * env;
     });
+    // Lowpass to remove harshness → soft click
+    return lpFilter(raw, 3500);
 }
 
 function genButtonTap() {
-    // Subtle wooden tap — slightly deeper than key press
+    // Slightly deeper, slightly longer click — like pressing a soft rubber button
+    // Duration: ~80ms
     const duration = 0.08;
-    return generateSamples(duration, (t, d) => {
-        const env = envelope(t, d, 0.002, 0.05);
-        const tap = sine(1800, t) * 0.12 + sine(2400, t) * 0.06;
-        return tap * env * Math.exp(-t * 50);
+    const raw = generateSamples(duration, (t, d) => {
+        const env = Math.exp(-t * 70) * 0.5;
+        return noise() * env;
     });
+    return lpFilter(raw, 2200);
 }
 
 function genCorrectWord() {
-    // Gentle two-note ascending chime: C5 → E5
-    // Like wind chimes — soft, resonant
-    const duration = 0.5;
-    const note1 = 523.25; // C5
-    const note2 = 659.25; // E5
-
+    // Soft, short "ding" — two very quiet overlapping harmonics
+    // NOT a celebratory chime. More like a gentle notification.
+    // Duration: ~200ms
+    const duration = 0.2;
     return generateSamples(duration, (t, d) => {
-        let out = 0;
-
-        // Note 1: starts at t=0, gentle bell
-        if (t < 0.35) {
-            const e = Math.exp(-t * 8) * 0.3;
-            out += sine(note1, t) * e;
-            out += sine(note1 * 2, t) * e * 0.15; // harmonic
-        }
-
-        // Note 2: starts at t=0.12, gentle bell
-        if (t > 0.12) {
-            const t2 = t - 0.12;
-            const e = Math.exp(-t2 * 6) * 0.35;
-            out += sine(note2, t) * e;
-            out += sine(note2 * 2, t) * e * 0.12;
-        }
-
-        return out;
+        const env = Math.exp(-t * 18) * 0.35;
+        // Soft bell: fundamental + quiet overtone, both decaying fast
+        const f1 = Math.sin(2 * Math.PI * 880 * t);   // A5
+        const f2 = Math.sin(2 * Math.PI * 1320 * t);  // E6 (soft fifth)
+        return (f1 * 0.7 + f2 * 0.3) * env;
     });
 }
 
 function genWrongWord() {
-    // Soft, low muted tone — not harsh, just a gentle "hmm"
-    const duration = 0.3;
-    const freq = 220; // A3
-
-    return generateSamples(duration, (t, d) => {
-        const env = envelope(t, d, 0.02, 0.15);
-        // Muted low tone with slight detuning for warmth
-        const out = sine(freq, t) * 0.2 + sine(freq * 0.998, t) * 0.15;
-        return out * env * Math.exp(-t * 5);
+    // Soft muted thud — NO buzzer, just a gentle low "bump"
+    // Filtered noise with low cutoff
+    // Duration: ~130ms
+    const duration = 0.13;
+    const raw = generateSamples(duration, (t, d) => {
+        const env = Math.exp(-t * 35) * 0.4;
+        return noise() * env;
     });
+    return lpFilter(raw, 800);  // Very low cutoff → muted thud
 }
 
 function genPuzzleComplete() {
-    // Elegant ascending arpeggio: C5 → E5 → G5 → C6
-    // Like a music box — delicate and rewarding
-    const duration = 1.4;
-    const notes = [
-        { freq: 523.25, start: 0.0 },   // C5
-        { freq: 659.25, start: 0.18 },   // E5
-        { freq: 783.99, start: 0.36 },   // G5
-        { freq: 1046.50, start: 0.54 },  // C6
-    ];
-
+    // Elegant short sparkle — two quick ascending notes, NOT loud
+    // Like a gentle music box playing two notes
+    // Duration: ~350ms
+    const duration = 0.35;
     return generateSamples(duration, (t, d) => {
         let out = 0;
 
-        for (const note of notes) {
-            if (t >= note.start) {
-                const tn = t - note.start;
-                const decay = Math.exp(-tn * 3);
-                // Bell-like tone with soft harmonics
-                out += sine(note.freq, t) * decay * 0.22;
-                out += sine(note.freq * 2, t) * decay * 0.06;
-                out += sine(note.freq * 3, t) * decay * 0.02;
-            }
+        // Note 1: C6 (1046 Hz) — starts immediately
+        if (t < 0.2) {
+            const e1 = Math.exp(-t * 15) * 0.3;
+            out += Math.sin(2 * Math.PI * 1046.5 * t) * e1;
         }
 
-        // Gentle tail fade
-        if (t > d - 0.4) {
-            out *= (d - t) / 0.4;
+        // Note 2: E6 (1318 Hz) — starts at 100ms
+        if (t > 0.1 && t < 0.35) {
+            const t2 = t - 0.1;
+            const e2 = Math.exp(-t2 * 12) * 0.3;
+            out += Math.sin(2 * Math.PI * 1318.5 * t) * e2;
+        }
+
+        // Gentle final fade
+        if (t > d - 0.08) {
+            out *= (d - t) / 0.08;
         }
 
         return out;
@@ -189,48 +165,36 @@ function genPuzzleComplete() {
 }
 
 function genBgMusic() {
-    // Calm ambient pad — evolving warm chords
-    // ~25 seconds, designed to loop seamlessly
+    // Keep the ambient pad for optional use, but make it even quieter
     const duration = 25;
-
-    // Chord tones (Cmaj7 → Am7 → Fmaj7 → G7sus4 cycle)
     const chords = [
-        { notes: [130.81, 164.81, 196.00, 246.94], start: 0, end: 6.25 },     // C E G B
-        { notes: [110.00, 130.81, 164.81, 196.00], start: 6.25, end: 12.5 },  // A C E G
-        { notes: [174.61, 220.00, 261.63, 329.63], start: 12.5, end: 18.75 }, // F A C E
-        { notes: [196.00, 261.63, 293.66, 349.23], start: 18.75, end: 25 },   // G C D F
+        { notes: [130.81, 164.81, 196.00, 246.94], start: 0, end: 6.25 },
+        { notes: [110.00, 130.81, 164.81, 196.00], start: 6.25, end: 12.5 },
+        { notes: [174.61, 220.00, 261.63, 329.63], start: 12.5, end: 18.75 },
+        { notes: [196.00, 261.63, 293.66, 349.23], start: 18.75, end: 25 },
     ];
 
     return generateSamples(duration, (t, d) => {
         let out = 0;
-
         for (const chord of chords) {
             if (t >= chord.start && t < chord.end) {
-                const chordDur = chord.end - chord.start;
+                const cd = chord.end - chord.start;
                 const tc = t - chord.start;
-                // Smooth crossfade between chords
-                const crossfade = 0.8;
+                const cf = 0.8;
                 let env = 1;
-                if (tc < crossfade) env = tc / crossfade;
-                if (tc > chordDur - crossfade) env = Math.max(0, (chordDur - tc) / crossfade);
-
+                if (tc < cf) env = tc / cf;
+                if (tc > cd - cf) env = Math.max(0, (cd - tc) / cf);
                 for (const freq of chord.notes) {
-                    // Soft pad with slow vibrato
-                    const vibrato = 1 + Math.sin(2 * Math.PI * 0.3 * t) * 0.002;
-                    out += sine(freq * vibrato, t) * 0.04 * env;
-                    // Add gentle detuned layer for warmth
-                    out += sine(freq * 1.003 * vibrato, t) * 0.025 * env;
+                    const vib = 1 + Math.sin(2 * Math.PI * 0.3 * t) * 0.002;
+                    out += Math.sin(2 * Math.PI * freq * vib * t) * 0.03 * env;
+                    out += Math.sin(2 * Math.PI * freq * 1.003 * vib * t) * 0.018 * env;
                 }
             }
         }
-
-        // Loop crossfade: fade out last 1s, fade in first 1s
-        const loopFade = 1.5;
-        if (t < loopFade) out *= t / loopFade;
-        if (t > d - loopFade) out *= (d - t) / loopFade;
-
-        // Very low overall volume — ambient background
-        return out * 0.7;
+        const lf = 1.5;
+        if (t < lf) out *= t / lf;
+        if (t > d - lf) out *= (d - t) / lf;
+        return out * 0.5;
     });
 }
 
@@ -238,6 +202,7 @@ function genBgMusic() {
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
+console.log('\n  Generating premium SFX...\n');
 writeWav(path.join(OUT_DIR, 'key_press.wav'), genKeyPress());
 writeWav(path.join(OUT_DIR, 'button_tap.wav'), genButtonTap());
 writeWav(path.join(OUT_DIR, 'correct_word.wav'), genCorrectWord());
@@ -245,4 +210,4 @@ writeWav(path.join(OUT_DIR, 'wrong_word.wav'), genWrongWord());
 writeWav(path.join(OUT_DIR, 'puzzle_complete.wav'), genPuzzleComplete());
 writeWav(path.join(OUT_DIR, 'bg_music.wav'), genBgMusic());
 
-console.log('\n✅ All sounds generated!');
+console.log('\n  ✅ All sounds regenerated!\n');
