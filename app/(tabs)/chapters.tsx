@@ -107,14 +107,16 @@ export default function ChaptersScreen() {
 
     return (
         <View style={styles.container}>
-            {/* Deep gradient background */}
+            {/* Layer 1: Deep multi-stop base gradient */}
             <LinearGradient
                 colors={
                     isDark
-                        ? ['#030712', '#0C1131', '#12183D', '#0D1235', '#070B1E']
+                        ? ['#020617', '#0A1128', '#0F1A3E', '#160E3A', '#0D0F28', '#050714']
                         : [theme.background, theme.surface2, theme.background]
                 }
-                locations={isDark ? [0, 0.2, 0.45, 0.7, 1] : [0, 0.5, 1]}
+                locations={isDark ? [0, 0.15, 0.35, 0.55, 0.78, 1] : [0, 0.5, 1]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.4, y: 1 }}
                 style={StyleSheet.absoluteFill}
             />
 
