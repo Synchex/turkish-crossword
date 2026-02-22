@@ -21,6 +21,7 @@ export default function TabsLayout() {
                 headerShown: false,
                 tabBarActiveTintColor: th.tabActive,
                 tabBarInactiveTintColor: th.tabInactive,
+                sceneStyle: { backgroundColor: th.background },
                 tabBarLabelStyle: styles.tabLabel,
                 tabBarStyle: [
                     styles.tabBar,

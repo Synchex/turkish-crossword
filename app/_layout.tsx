@@ -37,6 +37,7 @@ function AppContent() {
         <Stack.Screen name="result/[id]" />
         <Stack.Screen name="daily" />
         <Stack.Screen name="achievements" />
+        <Stack.Screen name="practice" />
       </Stack>
       <AchievementToast />
     </>

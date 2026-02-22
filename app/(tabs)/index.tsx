@@ -41,56 +41,9 @@ import { getResumePuzzleId, getPuzzleLevelNumber, logContinueDecision } from '..
 
 const { width: SW } = Dimensions.get('window');
 
-// ═══════════════════════════════════════════════
-//  FLOATING PARTICLES
-// ═══════════════════════════════════════════════
-function FloatingParticles() {
-  const dots = useMemo(() =>
-    Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: new Animated.Value(Math.random() * SW),
-      y: new Animated.Value(Math.random() * 260),
-      o: new Animated.Value(Math.random() * 0.25 + 0.03),
-      s: Math.random() * 3 + 1.5,
-      d: Math.random() * 5000 + 3000,
-    })),
-    []);
+// FloatingParticles is imported from shared component
+import FloatingParticles from '../../src/components/FloatingParticles';
 
-  useEffect(() => {
-    dots.forEach((p) => {
-      const loop = () => {
-        Animated.parallel([
-          Animated.timing(p.y, { toValue: Math.random() * 260, duration: p.d, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-          Animated.timing(p.x, { toValue: Math.random() * SW, duration: p.d * 1.2, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-          Animated.sequence([
-            Animated.timing(p.o, { toValue: Math.random() * 0.35 + 0.05, duration: p.d / 2, useNativeDriver: true }),
-            Animated.timing(p.o, { toValue: Math.random() * 0.1, duration: p.d / 2, useNativeDriver: true }),
-          ]),
-        ]).start(loop);
-      };
-      loop();
-    });
-  }, []);
-
-  return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      {dots.map((p) => (
-        <Animated.View
-          key={p.id}
-          style={{
-            position: 'absolute',
-            width: p.s,
-            height: p.s,
-            borderRadius: p.s / 2,
-            backgroundColor: '#FFF',
-            opacity: p.o,
-            transform: [{ translateX: p.x }, { translateY: p.y }],
-          }}
-        />
-      ))}
-    </View>
-  );
-}
 
 // ═══════════════════════════════════════════════
 //  XP PROGRESS RING
@@ -690,8 +643,8 @@ export default function HomeScreen() {
             <View style={[s.playIcon, { backgroundColor: t.primary + '12' }]}>
               <Ionicons name="map-outline" size={Math.round(22 * fs)} color={t.primary} />
             </View>
-            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(15 * fs) }]}>Bölümler</Text>
-            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(11 * fs) }]}>Seviye seviye</Text>
+            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(13 * fs) }]}>Bölümler</Text>
+            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(10 * fs) }]}>Seviye seviye</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -704,8 +657,22 @@ export default function HomeScreen() {
             <View style={[s.playIcon, { backgroundColor: t.accent + '12' }]}>
               <Ionicons name="grid-outline" size={Math.round(22 * fs)} color={t.accent} />
             </View>
-            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(15 * fs) }]}>Büyük Bulmaca</Text>
-            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(11 * fs) }]}>Rastgele boy</Text>
+            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(13 * fs) }]}>Büyük Bulmaca</Text>
+            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(10 * fs) }]}>Rastgele boy</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[s.playCard, { backgroundColor: isDark ? t.surface2 : t.card, borderColor: isDark ? 'rgba(255,255,255,0.05)' : t.border },
+            isDark && ui.glow && { shadowColor: '#34C759', shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+            ]}
+            activeOpacity={0.82}
+            onPress={() => router.push('/practice')}
+          >
+            <View style={[s.playIcon, { backgroundColor: '#34C75912' }]}>
+              <Ionicons name="flash-outline" size={Math.round(22 * fs)} color="#34C759" />
+            </View>
+            <Text style={[s.playTitle, { color: t.text, fontSize: Math.round(13 * fs) }]}>Alıştırma</Text>
+            <Text style={[s.playSub, { color: t.textSecondary, fontSize: Math.round(10 * fs) }]}>Kendini test et</Text>
           </TouchableOpacity>
         </Animated.View>
 

@@ -58,6 +58,22 @@ export function getQuestionsForLevel(levelId: number, count: number = 8): Questi
     return levelQuestions.slice(0, count);
 }
 
+// ── Practice Mode ──
+
+/**
+ * Get a random question for practice mode.
+ * Only returns answers between 3-7 characters.
+ * Excludes any IDs already used in the current session.
+ */
+export function getRandomPracticeQuestion(excludeIds: Set<string>): Question | null {
+    const eligible = questions.filter(
+        (q) => q.answer.length >= 3 && q.answer.length <= 7 && !excludeIds.has(q.id)
+    );
+    if (eligible.length === 0) return null;
+    const idx = Math.floor(Math.random() * eligible.length);
+    return eligible[idx];
+}
+
 // ── UI Adapter ──
 
 export type QuestionType = 'crossword' | 'multipleChoice' | 'wordFill';

@@ -15,10 +15,16 @@ export const BOSS_NODE_SIZE = 80;
 export const NODE_HITSLOP = 8;
 
 // ── Path layout ──
-export const VERTICAL_GAP = 120;          // Vertical distance between nodes
-export const WAVE_AMPLITUDE = 70;         // Horizontal wave amplitude
-export const PATH_WIDTH = 4;              // Path line thickness
+export const VERTICAL_GAP = 140;          // Vertical distance between nodes
+export const WAVE_AMPLITUDE = 90;         // Horizontal wave amplitude
+export const PATH_WIDTH = 5;              // Path line thickness
 export const PATH_DOT_SIZE = 8;           // Decorative dots along path
+
+// ── Seeded jitter for organic feel ──
+function seededRandom(seed: number): number {
+    const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+    return x - Math.floor(x);
+}
 
 // ── World config ──
 export const LEVELS_PER_WORLD = 5;
@@ -75,11 +81,13 @@ export function generateNodePositions(): NodePosition[] {
             currentY -= (WORLD_BANNER_GAP * 2 + WORLD_BANNER_HEIGHT);
         }
 
-        // Sinusoidal wave offset
+        // Sinusoidal wave offset + seeded jitter for organic feel
         const waveOffset = Math.sin((i / 3) * Math.PI) * WAVE_AMPLITUDE;
+        const jitterX = (seededRandom(i * 7 + 3) - 0.5) * 18;
+        const jitterY = (seededRandom(i * 13 + 7) - 0.5) * 10;
 
-        const x = centerX + waveOffset;
-        const y = currentY;
+        const x = centerX + waveOffset + jitterX;
+        const y = currentY + jitterY;
 
         positions.push({ index: i, x, y, isBoss, worldIndex });
 

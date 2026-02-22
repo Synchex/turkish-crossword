@@ -10,13 +10,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStatsStore, computeDerived } from '../../src/store/useStatsStore';
 import { useGamificationStore, getXPForNextLevel } from '../../src/store/useGamificationStore';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/theme/ThemeContext';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
 import { typography } from '../../src/theme/typography';
 
 // ── Animated Bar ──
-function AnimatedBar({ value, maxValue, color }: { value: number; maxValue: number; color: string }) {
+function AnimatedBar({ value, maxValue, color, trackColor }: { value: number; maxValue: number; color: string; trackColor: string }) {
     const widthAnim = useRef(new Animated.Value(0)).current;
     const percent = maxValue > 0 ? Math.min(1, value / maxValue) : 0;
 
@@ -31,7 +31,7 @@ function AnimatedBar({ value, maxValue, color }: { value: number; maxValue: numb
     }, [percent]);
 
     return (
-        <View style={barStyles.track}>
+        <View style={[barStyles.track, { backgroundColor: trackColor }]}>
             <Animated.View
                 style={[
                     barStyles.fill,
@@ -51,7 +51,6 @@ function AnimatedBar({ value, maxValue, color }: { value: number; maxValue: numb
 const barStyles = StyleSheet.create({
     track: {
         height: 8,
-        backgroundColor: colors.borderLight,
         borderRadius: 4,
         overflow: 'hidden',
         flex: 1,
@@ -72,6 +71,9 @@ function formatTime(sec: number): string {
 
 // ── Main Stats Screen ──
 export default function StatsScreen() {
+    const t = useTheme();
+    const isDark = t.id === 'black';
+
     const stats = useStatsStore();
     const { currentStreak, longestStreak, totalXP, currentLevel } = useGamificationStore();
     const { accuracyPercent, averageSolveTimeSec } = computeDerived(stats);
@@ -98,94 +100,99 @@ export default function StatsScreen() {
         ]).start();
     }, []);
 
+    // ── Dynamic colors ──
+    const cardBg = isDark ? t.surface2 : t.card;
+    const cardBorder = isDark ? 'rgba(255,255,255,0.04)' : t.border;
+    const trackColor = isDark ? 'rgba(255,255,255,0.06)' : t.borderLight;
+
     return (
-        <SafeAreaView style={styles.safe} edges={['top']}>
+        <SafeAreaView style={[styles.safe, { backgroundColor: t.background }]} edges={['top']}>
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
                 <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
                     {/* ── Header ── */}
                     <View style={styles.header}>
-                        <View style={styles.levelBadge}>
+                        <View style={[styles.levelBadge, { backgroundColor: t.primary }]}>
                             <Text style={styles.levelText}>{currentLevel}</Text>
                         </View>
                         <View>
-                            <Text style={styles.headerTitle}>İstatistikler</Text>
-                            <Text style={styles.headerSub}>{totalXP} XP · Seviye {currentLevel}</Text>
+                            <Text style={[styles.headerTitle, { color: t.text }]}>İstatistikler</Text>
+                            <Text style={[styles.headerSub, { color: t.textSecondary }]}>{totalXP} XP · Seviye {currentLevel}</Text>
                         </View>
                     </View>
 
                     {/* ── Streak Card ── */}
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>🔥 Seri</Text>
+                    <View style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder }]}>
+                        <Text style={[styles.cardTitle, { color: t.text }]}>🔥 Seri</Text>
                         <View style={styles.row}>
                             <View style={styles.statItem}>
-                                <Text style={styles.statBig}>{currentStreak}</Text>
-                                <Text style={styles.statLabel}>Güncel Seri</Text>
+                                <Text style={[styles.statBig, { color: t.primary }]}>{currentStreak}</Text>
+                                <Text style={[styles.statLabel, { color: t.textSecondary }]}>Güncel Seri</Text>
                             </View>
-                            <View style={styles.divider} />
+                            <View style={[styles.divider, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : t.border }]} />
                             <View style={styles.statItem}>
-                                <Text style={styles.statBig}>{longestStreak}</Text>
-                                <Text style={styles.statLabel}>En Uzun</Text>
+                                <Text style={[styles.statBig, { color: t.primary }]}>{longestStreak}</Text>
+                                <Text style={[styles.statLabel, { color: t.textSecondary }]}>En Uzun</Text>
                             </View>
                         </View>
                     </View>
 
                     {/* ── Performance Card ── */}
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>📊 Performans</Text>
+                    <View style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder }]}>
+                        <Text style={[styles.cardTitle, { color: t.text }]}>📊 Performans</Text>
                         <View style={styles.perfRow}>
                             <View style={styles.perfItem}>
-                                <Text style={[styles.perfValue, accuracyPercent >= 80 && { color: colors.success }]}>
+                                <Text style={[styles.perfValue, { color: t.text }, accuracyPercent >= 80 && { color: t.success }]}>
                                     %{accuracyPercent}
                                 </Text>
-                                <Text style={styles.perfLabel}>Doğruluk</Text>
+                                <Text style={[styles.perfLabel, { color: t.textSecondary }]}>Doğruluk</Text>
                             </View>
                             <View style={styles.perfItem}>
-                                <Text style={styles.perfValue}>{formatTime(averageSolveTimeSec)}</Text>
-                                <Text style={styles.perfLabel}>Ort. Süre</Text>
+                                <Text style={[styles.perfValue, { color: t.text }]}>{formatTime(averageSolveTimeSec)}</Text>
+                                <Text style={[styles.perfLabel, { color: t.textSecondary }]}>Ort. Süre</Text>
                             </View>
                             <View style={styles.perfItem}>
-                                <Text style={[styles.perfValue, { color: colors.accent }]}>
+                                <Text style={[styles.perfValue, { color: t.accent }]}>
                                     {formatTime(stats.fastestSolveTimeSec)}
                                 </Text>
-                                <Text style={styles.perfLabel}>En Hızlı</Text>
+                                <Text style={[styles.perfLabel, { color: t.textSecondary }]}>En Hızlı</Text>
                             </View>
                         </View>
 
                         <View style={styles.accuracyBar}>
-                            <Text style={styles.accuracyLabel}>Doğruluk</Text>
-                            <AnimatedBar value={accuracyPercent} maxValue={100} color={colors.success} />
-                            <Text style={styles.accuracyPct}>{accuracyPercent}%</Text>
+                            <Text style={[styles.accuracyLabel, { color: t.textMuted }]}>Doğruluk</Text>
+                            <AnimatedBar value={accuracyPercent} maxValue={100} color={t.success} trackColor={trackColor} />
+                            <Text style={[styles.accuracyPct, { color: t.textMuted }]}>{accuracyPercent}%</Text>
                         </View>
                     </View>
 
                     {/* ── Totals Card ── */}
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>🏆 Toplamlar</Text>
+                    <View style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder }]}>
+                        <Text style={[styles.cardTitle, { color: t.text }]}>🏆 Toplamlar</Text>
                         <View style={styles.totalsGrid}>
-                            <View style={styles.totalItem}>
-                                <Text style={styles.totalValue}>{stats.totalPuzzlesSolved}</Text>
-                                <Text style={styles.totalLabel}>Bulmaca</Text>
+                            <View style={[styles.totalItem, { backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : t.cardAlt }]}>
+                                <Text style={[styles.totalValue, { color: t.text }]}>{stats.totalPuzzlesSolved}</Text>
+                                <Text style={[styles.totalLabel, { color: t.textSecondary }]}>Bulmaca</Text>
                             </View>
-                            <View style={styles.totalItem}>
-                                <Text style={styles.totalValue}>{stats.totalDailySolved}</Text>
-                                <Text style={styles.totalLabel}>Günlük</Text>
+                            <View style={[styles.totalItem, { backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : t.cardAlt }]}>
+                                <Text style={[styles.totalValue, { color: t.text }]}>{stats.totalDailySolved}</Text>
+                                <Text style={[styles.totalLabel, { color: t.textSecondary }]}>Günlük</Text>
                             </View>
-                            <View style={styles.totalItem}>
-                                <Text style={styles.totalValue}>{stats.totalCorrectWords}</Text>
-                                <Text style={styles.totalLabel}>Doğru Kelime</Text>
+                            <View style={[styles.totalItem, { backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : t.cardAlt }]}>
+                                <Text style={[styles.totalValue, { color: t.text }]}>{stats.totalCorrectWords}</Text>
+                                <Text style={[styles.totalLabel, { color: t.textSecondary }]}>Doğru Kelime</Text>
                             </View>
-                            <View style={styles.totalItem}>
-                                <Text style={styles.totalValue}>{stats.totalMistakes}</Text>
-                                <Text style={styles.totalLabel}>Hata</Text>
+                            <View style={[styles.totalItem, { backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : t.cardAlt }]}>
+                                <Text style={[styles.totalValue, { color: t.text }]}>{stats.totalMistakes}</Text>
+                                <Text style={[styles.totalLabel, { color: t.textSecondary }]}>Hata</Text>
                             </View>
                         </View>
                     </View>
 
                     {/* ── Last 7 Days Mini Bars ── */}
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>📅 Son 7 Gün</Text>
+                    <View style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder }]}>
+                        <Text style={[styles.cardTitle, { color: t.text }]}>📅 Son 7 Gün</Text>
                         {stats.last7Days.length === 0 ? (
-                            <Text style={styles.emptyText}>Henüz veri yok. Bulmaca çözerek başla!</Text>
+                            <Text style={[styles.emptyText, { color: t.textMuted }]}>Henüz veri yok. Bulmaca çözerek başla!</Text>
                         ) : (
                             <View style={styles.barsContainer}>
                                 {stats.last7Days.map((day) => {
@@ -193,9 +200,9 @@ export default function StatsScreen() {
                                     const dayLabel = day.dateKey.slice(5); // MM-DD
                                     return (
                                         <View key={day.dateKey} style={styles.barColumn}>
-                                            <Text style={styles.barCount}>{day.count}</Text>
-                                            <View style={[styles.bar, { height: barHeight, backgroundColor: colors.primary }]} />
-                                            <Text style={styles.barDate}>{dayLabel}</Text>
+                                            <Text style={[styles.barCount, { color: t.textMuted }]}>{day.count}</Text>
+                                            <View style={[styles.bar, { height: barHeight, backgroundColor: t.primary }]} />
+                                            <Text style={[styles.barDate, { color: t.textMuted }]}>{dayLabel}</Text>
                                         </View>
                                     );
                                 })}
@@ -211,7 +218,6 @@ export default function StatsScreen() {
 const styles = StyleSheet.create({
     safe: {
         flex: 1,
-        backgroundColor: colors.background,
     },
     scroll: {
         padding: spacing.md,
@@ -228,36 +234,30 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: colors.primary,
         justifyContent: 'center',
         alignItems: 'center',
     },
     levelText: {
         fontSize: 20,
         fontWeight: '800',
-        color: colors.textInverse,
+        color: '#FFF',
     },
     headerTitle: {
         ...typography.h1,
-        color: colors.text,
     },
     headerSub: {
         ...typography.caption,
-        color: colors.textSecondary,
         marginTop: 2,
     },
     // ── Card ──
     card: {
-        backgroundColor: colors.surface,
         borderRadius: radius.xl,
         padding: spacing.lg,
         marginBottom: spacing.md,
         borderWidth: 1,
-        borderColor: colors.borderLight,
     },
     cardTitle: {
         ...typography.h3,
-        color: colors.text,
         marginBottom: spacing.md,
     },
     // ── Streak ──
@@ -273,17 +273,14 @@ const styles = StyleSheet.create({
     statBig: {
         fontSize: 36,
         fontWeight: '800',
-        color: colors.primary,
     },
     statLabel: {
         ...typography.caption,
-        color: colors.textSecondary,
         marginTop: 2,
     },
     divider: {
         width: 1,
         height: 40,
-        backgroundColor: colors.border,
     },
     // ── Performance ──
     perfRow: {
@@ -297,11 +294,9 @@ const styles = StyleSheet.create({
     perfValue: {
         fontSize: 22,
         fontWeight: '800',
-        color: colors.text,
     },
     perfLabel: {
         ...typography.caption,
-        color: colors.textSecondary,
         marginTop: 2,
     },
     accuracyBar: {
@@ -312,12 +307,10 @@ const styles = StyleSheet.create({
     },
     accuracyLabel: {
         ...typography.caption,
-        color: colors.textMuted,
         width: 60,
     },
     accuracyPct: {
         ...typography.caption,
-        color: colors.textMuted,
         width: 35,
         textAlign: 'right',
     },
@@ -329,7 +322,6 @@ const styles = StyleSheet.create({
     },
     totalItem: {
         width: '47%',
-        backgroundColor: colors.cardAlt,
         borderRadius: radius.lg,
         padding: spacing.md,
         alignItems: 'center',
@@ -337,11 +329,9 @@ const styles = StyleSheet.create({
     totalValue: {
         fontSize: 24,
         fontWeight: '800',
-        color: colors.text,
     },
     totalLabel: {
         ...typography.caption,
-        color: colors.textSecondary,
         marginTop: 2,
     },
     // ── Last 7 Days ──
@@ -358,7 +348,6 @@ const styles = StyleSheet.create({
     },
     barCount: {
         ...typography.caption,
-        color: colors.textMuted,
         marginBottom: 4,
         fontSize: 10,
     },
@@ -368,13 +357,11 @@ const styles = StyleSheet.create({
     },
     barDate: {
         ...typography.caption,
-        color: colors.textMuted,
         marginTop: 4,
         fontSize: 9,
     },
     emptyText: {
         ...typography.body,
-        color: colors.textMuted,
         textAlign: 'center',
         paddingVertical: spacing.md,
     },

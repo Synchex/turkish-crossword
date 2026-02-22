@@ -27,6 +27,8 @@ interface CengelGridProps {
     ui: UIProfile;
     theme: ThemeColors;
     cellFeedback?: CellFeedback;
+    /** Entries for clue numbering on tiles */
+    entries?: Entry[];
 }
 
 export default function CengelGrid({
@@ -39,6 +41,7 @@ export default function CengelGrid({
     ui,
     theme,
     cellFeedback,
+    entries,
 }: CengelGridProps) {
     const [rows, cols] = gridSize;
     const gridPadding = ui.gameplay.gridPadding;
@@ -54,6 +57,30 @@ export default function CengelGrid({
         activeEntryCells.forEach((c) => set.add(`${c.row},${c.col}`));
         return set;
     }, [activeEntryCells]);
+
+    // Build clue number map: "row,col" → { across?: number, down?: number }
+    const clueNumMap = useMemo(() => {
+        const map = new Map<string, { across?: number; down?: number }>();
+        if (!entries) return map;
+        let acrossIdx = 0;
+        let downIdx = 0;
+        // Sort entries to match CengelClueList numbering (direction groups)
+        const acrossEntries = entries.filter(e => e.direction === 'across');
+        const downEntries = entries.filter(e => e.direction === 'down');
+        acrossEntries.forEach((e, i) => {
+            const key = `${e.clueCell.row},${e.clueCell.col}`;
+            const existing = map.get(key) || {};
+            existing.across = i + 1;
+            map.set(key, existing);
+        });
+        downEntries.forEach((e, i) => {
+            const key = `${e.clueCell.row},${e.clueCell.col}`;
+            const existing = map.get(key) || {};
+            existing.down = i + 1;
+            map.set(key, existing);
+        });
+        return map;
+    }, [entries]);
 
     return (
         <View style={[styles.container, { paddingHorizontal: gridPadding }]}>
@@ -84,6 +111,7 @@ export default function CengelGrid({
                                 ui={ui}
                                 theme={theme}
                                 cellFeedback={cellFeedback}
+                                clueNums={clueNumMap.get(`${r},${c}`)}
                             />
                         )),
                     )}
@@ -105,6 +133,7 @@ interface CellComponentProps {
     ui: UIProfile;
     theme: ThemeColors;
     cellFeedback?: CellFeedback;
+    clueNums?: { across?: number; down?: number };
 }
 
 const MemoCell = memo(function CellComponent({
@@ -118,6 +147,7 @@ const MemoCell = memo(function CellComponent({
     ui,
     theme,
     cellFeedback,
+    clueNums,
 }: CellComponentProps) {
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -183,7 +213,8 @@ const MemoCell = memo(function CellComponent({
         const hasAcross = !!cell.clueAcross;
         const hasDown = !!cell.clueDown;
         const displayClue = cell.clueAcross || cell.clueDown || '';
-        const arrowSize = Math.max(8, cellSize * 0.2);
+        const arrowSize = Math.max(8, cellSize * 0.18);
+        const numFontSize = Math.max(9, cellSize * 0.13);
 
         return (
             <TouchableOpacity
@@ -222,21 +253,35 @@ const MemoCell = memo(function CellComponent({
                         </Text>
                     </View>
 
-                    {/* Arrow indicators */}
+                    {/* Arrow indicators with clue numbers */}
                     <View style={styles.arrowContainer}>
                         {hasAcross && (
-                            <Ionicons
-                                name="arrow-forward"
-                                size={arrowSize}
-                                color={t.primary}
-                            />
+                            <View style={styles.numArrowGroup}>
+                                {clueNums?.across != null && (
+                                    <Text style={[styles.clueNum, { fontSize: numFontSize, color: t.primary }]}>
+                                        {clueNums.across}
+                                    </Text>
+                                )}
+                                <Ionicons
+                                    name="arrow-forward"
+                                    size={arrowSize}
+                                    color={t.primary}
+                                />
+                            </View>
                         )}
                         {hasDown && (
-                            <Ionicons
-                                name="arrow-down"
-                                size={arrowSize}
-                                color={t.primary}
-                            />
+                            <View style={styles.numArrowGroup}>
+                                {clueNums?.down != null && (
+                                    <Text style={[styles.clueNum, { fontSize: numFontSize, color: t.primary }]}>
+                                        {clueNums.down}
+                                    </Text>
+                                )}
+                                <Ionicons
+                                    name="arrow-down"
+                                    size={arrowSize}
+                                    color={t.primary}
+                                />
+                            </View>
                         )}
                     </View>
                 </View>
@@ -365,6 +410,14 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         overflow: 'hidden',
+    },
+    clueNum: {
+        fontWeight: '700',
+    },
+    numArrowGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 1,
     },
     clueText: {
         fontWeight: '600',

@@ -385,6 +385,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
               ui={ui}
               theme={gameplayTheme}
               cellFeedback={cellFeedback}
+              entries={entries}
             />
 
             {/* ── Clue List (numaralı soru listesi) ── */}
@@ -448,7 +449,7 @@ function CengelGameScreen({ puzzleId }: { puzzleId: string }) {
           </View>
         </Modal>
       </SafeAreaView>
-    </Pressable>
+    </Pressable >
   );
 }
 
