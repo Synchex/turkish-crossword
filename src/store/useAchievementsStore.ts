@@ -5,9 +5,10 @@ import { ACHIEVEMENTS, ACHIEVEMENT_MAP } from '../achievements/achievementDefs';
 
 // ── Types ──
 
-interface PendingToast {
+export interface PendingToast {
     id: string;
     title: string;
+    description?: string;
     icon: string;
 }
 
@@ -16,7 +17,9 @@ interface AchievementsState {
     progress: Record<string, number>;
     /** IDs of unlocked achievements */
     unlockedIds: string[];
-    /** Queued unlock toast (shown once then cleared) */
+    /** Queued unlock toasts (shown one at a time then shifted) */
+    toastQueue: PendingToast[];
+    /** First item in queue for UI consumption */
     pendingToast: PendingToast | null;
 
     // Actions
@@ -24,8 +27,10 @@ interface AchievementsState {
     updateProgress: (id: string, increment: number) => void;
     /** Set progress to an absolute value (for streak-type achievements). */
     setProgress: (id: string, value: number) => void;
-    /** Clear the pending toast after it's shown */
+    /** Dismiss current toast, advance queue */
     dismissToast: () => void;
+    /** Show an arbitrary achievement banner */
+    showAchievement: (toast: PendingToast) => void;
     /** Get progress for an achievement */
     getProgress: (id: string) => number;
 }
@@ -37,6 +42,7 @@ export const useAchievementsStore = create<AchievementsState>()(
         (set, get) => ({
             progress: {},
             unlockedIds: [],
+            toastQueue: [],
             pendingToast: null,
 
             updateProgress: (id, increment) => {
@@ -52,14 +58,18 @@ export const useAchievementsStore = create<AchievementsState>()(
 
                 if (next >= def.target) {
                     // Unlock!
+                    const toast: PendingToast = {
+                        id: def.id,
+                        title: def.title,
+                        description: def.description,
+                        icon: def.icon,
+                    };
+                    const queue = [...state.toastQueue, toast];
                     set({
                         progress: newProgress,
                         unlockedIds: [...state.unlockedIds, id],
-                        pendingToast: {
-                            id: def.id,
-                            title: def.title,
-                            icon: def.icon,
-                        },
+                        toastQueue: queue,
+                        pendingToast: state.pendingToast ?? toast,
                     });
                 } else {
                     set({ progress: newProgress });
@@ -75,14 +85,18 @@ export const useAchievementsStore = create<AchievementsState>()(
                 const newProgress = { ...state.progress, [id]: value };
 
                 if (value >= def.target) {
+                    const toast: PendingToast = {
+                        id: def.id,
+                        title: def.title,
+                        description: def.description,
+                        icon: def.icon,
+                    };
+                    const queue = [...state.toastQueue, toast];
                     set({
                         progress: newProgress,
                         unlockedIds: [...state.unlockedIds, id],
-                        pendingToast: {
-                            id: def.id,
-                            title: def.title,
-                            icon: def.icon,
-                        },
+                        toastQueue: queue,
+                        pendingToast: state.pendingToast ?? toast,
                     });
                 } else {
                     set({ progress: newProgress });
@@ -90,7 +104,21 @@ export const useAchievementsStore = create<AchievementsState>()(
             },
 
             dismissToast: () => {
-                set({ pendingToast: null });
+                const state = get();
+                const remaining = state.toastQueue.slice(1);
+                set({
+                    toastQueue: remaining,
+                    pendingToast: remaining.length > 0 ? remaining[0] : null,
+                });
+            },
+
+            showAchievement: (toast) => {
+                const state = get();
+                const queue = [...state.toastQueue, toast];
+                set({
+                    toastQueue: queue,
+                    pendingToast: state.pendingToast ?? toast,
+                });
             },
 
             getProgress: (id) => {
