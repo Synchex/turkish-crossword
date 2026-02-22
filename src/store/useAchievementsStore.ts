@@ -139,5 +139,8 @@ export function checkStreakAchievements(currentStreak: number) {
     const store = useAchievementsStore.getState();
     if (currentStreak >= 3) store.setProgress('streak_3', currentStreak);
     if (currentStreak >= 7) store.setProgress('streak_7', currentStreak);
+    if (currentStreak >= 14) store.setProgress('streak_14', currentStreak);
     if (currentStreak >= 30) store.setProgress('streak_30', currentStreak);
+    if (currentStreak >= 60) store.setProgress('streak_60', currentStreak);
+    if (currentStreak >= 100) store.setProgress('streak_100', currentStreak);
 }

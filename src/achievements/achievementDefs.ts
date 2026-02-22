@@ -3,7 +3,7 @@
 
 import { Ionicons } from '@expo/vector-icons';
 
-export type AchievementCategory = 'puzzle' | 'accuracy' | 'speed' | 'economy' | 'streak' | 'special';
+export type AchievementCategory = 'puzzle' | 'accuracy' | 'speed' | 'economy' | 'streak' | 'special' | 'social' | 'mastery';
 
 export interface AchievementDef {
     id: string;
@@ -17,7 +17,9 @@ export interface AchievementDef {
 }
 
 export const ACHIEVEMENTS: AchievementDef[] = [
-    // ── Puzzle completion ──
+    // ═══════════════════════════════════
+    //  PUZZLE COMPLETION
+    // ═══════════════════════════════════
     {
         id: 'first_step',
         title: 'İlk Adım',
@@ -35,11 +37,27 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         category: 'puzzle',
     },
     {
+        id: 'dedicated',
+        title: 'Kararlı Çözücü',
+        description: '10 bulmaca tamamla',
+        icon: 'fitness-outline',
+        target: 10,
+        category: 'puzzle',
+    },
+    {
         id: 'marathon',
         title: 'Maratoncu',
         description: '25 bulmaca tamamla',
         icon: 'trophy-outline',
         target: 25,
+        category: 'puzzle',
+    },
+    {
+        id: 'half_century',
+        title: 'Yarım Asırlık',
+        description: '50 bulmaca tamamla',
+        icon: 'ribbon-outline',
+        target: 50,
         category: 'puzzle',
     },
     {
@@ -51,11 +69,27 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         category: 'puzzle',
     },
     {
+        id: 'legendary',
+        title: 'Efsane',
+        description: '250 bulmaca tamamla',
+        icon: 'shield-outline',
+        target: 250,
+        category: 'puzzle',
+    },
+    {
         id: 'world_explorer',
         title: 'Dünya Gezgini',
         description: '1 bölümü tamamla (10 seviye)',
         icon: 'earth-outline',
         target: 10,
+        category: 'puzzle',
+    },
+    {
+        id: 'chapter_master',
+        title: 'Bölüm Ustası',
+        description: '3 bölümü tamamla',
+        icon: 'map-outline',
+        target: 30,
         category: 'puzzle',
     },
     {
@@ -66,22 +100,24 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         target: 10,
         category: 'puzzle',
     },
+    {
+        id: 'daily_devotee',
+        title: 'Günlük Bağımlısı',
+        description: '30 günlük bulmaca tamamla',
+        icon: 'calendar-outline',
+        target: 30,
+        category: 'puzzle',
+    },
 
-    // ── Accuracy ──
+    // ═══════════════════════════════════
+    //  ACCURACY
+    // ═══════════════════════════════════
     {
         id: 'perfect',
         title: 'Mükemmel!',
         description: 'Bir bulmacayı hatasız tamamla',
         icon: 'diamond-outline',
         target: 1,
-        category: 'accuracy',
-    },
-    {
-        id: 'sharp_mind',
-        title: 'Keskin Zihin',
-        description: '10 bulmacayı %90+ doğrulukla tamamla',
-        icon: 'eye-outline',
-        target: 10,
         category: 'accuracy',
     },
     {
@@ -92,8 +128,50 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         target: 5,
         category: 'accuracy',
     },
+    {
+        id: 'sharp_mind',
+        title: 'Keskin Zihin',
+        description: '10 bulmacayı hatasız tamamla',
+        icon: 'eye-outline',
+        target: 10,
+        category: 'accuracy',
+    },
+    {
+        id: 'flawless',
+        title: 'Kusursuz',
+        description: '25 bulmacayı hatasız tamamla',
+        icon: 'prism-outline',
+        target: 25,
+        category: 'accuracy',
+    },
+    {
+        id: 'no_hint_win',
+        title: 'Kendi Başına',
+        description: 'Bir bulmacayı ipucu kullanmadan tamamla',
+        icon: 'hand-left-outline',
+        target: 1,
+        category: 'accuracy',
+    },
+    {
+        id: 'no_hint_streak_5',
+        title: 'İpucusuz Seri',
+        description: '5 bulmacayı üst üste ipucu kullanmadan tamamla',
+        icon: 'shield-checkmark-outline',
+        target: 5,
+        category: 'accuracy',
+    },
 
-    // ── Speed ──
+    // ═══════════════════════════════════
+    //  SPEED
+    // ═══════════════════════════════════
+    {
+        id: 'quick_solver',
+        title: 'Hızlı Çözücü',
+        description: 'Bir bulmacayı 2 dakika altında tamamla',
+        icon: 'timer-outline',
+        target: 1,
+        category: 'speed',
+    },
     {
         id: 'speed_demon',
         title: 'Hız Şeytanı',
@@ -110,14 +188,32 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         target: 1,
         category: 'speed',
     },
+    {
+        id: 'speed_series',
+        title: 'Hız Serisi',
+        description: '5 bulmacayı 2 dakika altında tamamla',
+        icon: 'speedometer-outline',
+        target: 5,
+        category: 'speed',
+    },
 
-    // ── Economy ──
+    // ═══════════════════════════════════
+    //  ECONOMY
+    // ═══════════════════════════════════
     {
         id: 'saver',
         title: 'Tasarruf Ustası',
         description: '5 bulmacayı ipucu kullanmadan tamamla',
         icon: 'shield-checkmark-outline',
         target: 5,
+        category: 'economy',
+    },
+    {
+        id: 'first_purchase',
+        title: 'İlk Alışveriş',
+        description: 'İlk ipucunu satın al',
+        icon: 'cart-outline',
+        target: 1,
         category: 'economy',
     },
     {
@@ -136,8 +232,26 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         target: 500,
         category: 'economy',
     },
+    {
+        id: 'coin_hoarder',
+        title: 'Altın Biriktirici',
+        description: '1000 coin biriktir',
+        icon: 'cash-outline',
+        target: 1000,
+        category: 'economy',
+    },
+    {
+        id: 'wealthy',
+        title: 'Zengin',
+        description: '5000 coin biriktir',
+        icon: 'diamond-outline',
+        target: 5000,
+        category: 'economy',
+    },
 
-    // ── Streak ──
+    // ═══════════════════════════════════
+    //  STREAK
+    // ═══════════════════════════════════
     {
         id: 'streak_3',
         title: 'Başlangıç Serisi',
@@ -155,6 +269,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         category: 'streak',
     },
     {
+        id: 'streak_14',
+        title: 'İki Haftalık Seri',
+        description: '14 gün üst üste oyna',
+        icon: 'flame-outline',
+        target: 14,
+        category: 'streak',
+    },
+    {
         id: 'streak_30',
         title: 'Ay Serisi',
         description: '30 gün üst üste oyna',
@@ -162,13 +284,167 @@ export const ACHIEVEMENTS: AchievementDef[] = [
         target: 30,
         category: 'streak',
     },
+    {
+        id: 'streak_60',
+        title: 'Çelik İrade',
+        description: '60 gün üst üste oyna',
+        icon: 'nuclear-outline',
+        target: 60,
+        category: 'streak',
+    },
+    {
+        id: 'streak_100',
+        title: 'Yüz Günlük Efsane',
+        description: '100 gün üst üste oyna',
+        icon: 'planet-outline',
+        target: 100,
+        category: 'streak',
+    },
 
-    // ── Special ──
+    // ═══════════════════════════════════
+    //  MASTERY (Word & Knowledge)
+    // ═══════════════════════════════════
+    {
+        id: 'word_hunter',
+        title: 'Kelime Avcısı',
+        description: 'Toplam 100 kelime bul',
+        icon: 'search-outline',
+        target: 100,
+        category: 'mastery',
+    },
+    {
+        id: 'word_master',
+        title: 'Kelime Ustası',
+        description: 'Toplam 500 kelime bul',
+        icon: 'library-outline',
+        target: 500,
+        category: 'mastery',
+    },
+    {
+        id: 'vocabulary_king',
+        title: 'Sözcük Kralı',
+        description: 'Toplam 1000 kelime bul',
+        icon: 'school-outline',
+        target: 1000,
+        category: 'mastery',
+    },
+    {
+        id: 'xp_collector_1000',
+        title: 'XP Toplama',
+        description: '1000 XP topla',
+        icon: 'trending-up-outline',
+        target: 1000,
+        category: 'mastery',
+    },
+    {
+        id: 'xp_collector_5000',
+        title: 'XP Ustası',
+        description: '5000 XP topla',
+        icon: 'analytics-outline',
+        target: 5000,
+        category: 'mastery',
+    },
+    {
+        id: 'level_5',
+        title: 'Seviye 5',
+        description: 'Seviye 5\'e ulaş',
+        icon: 'arrow-up-circle-outline',
+        target: 5,
+        category: 'mastery',
+    },
+    {
+        id: 'level_10',
+        title: 'Seviye 10',
+        description: 'Seviye 10\'a ulaş',
+        icon: 'arrow-up-circle-outline',
+        target: 10,
+        category: 'mastery',
+    },
+    {
+        id: 'three_star_collector',
+        title: '3 Yıldız Koleksiyoncusu',
+        description: '10 bulmacada 3 yıldız al',
+        icon: 'star-outline',
+        target: 10,
+        category: 'mastery',
+    },
+
+    // ═══════════════════════════════════
+    //  SPECIAL (Hidden & Rare)
+    // ═══════════════════════════════════
     {
         id: 'last_second',
         title: 'Son Saniye',
         description: 'Son 3 saniyede bitir',
         icon: 'hourglass-outline',
+        target: 1,
+        category: 'special',
+        hidden: true,
+    },
+    {
+        id: 'night_owl',
+        title: 'Gece Kuşu',
+        description: 'Gece yarısından sonra bir bulmaca tamamla',
+        icon: 'moon-outline',
+        target: 1,
+        category: 'special',
+        hidden: true,
+    },
+    {
+        id: 'early_bird',
+        title: 'Erken Kuş',
+        description: 'Sabah 6\'dan önce bir bulmaca tamamla',
+        icon: 'sunny-outline',
+        target: 1,
+        category: 'special',
+        hidden: true,
+    },
+    {
+        id: 'weekend_warrior',
+        title: 'Hafta Sonu Savaşçısı',
+        description: 'Bir hafta sonu 5 bulmaca tamamla',
+        icon: 'flag-outline',
+        target: 5,
+        category: 'special',
+    },
+    {
+        id: 'comeback',
+        title: 'Geri Dönüş',
+        description: '7 gün ara verdikten sonra tekrar oyna',
+        icon: 'refresh-outline',
+        target: 1,
+        category: 'special',
+        hidden: true,
+    },
+    {
+        id: 'big_puzzle_first',
+        title: 'Büyük Meydan Okuma',
+        description: 'İlk büyük bulmacayı tamamla',
+        icon: 'grid-outline',
+        target: 1,
+        category: 'special',
+    },
+    {
+        id: 'big_puzzle_master',
+        title: 'Büyük Bulmaca Ustası',
+        description: '10 büyük bulmaca tamamla',
+        icon: 'apps-outline',
+        target: 10,
+        category: 'special',
+    },
+    {
+        id: 'daily_streak_perfect',
+        title: 'Günlük Mükemmellik',
+        description: 'Günlük bulmacayı hatasız tamamla',
+        icon: 'ribbon-outline',
+        target: 1,
+        category: 'special',
+    },
+    {
+        id: 'all_stars',
+        title: 'Tam Puan',
+        description: 'Bir bölümdeki tüm bulmacalarda 3 yıldız al',
+        icon: 'sparkles-outline',
         target: 1,
         category: 'special',
         hidden: true,
