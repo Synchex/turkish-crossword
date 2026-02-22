@@ -23,14 +23,14 @@ export type SfxName =
 // For now we use placeholder paths — the manager will silently skip
 // if a file cannot be loaded.
 const SFX_SOURCES: Record<SfxName, any> = {
-    keyPress: require('../../assets/sounds/key_press.mp3'),
-    correctWord: require('../../assets/sounds/correct_word.mp3'),
-    wrongWord: require('../../assets/sounds/wrong_word.mp3'),
-    buttonTap: require('../../assets/sounds/button_tap.mp3'),
-    puzzleComplete: require('../../assets/sounds/puzzle_complete.mp3'),
+    keyPress: require('../../assets/sounds/key_press.wav'),
+    correctWord: require('../../assets/sounds/correct_word.wav'),
+    wrongWord: require('../../assets/sounds/wrong_word.wav'),
+    buttonTap: require('../../assets/sounds/button_tap.wav'),
+    puzzleComplete: require('../../assets/sounds/puzzle_complete.wav'),
 };
 
-const MUSIC_SOURCE = require('../../assets/sounds/bg_music.mp3');
+const MUSIC_SOURCE = require('../../assets/sounds/bg_music.wav');
 
 // ──────────────────────────────────
 //  Singleton AudioManager
